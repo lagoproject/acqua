@@ -1,0 +1,883 @@
+   1              		.file	"libusbwrap.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.globl	usbValidateVidPid
+   6              	usbValidateVidPid:
+   7              	.LFB4:
+   8              		.file 1 "libusbwrap.c"
+   1:libusbwrap.c  **** /*
+   2:libusbwrap.c  ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:libusbwrap.c  ****  *
+   4:libusbwrap.c  ****  * This program is free software: you can redistribute it and/or modify
+   5:libusbwrap.c  ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:libusbwrap.c  ****  * the Free Software Foundation, either version 3 of the License, or
+   7:libusbwrap.c  ****  * (at your option) any later version.
+   8:libusbwrap.c  ****  *
+   9:libusbwrap.c  ****  * This program is distributed in the hope that it will be useful,
+  10:libusbwrap.c  ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:libusbwrap.c  ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:libusbwrap.c  ****  * GNU Lesser General Public License for more details.
+  13:libusbwrap.c  ****  *
+  14:libusbwrap.c  ****  * You should have received a copy of the GNU Lesser General Public License
+  15:libusbwrap.c  ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:libusbwrap.c  ****  */
+  17:libusbwrap.c  **** #include <stdio.h>
+  18:libusbwrap.c  **** #include <string.h>
+  19:libusbwrap.c  **** #include <makestuff.h>
+  20:libusbwrap.c  **** #include <liberror.h>
+  21:libusbwrap.c  **** #ifdef WIN32
+  22:libusbwrap.c  **** 	#include <lusb0_usb.h>
+  23:libusbwrap.c  **** #else
+  24:libusbwrap.c  **** 	#include <usb.h>
+  25:libusbwrap.c  **** #endif
+  26:libusbwrap.c  **** #include "libusbwrap.h"
+  27:libusbwrap.c  **** 
+  28:libusbwrap.c  **** // Return true if vp is VVVV:PPPP where V and P are hex digits:
+  29:libusbwrap.c  **** //
+  30:libusbwrap.c  **** bool usbValidateVidPid(const char *vp) {
+   9              		.loc 1 30 0
+  10              		.cfi_startproc
+  11 0000 55       		pushq	%rbp
+  12              		.cfi_def_cfa_offset 16
+  13              		.cfi_offset 6, -16
+  14 0001 4889E5   		movq	%rsp, %rbp
+  15              		.cfi_def_cfa_register 6
+  16 0004 4883EC20 		subq	$32, %rsp
+  17 0008 48897DE8 		movq	%rdi, -24(%rbp)
+  31:libusbwrap.c  **** 	int i;
+  32:libusbwrap.c  **** 	char ch;
+  33:libusbwrap.c  **** 	if ( !vp ) {
+  18              		.loc 1 33 0
+  19 000c 48837DE8 		cmpq	$0, -24(%rbp)
+  19      00
+  20 0011 750A     		jne	.L2
+  34:libusbwrap.c  **** 		return false;
+  21              		.loc 1 34 0
+  22 0013 B8000000 		movl	$0, %eax
+  22      00
+  23 0018 E9DC0000 		jmp	.L3
+  23      00
+  24              	.L2:
+  35:libusbwrap.c  **** 	}
+  36:libusbwrap.c  **** 	if ( strlen(vp) != 9 ) {
+  25              		.loc 1 36 0
+  26 001d 488B45E8 		movq	-24(%rbp), %rax
+  27 0021 4889C7   		movq	%rax, %rdi
+  28 0024 E8000000 		call	strlen@PLT
+  28      00
+  29 0029 4883F809 		cmpq	$9, %rax
+  30 002d 740A     		je	.L4
+  37:libusbwrap.c  **** 		return false;
+  31              		.loc 1 37 0
+  32 002f B8000000 		movl	$0, %eax
+  32      00
+  33 0034 E9C00000 		jmp	.L3
+  33      00
+  34              	.L4:
+  38:libusbwrap.c  **** 	}
+  39:libusbwrap.c  **** 	if ( vp[4] != ':' ) {
+  35              		.loc 1 39 0
+  36 0039 488B45E8 		movq	-24(%rbp), %rax
+  37 003d 4883C004 		addq	$4, %rax
+  38 0041 0FB600   		movzbl	(%rax), %eax
+  39 0044 3C3A     		cmpb	$58, %al
+  40 0046 740A     		je	.L5
+  40:libusbwrap.c  **** 		return false;
+  41              		.loc 1 40 0
+  42 0048 B8000000 		movl	$0, %eax
+  42      00
+  43 004d E9A70000 		jmp	.L3
+  43      00
+  44              	.L5:
+  41:libusbwrap.c  **** 	}
+  42:libusbwrap.c  **** 	for ( i = 0; i < 4; i++ ) {
+  45              		.loc 1 42 0
+  46 0052 C745FC00 		movl	$0, -4(%rbp)
+  46      000000
+  47 0059 EB42     		jmp	.L6
+  48              	.L11:
+  43:libusbwrap.c  **** 		ch = vp[i];
+  49              		.loc 1 43 0
+  50 005b 8B45FC   		movl	-4(%rbp), %eax
+  51 005e 4863D0   		movslq	%eax, %rdx
+  52 0061 488B45E8 		movq	-24(%rbp), %rax
+  53 0065 4801D0   		addq	%rdx, %rax
+  54 0068 0FB600   		movzbl	(%rax), %eax
+  55 006b 8845FB   		movb	%al, -5(%rbp)
+  44:libusbwrap.c  **** 		if (
+  56              		.loc 1 44 0
+  57 006e 807DFB2F 		cmpb	$47, -5(%rbp)
+  58 0072 7E1E     		jle	.L7
+  45:libusbwrap.c  **** 			ch < '0' ||
+  59              		.loc 1 45 0
+  60 0074 807DFB39 		cmpb	$57, -5(%rbp)
+  61 0078 7E06     		jle	.L8
+  46:libusbwrap.c  **** 			(ch > '9' && ch < 'A') ||
+  62              		.loc 1 46 0
+  63 007a 807DFB40 		cmpb	$64, -5(%rbp)
+  64 007e 7E12     		jle	.L7
+  65              	.L8:
+  66              		.loc 1 46 0 is_stmt 0 discriminator 1
+  67 0080 807DFB46 		cmpb	$70, -5(%rbp)
+  68 0084 7E06     		jle	.L9
+  47:libusbwrap.c  **** 			(ch > 'F' && ch < 'a') ||
+  69              		.loc 1 47 0 is_stmt 1
+  70 0086 807DFB60 		cmpb	$96, -5(%rbp)
+  71 008a 7E06     		jle	.L7
+  72              	.L9:
+  73              		.loc 1 47 0 is_stmt 0 discriminator 1
+  74 008c 807DFB66 		cmpb	$102, -5(%rbp)
+  75 0090 7E07     		jle	.L10
+  76              	.L7:
+  48:libusbwrap.c  **** 			ch > 'f')
+  49:libusbwrap.c  **** 		{
+  50:libusbwrap.c  **** 			return false;
+  77              		.loc 1 50 0 is_stmt 1
+  78 0092 B8000000 		movl	$0, %eax
+  78      00
+  79 0097 EB60     		jmp	.L3
+  80              	.L10:
+  42:libusbwrap.c  **** 		ch = vp[i];
+  81              		.loc 1 42 0 discriminator 2
+  82 0099 8345FC01 		addl	$1, -4(%rbp)
+  83              	.L6:
+  42:libusbwrap.c  **** 		ch = vp[i];
+  84              		.loc 1 42 0 is_stmt 0 discriminator 1
+  85 009d 837DFC03 		cmpl	$3, -4(%rbp)
+  86 00a1 7EB8     		jle	.L11
+  51:libusbwrap.c  **** 		}
+  52:libusbwrap.c  **** 	}
+  53:libusbwrap.c  **** 	for ( i = 5; i < 9; i++ ) {
+  87              		.loc 1 53 0 is_stmt 1
+  88 00a3 C745FC05 		movl	$5, -4(%rbp)
+  88      000000
+  89 00aa EB42     		jmp	.L12
+  90              	.L17:
+  54:libusbwrap.c  **** 		ch = vp[i];
+  91              		.loc 1 54 0
+  92 00ac 8B45FC   		movl	-4(%rbp), %eax
+  93 00af 4863D0   		movslq	%eax, %rdx
+  94 00b2 488B45E8 		movq	-24(%rbp), %rax
+  95 00b6 4801D0   		addq	%rdx, %rax
+  96 00b9 0FB600   		movzbl	(%rax), %eax
+  97 00bc 8845FB   		movb	%al, -5(%rbp)
+  55:libusbwrap.c  **** 		if (
+  98              		.loc 1 55 0
+  99 00bf 807DFB2F 		cmpb	$47, -5(%rbp)
+ 100 00c3 7E1E     		jle	.L13
+  56:libusbwrap.c  **** 			ch < '0' ||
+ 101              		.loc 1 56 0
+ 102 00c5 807DFB39 		cmpb	$57, -5(%rbp)
+ 103 00c9 7E06     		jle	.L14
+  57:libusbwrap.c  **** 			(ch > '9' && ch < 'A') ||
+ 104              		.loc 1 57 0
+ 105 00cb 807DFB40 		cmpb	$64, -5(%rbp)
+ 106 00cf 7E12     		jle	.L13
+ 107              	.L14:
+ 108              		.loc 1 57 0 is_stmt 0 discriminator 1
+ 109 00d1 807DFB46 		cmpb	$70, -5(%rbp)
+ 110 00d5 7E06     		jle	.L15
+  58:libusbwrap.c  **** 			(ch > 'F' && ch < 'a') ||
+ 111              		.loc 1 58 0 is_stmt 1
+ 112 00d7 807DFB60 		cmpb	$96, -5(%rbp)
+ 113 00db 7E06     		jle	.L13
+ 114              	.L15:
+ 115              		.loc 1 58 0 is_stmt 0 discriminator 1
+ 116 00dd 807DFB66 		cmpb	$102, -5(%rbp)
+ 117 00e1 7E07     		jle	.L16
+ 118              	.L13:
+  59:libusbwrap.c  **** 			ch > 'f')
+  60:libusbwrap.c  **** 		{
+  61:libusbwrap.c  **** 			return false;
+ 119              		.loc 1 61 0 is_stmt 1
+ 120 00e3 B8000000 		movl	$0, %eax
+ 120      00
+ 121 00e8 EB0F     		jmp	.L3
+ 122              	.L16:
+  53:libusbwrap.c  **** 		ch = vp[i];
+ 123              		.loc 1 53 0 discriminator 2
+ 124 00ea 8345FC01 		addl	$1, -4(%rbp)
+ 125              	.L12:
+  53:libusbwrap.c  **** 		ch = vp[i];
+ 126              		.loc 1 53 0 is_stmt 0 discriminator 1
+ 127 00ee 837DFC08 		cmpl	$8, -4(%rbp)
+ 128 00f2 7EB8     		jle	.L17
+  62:libusbwrap.c  **** 		}
+  63:libusbwrap.c  **** 	}
+  64:libusbwrap.c  **** 	return true;
+ 129              		.loc 1 64 0 is_stmt 1
+ 130 00f4 B8010000 		movl	$1, %eax
+ 130      00
+ 131              	.L3:
+  65:libusbwrap.c  **** }
+ 132              		.loc 1 65 0
+ 133 00f9 C9       		leave
+ 134              		.cfi_def_cfa 7, 8
+ 135 00fa C3       		ret
+ 136              		.cfi_endproc
+ 137              	.LFE4:
+ 139              		.globl	usbInitialise
+ 141              	usbInitialise:
+ 142              	.LFB5:
+  66:libusbwrap.c  **** 
+  67:libusbwrap.c  **** // Initialise USB
+  68:libusbwrap.c  **** //
+  69:libusbwrap.c  **** void usbInitialise(void) {
+ 143              		.loc 1 69 0
+ 144              		.cfi_startproc
+ 145 00fb 55       		pushq	%rbp
+ 146              		.cfi_def_cfa_offset 16
+ 147              		.cfi_offset 6, -16
+ 148 00fc 4889E5   		movq	%rsp, %rbp
+ 149              		.cfi_def_cfa_register 6
+  70:libusbwrap.c  **** 	usb_init();
+ 150              		.loc 1 70 0
+ 151 00ff E8000000 		call	usb_init@PLT
+ 151      00
+  71:libusbwrap.c  **** }
+ 152              		.loc 1 71 0
+ 153 0104 5D       		popq	%rbp
+ 154              		.cfi_def_cfa 7, 8
+ 155 0105 C3       		ret
+ 156              		.cfi_endproc
+ 157              	.LFE5:
+ 159              		.section	.rodata
+ 160              		.align 8
+ 161              	.LC0:
+ 162 0000 4E6F2055 		.string	"No USB buses found. Did you forget to call usbInitialise()?"
+ 162      53422062 
+ 162      75736573 
+ 162      20666F75 
+ 162      6E642E20 
+ 163              		.text
+ 164              		.globl	usbIsDeviceAvailable
+ 166              	usbIsDeviceAvailable:
+ 167              	.LFB6:
+  72:libusbwrap.c  **** 
+  73:libusbwrap.c  **** // Find the descriptor of the first occurance of the specified device
+  74:libusbwrap.c  **** //
+  75:libusbwrap.c  **** USBStatus usbIsDeviceAvailable(uint16 vid, uint16 pid, bool *isAvailable, const char **error) {
+ 168              		.loc 1 75 0
+ 169              		.cfi_startproc
+ 170 0106 55       		pushq	%rbp
+ 171              		.cfi_def_cfa_offset 16
+ 172              		.cfi_offset 6, -16
+ 173 0107 4889E5   		movq	%rsp, %rbp
+ 174              		.cfi_def_cfa_register 6
+ 175 010a 4883EC30 		subq	$48, %rsp
+ 176 010e 89F0     		movl	%esi, %eax
+ 177 0110 488955E0 		movq	%rdx, -32(%rbp)
+ 178 0114 48894DD8 		movq	%rcx, -40(%rbp)
+ 179 0118 66897DEC 		movw	%di, -20(%rbp)
+ 180 011c 668945E8 		movw	%ax, -24(%rbp)
+  76:libusbwrap.c  **** 	struct usb_device *thisDevice;
+  77:libusbwrap.c  **** 	struct usb_bus *bus;
+  78:libusbwrap.c  **** 	usb_find_busses();
+ 181              		.loc 1 78 0
+ 182 0120 E8000000 		call	usb_find_busses@PLT
+ 182      00
+  79:libusbwrap.c  **** 	bus = usb_get_busses();
+ 183              		.loc 1 79 0
+ 184 0125 E8000000 		call	usb_get_busses@PLT
+ 184      00
+ 185 012a 488945F8 		movq	%rax, -8(%rbp)
+  80:libusbwrap.c  **** 	if ( !bus ) {
+ 186              		.loc 1 80 0
+ 187 012e 48837DF8 		cmpq	$0, -8(%rbp)
+ 187      00
+ 188 0133 751F     		jne	.L20
+  81:libusbwrap.c  **** 		errRender(error, "No USB buses found. Did you forget to call usbInitialise()?");
+ 189              		.loc 1 81 0
+ 190 0135 488B45D8 		movq	-40(%rbp), %rax
+ 191 0139 488D3500 		leaq	.LC0(%rip), %rsi
+ 191      000000
+ 192 0140 4889C7   		movq	%rax, %rdi
+ 193 0143 B8000000 		movl	$0, %eax
+ 193      00
+ 194 0148 E8000000 		call	errRender@PLT
+ 194      00
+  82:libusbwrap.c  **** 		return USB_NO_BUSES;
+ 195              		.loc 1 82 0
+ 196 014d B8020000 		movl	$2, %eax
+ 196      00
+ 197 0152 EB7F     		jmp	.L21
+ 198              	.L20:
+  83:libusbwrap.c  **** 	}
+  84:libusbwrap.c  **** 	usb_find_devices();
+ 199              		.loc 1 84 0
+ 200 0154 E8000000 		call	usb_find_devices@PLT
+ 200      00
+  85:libusbwrap.c  **** 	bus = usb_get_busses();
+ 201              		.loc 1 85 0
+ 202 0159 E8000000 		call	usb_get_busses@PLT
+ 202      00
+ 203 015e 488945F8 		movq	%rax, -8(%rbp)
+ 204              	.L26:
+  86:libusbwrap.c  **** 	do {
+  87:libusbwrap.c  **** 		thisDevice = bus->devices;
+ 205              		.loc 1 87 0
+ 206 0162 488B45F8 		movq	-8(%rbp), %rax
+ 207 0166 488B8018 		movq	4120(%rax), %rax
+ 207      100000
+ 208 016d 488945F0 		movq	%rax, -16(%rbp)
+  88:libusbwrap.c  **** 		while ( thisDevice && (thisDevice->descriptor.idVendor != vid ||
+ 209              		.loc 1 88 0
+ 210 0171 EB0B     		jmp	.L22
+ 211              	.L24:
+  89:libusbwrap.c  **** 							   thisDevice->descriptor.idProduct != pid) )
+  90:libusbwrap.c  **** 		{
+  91:libusbwrap.c  **** 			thisDevice = thisDevice->next;
+ 212              		.loc 1 91 0
+ 213 0173 488B45F0 		movq	-16(%rbp), %rax
+ 214 0177 488B00   		movq	(%rax), %rax
+ 215 017a 488945F0 		movq	%rax, -16(%rbp)
+ 216              	.L22:
+  88:libusbwrap.c  **** 		while ( thisDevice && (thisDevice->descriptor.idVendor != vid ||
+ 217              		.loc 1 88 0
+ 218 017e 48837DF0 		cmpq	$0, -16(%rbp)
+ 218      00
+ 219 0183 7422     		je	.L23
+  88:libusbwrap.c  **** 		while ( thisDevice && (thisDevice->descriptor.idVendor != vid ||
+ 220              		.loc 1 88 0 is_stmt 0 discriminator 1
+ 221 0185 488B45F0 		movq	-16(%rbp), %rax
+ 222 0189 0FB78028 		movzwl	4136(%rax), %eax
+ 222      100000
+ 223 0190 663B45EC 		cmpw	-20(%rbp), %ax
+ 224 0194 75DD     		jne	.L24
+  89:libusbwrap.c  **** 							   thisDevice->descriptor.idProduct != pid) )
+ 225              		.loc 1 89 0 is_stmt 1 discriminator 2
+ 226 0196 488B45F0 		movq	-16(%rbp), %rax
+ 227 019a 0FB7802A 		movzwl	4138(%rax), %eax
+ 227      100000
+  88:libusbwrap.c  **** 		while ( thisDevice && (thisDevice->descriptor.idVendor != vid ||
+ 228              		.loc 1 88 0 discriminator 2
+ 229 01a1 663B45E8 		cmpw	-24(%rbp), %ax
+ 230 01a5 75CC     		jne	.L24
+ 231              	.L23:
+  92:libusbwrap.c  **** 		}
+  93:libusbwrap.c  **** 		bus = bus->next;
+ 232              		.loc 1 93 0
+ 233 01a7 488B45F8 		movq	-8(%rbp), %rax
+ 234 01ab 488B00   		movq	(%rax), %rax
+ 235 01ae 488945F8 		movq	%rax, -8(%rbp)
+  94:libusbwrap.c  **** 	} while ( bus && !thisDevice );  // break out if I run out of buses, or device found
+ 236              		.loc 1 94 0
+ 237 01b2 48837DF8 		cmpq	$0, -8(%rbp)
+ 237      00
+ 238 01b7 7407     		je	.L25
+ 239              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 240 01b9 48837DF0 		cmpq	$0, -16(%rbp)
+ 240      00
+ 241 01be 74A2     		je	.L26
+ 242              	.L25:
+  95:libusbwrap.c  **** 	*isAvailable = thisDevice ? true : false;
+ 243              		.loc 1 95 0 is_stmt 1
+ 244 01c0 48837DF0 		cmpq	$0, -16(%rbp)
+ 244      00
+ 245 01c5 0F95C2   		setne	%dl
+ 246 01c8 488B45E0 		movq	-32(%rbp), %rax
+ 247 01cc 8810     		movb	%dl, (%rax)
+  96:libusbwrap.c  **** 	return USB_SUCCESS;
+ 248              		.loc 1 96 0
+ 249 01ce B8000000 		movl	$0, %eax
+ 249      00
+ 250              	.L21:
+  97:libusbwrap.c  **** }
+ 251              		.loc 1 97 0
+ 252 01d3 C9       		leave
+ 253              		.cfi_def_cfa 7, 8
+ 254 01d4 C3       		ret
+ 255              		.cfi_endproc
+ 256              	.LFE6:
+ 258              		.section	.rodata
+ 259              	.LC1:
+ 260 003c 44657669 		.string	"Device %04X:%04X not found"
+ 260      63652025 
+ 260      3034583A 
+ 260      25303458 
+ 260      206E6F74 
+ 261              	.LC2:
+ 262 0057 7573625F 		.string	"usb_open(): %s"
+ 262      6F70656E 
+ 262      28293A20 
+ 262      257300
+ 263              	.LC3:
+ 264 0066 7573625F 		.string	"usb_set_configuration(): %s"
+ 264      7365745F 
+ 264      636F6E66 
+ 264      69677572 
+ 264      6174696F 
+ 265              	.LC4:
+ 266 0082 7573625F 		.string	"usb_claim_interface(): %s"
+ 266      636C6169 
+ 266      6D5F696E 
+ 266      74657266 
+ 266      61636528 
+ 267              	.LC5:
+ 268 009c 7573625F 		.string	"usb_set_altinterface(): %s"
+ 268      7365745F 
+ 268      616C7469 
+ 268      6E746572 
+ 268      66616365 
+ 269              		.text
+ 270              		.globl	usbOpenDevice
+ 272              	usbOpenDevice:
+ 273              	.LFB7:
+  98:libusbwrap.c  **** 
+  99:libusbwrap.c  **** // Find the descriptor of the first occurance of the specified device
+ 100:libusbwrap.c  **** //
+ 101:libusbwrap.c  **** USBStatus usbOpenDevice(
+ 102:libusbwrap.c  **** 	uint16 vid, uint16 pid, int configuration, int iface, int alternateInterface,
+ 103:libusbwrap.c  **** 	struct usb_dev_handle **devHandlePtr, const char **error)
+ 104:libusbwrap.c  **** {
+ 274              		.loc 1 104 0
+ 275              		.cfi_startproc
+ 276 01d5 55       		pushq	%rbp
+ 277              		.cfi_def_cfa_offset 16
+ 278              		.cfi_offset 6, -16
+ 279 01d6 4889E5   		movq	%rsp, %rbp
+ 280              		.cfi_def_cfa_register 6
+ 281 01d9 4883EC40 		subq	$64, %rsp
+ 282 01dd 89F0     		movl	%esi, %eax
+ 283 01df 8955D4   		movl	%edx, -44(%rbp)
+ 284 01e2 894DD0   		movl	%ecx, -48(%rbp)
+ 285 01e5 448945CC 		movl	%r8d, -52(%rbp)
+ 286 01e9 4C894DC0 		movq	%r9, -64(%rbp)
+ 287 01ed 66897DDC 		movw	%di, -36(%rbp)
+ 288 01f1 668945D8 		movw	%ax, -40(%rbp)
+ 105:libusbwrap.c  **** 	USBStatus returnCode;
+ 106:libusbwrap.c  **** 	struct usb_bus *bus;
+ 107:libusbwrap.c  **** 	struct usb_device *thisDevice;
+ 108:libusbwrap.c  **** 	struct usb_dev_handle *deviceHandle;
+ 109:libusbwrap.c  **** 	int uStatus;
+ 110:libusbwrap.c  **** 	usb_find_busses();
+ 289              		.loc 1 110 0
+ 290 01f5 E8000000 		call	usb_find_busses@PLT
+ 290      00
+ 111:libusbwrap.c  **** 	bus = usb_get_busses();
+ 291              		.loc 1 111 0
+ 292 01fa E8000000 		call	usb_get_busses@PLT
+ 292      00
+ 293 01ff 488945E8 		movq	%rax, -24(%rbp)
+ 112:libusbwrap.c  **** 	if ( bus ) {
+ 294              		.loc 1 112 0
+ 295 0203 48837DE8 		cmpq	$0, -24(%rbp)
+ 295      00
+ 296 0208 0F84C801 		je	.L28
+ 296      0000
+ 113:libusbwrap.c  **** 		// This system has one or more USB buses...let's step through them looking for the specified VID/
+ 114:libusbwrap.c  **** 		//
+ 115:libusbwrap.c  **** 		usb_find_devices();
+ 297              		.loc 1 115 0
+ 298 020e E8000000 		call	usb_find_devices@PLT
+ 298      00
+ 299              	.L33:
+ 116:libusbwrap.c  **** 		do {
+ 117:libusbwrap.c  **** 			thisDevice = bus->devices;
+ 300              		.loc 1 117 0
+ 301 0213 488B45E8 		movq	-24(%rbp), %rax
+ 302 0217 488B8018 		movq	4120(%rax), %rax
+ 302      100000
+ 303 021e 488945F0 		movq	%rax, -16(%rbp)
+ 118:libusbwrap.c  **** 			while ( thisDevice && (thisDevice->descriptor.idVendor != vid || thisDevice->descriptor.idProduc
+ 304              		.loc 1 118 0
+ 305 0222 EB0B     		jmp	.L29
+ 306              	.L31:
+ 119:libusbwrap.c  **** 				thisDevice = thisDevice->next;
+ 307              		.loc 1 119 0
+ 308 0224 488B45F0 		movq	-16(%rbp), %rax
+ 309 0228 488B00   		movq	(%rax), %rax
+ 310 022b 488945F0 		movq	%rax, -16(%rbp)
+ 311              	.L29:
+ 118:libusbwrap.c  **** 			while ( thisDevice && (thisDevice->descriptor.idVendor != vid || thisDevice->descriptor.idProduc
+ 312              		.loc 1 118 0
+ 313 022f 48837DF0 		cmpq	$0, -16(%rbp)
+ 313      00
+ 314 0234 7422     		je	.L30
+ 118:libusbwrap.c  **** 			while ( thisDevice && (thisDevice->descriptor.idVendor != vid || thisDevice->descriptor.idProduc
+ 315              		.loc 1 118 0 is_stmt 0 discriminator 1
+ 316 0236 488B45F0 		movq	-16(%rbp), %rax
+ 317 023a 0FB78028 		movzwl	4136(%rax), %eax
+ 317      100000
+ 318 0241 663B45DC 		cmpw	-36(%rbp), %ax
+ 319 0245 75DD     		jne	.L31
+ 118:libusbwrap.c  **** 			while ( thisDevice && (thisDevice->descriptor.idVendor != vid || thisDevice->descriptor.idProduc
+ 320              		.loc 1 118 0 discriminator 2
+ 321 0247 488B45F0 		movq	-16(%rbp), %rax
+ 322 024b 0FB7802A 		movzwl	4138(%rax), %eax
+ 322      100000
+ 323 0252 663B45D8 		cmpw	-40(%rbp), %ax
+ 324 0256 75CC     		jne	.L31
+ 325              	.L30:
+ 120:libusbwrap.c  **** 			}
+ 121:libusbwrap.c  **** 			bus = bus->next;
+ 326              		.loc 1 121 0 is_stmt 1
+ 327 0258 488B45E8 		movq	-24(%rbp), %rax
+ 328 025c 488B00   		movq	(%rax), %rax
+ 329 025f 488945E8 		movq	%rax, -24(%rbp)
+ 122:libusbwrap.c  **** 		} while ( bus && !thisDevice );  // will break out if I run out of buses, or if device found
+ 330              		.loc 1 122 0
+ 331 0263 48837DE8 		cmpq	$0, -24(%rbp)
+ 331      00
+ 332 0268 7407     		je	.L32
+ 333              		.loc 1 122 0 is_stmt 0 discriminator 1
+ 334 026a 48837DF0 		cmpq	$0, -16(%rbp)
+ 334      00
+ 335 026f 74A2     		je	.L33
+ 336              	.L32:
+ 123:libusbwrap.c  **** 		if ( !thisDevice ) {
+ 337              		.loc 1 123 0 is_stmt 1
+ 338 0271 48837DF0 		cmpq	$0, -16(%rbp)
+ 338      00
+ 339 0276 7538     		jne	.L34
+ 124:libusbwrap.c  **** 			// The VID/PID was not found after scanning all buses
+ 125:libusbwrap.c  **** 			//
+ 126:libusbwrap.c  **** 			*devHandlePtr = NULL;
+ 340              		.loc 1 126 0
+ 341 0278 488B45C0 		movq	-64(%rbp), %rax
+ 342 027c 48C70000 		movq	$0, (%rax)
+ 342      000000
+ 127:libusbwrap.c  **** 			errRender(error, "Device %04X:%04X not found", vid, pid);
+ 343              		.loc 1 127 0
+ 344 0283 0FB755D8 		movzwl	-40(%rbp), %edx
+ 345 0287 0FB745DC 		movzwl	-36(%rbp), %eax
+ 346 028b 89D1     		movl	%edx, %ecx
+ 347 028d 89C2     		movl	%eax, %edx
+ 348 028f 488D3500 		leaq	.LC1(%rip), %rsi
+ 348      000000
+ 349 0296 488B7D10 		movq	16(%rbp), %rdi
+ 350 029a B8000000 		movl	$0, %eax
+ 350      00
+ 351 029f E8000000 		call	errRender@PLT
+ 351      00
+ 128:libusbwrap.c  **** 			FAIL(USB_DEVICE_NOT_FOUND);
+ 352              		.loc 1 128 0
+ 353 02a4 C745E003 		movl	$3, -32(%rbp)
+ 353      000000
+ 354 02ab E94D0100 		jmp	.L35
+ 354      00
+ 355              	.L34:
+ 129:libusbwrap.c  **** 		} else {
+ 130:libusbwrap.c  **** 			// The VID/PID was found; let's see if we can open the device
+ 131:libusbwrap.c  **** 			//
+ 132:libusbwrap.c  **** 			deviceHandle = usb_open(thisDevice);
+ 356              		.loc 1 132 0
+ 357 02b0 488B45F0 		movq	-16(%rbp), %rax
+ 358 02b4 4889C7   		movq	%rax, %rdi
+ 359 02b7 E8000000 		call	usb_open@PLT
+ 359      00
+ 360 02bc 488945F8 		movq	%rax, -8(%rbp)
+ 133:libusbwrap.c  **** 			if ( deviceHandle == NULL ) {
+ 361              		.loc 1 133 0
+ 362 02c0 48837DF8 		cmpq	$0, -8(%rbp)
+ 362      00
+ 363 02c5 7534     		jne	.L36
+ 134:libusbwrap.c  **** 				*devHandlePtr = NULL;
+ 364              		.loc 1 134 0
+ 365 02c7 488B45C0 		movq	-64(%rbp), %rax
+ 366 02cb 48C70000 		movq	$0, (%rax)
+ 366      000000
+ 135:libusbwrap.c  **** 				errRender(error, "usb_open(): %s", usb_strerror());
+ 367              		.loc 1 135 0
+ 368 02d2 E8000000 		call	usb_strerror@PLT
+ 368      00
+ 369 02d7 4889C2   		movq	%rax, %rdx
+ 370 02da 488D3500 		leaq	.LC2(%rip), %rsi
+ 370      000000
+ 371 02e1 488B7D10 		movq	16(%rbp), %rdi
+ 372 02e5 B8000000 		movl	$0, %eax
+ 372      00
+ 373 02ea E8000000 		call	errRender@PLT
+ 373      00
+ 136:libusbwrap.c  **** 				FAIL(USB_CANNOT_OPEN_DEVICE);
+ 374              		.loc 1 136 0
+ 375 02ef C745E004 		movl	$4, -32(%rbp)
+ 375      000000
+ 376 02f6 E9020100 		jmp	.L35
+ 376      00
+ 377              	.L36:
+ 137:libusbwrap.c  **** 			}
+ 138:libusbwrap.c  **** 			*devHandlePtr = deviceHandle;  // Return the valid device handle anyway, even if subsequent oper
+ 378              		.loc 1 138 0
+ 379 02fb 488B45C0 		movq	-64(%rbp), %rax
+ 380 02ff 488B55F8 		movq	-8(%rbp), %rdx
+ 381 0303 488910   		movq	%rdx, (%rax)
+ 139:libusbwrap.c  **** 			uStatus = usb_set_configuration(deviceHandle, configuration);
+ 382              		.loc 1 139 0
+ 383 0306 8B55D4   		movl	-44(%rbp), %edx
+ 384 0309 488B45F8 		movq	-8(%rbp), %rax
+ 385 030d 89D6     		movl	%edx, %esi
+ 386 030f 4889C7   		movq	%rax, %rdi
+ 387 0312 E8000000 		call	usb_set_configuration@PLT
+ 387      00
+ 388 0317 8945E4   		movl	%eax, -28(%rbp)
+ 140:libusbwrap.c  **** 			if ( uStatus < 0 ) {
+ 389              		.loc 1 140 0
+ 390 031a 837DE400 		cmpl	$0, -28(%rbp)
+ 391 031e 7929     		jns	.L37
+ 141:libusbwrap.c  **** 				errRender(error, "usb_set_configuration(): %s", usb_strerror());
+ 392              		.loc 1 141 0
+ 393 0320 E8000000 		call	usb_strerror@PLT
+ 393      00
+ 394 0325 4889C2   		movq	%rax, %rdx
+ 395 0328 488D3500 		leaq	.LC3(%rip), %rsi
+ 395      000000
+ 396 032f 488B7D10 		movq	16(%rbp), %rdi
+ 397 0333 B8000000 		movl	$0, %eax
+ 397      00
+ 398 0338 E8000000 		call	errRender@PLT
+ 398      00
+ 142:libusbwrap.c  **** 				FAIL(USB_CANNOT_SET_CONFIGURATION);
+ 399              		.loc 1 142 0
+ 400 033d C745E005 		movl	$5, -32(%rbp)
+ 400      000000
+ 401 0344 E9B40000 		jmp	.L35
+ 401      00
+ 402              	.L37:
+ 143:libusbwrap.c  **** 			}
+ 144:libusbwrap.c  **** 			uStatus = usb_claim_interface(deviceHandle, iface);
+ 403              		.loc 1 144 0
+ 404 0349 8B55D0   		movl	-48(%rbp), %edx
+ 405 034c 488B45F8 		movq	-8(%rbp), %rax
+ 406 0350 89D6     		movl	%edx, %esi
+ 407 0352 4889C7   		movq	%rax, %rdi
+ 408 0355 E8000000 		call	usb_claim_interface@PLT
+ 408      00
+ 409 035a 8945E4   		movl	%eax, -28(%rbp)
+ 145:libusbwrap.c  **** 			if ( uStatus < 0 ) {
+ 410              		.loc 1 145 0
+ 411 035d 837DE400 		cmpl	$0, -28(%rbp)
+ 412 0361 7926     		jns	.L38
+ 146:libusbwrap.c  **** 				errRender(error, "usb_claim_interface(): %s", usb_strerror());
+ 413              		.loc 1 146 0
+ 414 0363 E8000000 		call	usb_strerror@PLT
+ 414      00
+ 415 0368 4889C2   		movq	%rax, %rdx
+ 416 036b 488D3500 		leaq	.LC4(%rip), %rsi
+ 416      000000
+ 417 0372 488B7D10 		movq	16(%rbp), %rdi
+ 418 0376 B8000000 		movl	$0, %eax
+ 418      00
+ 419 037b E8000000 		call	errRender@PLT
+ 419      00
+ 147:libusbwrap.c  **** 				FAIL(USB_CANNOT_CLAIM_INTERFACE);
+ 420              		.loc 1 147 0
+ 421 0380 C745E006 		movl	$6, -32(%rbp)
+ 421      000000
+ 422 0387 EB74     		jmp	.L35
+ 423              	.L38:
+ 148:libusbwrap.c  **** 			}
+ 149:libusbwrap.c  **** 			if ( alternateInterface ) {
+ 424              		.loc 1 149 0
+ 425 0389 837DCC00 		cmpl	$0, -52(%rbp)
+ 426 038d 7440     		je	.L39
+ 150:libusbwrap.c  **** 				uStatus = usb_set_altinterface(deviceHandle, alternateInterface);
+ 427              		.loc 1 150 0
+ 428 038f 8B55CC   		movl	-52(%rbp), %edx
+ 429 0392 488B45F8 		movq	-8(%rbp), %rax
+ 430 0396 89D6     		movl	%edx, %esi
+ 431 0398 4889C7   		movq	%rax, %rdi
+ 432 039b E8000000 		call	usb_set_altinterface@PLT
+ 432      00
+ 433 03a0 8945E4   		movl	%eax, -28(%rbp)
+ 151:libusbwrap.c  **** 				if ( uStatus < 0 ) {
+ 434              		.loc 1 151 0
+ 435 03a3 837DE400 		cmpl	$0, -28(%rbp)
+ 436 03a7 7926     		jns	.L39
+ 152:libusbwrap.c  **** 					errRender(error, "usb_set_altinterface(): %s", usb_strerror());
+ 437              		.loc 1 152 0
+ 438 03a9 E8000000 		call	usb_strerror@PLT
+ 438      00
+ 439 03ae 4889C2   		movq	%rax, %rdx
+ 440 03b1 488D3500 		leaq	.LC5(%rip), %rsi
+ 440      000000
+ 441 03b8 488B7D10 		movq	16(%rbp), %rdi
+ 442 03bc B8000000 		movl	$0, %eax
+ 442      00
+ 443 03c1 E8000000 		call	errRender@PLT
+ 443      00
+ 153:libusbwrap.c  **** 					FAIL(USB_CANNOT_SET_ALTINT);
+ 444              		.loc 1 153 0
+ 445 03c6 C745E007 		movl	$7, -32(%rbp)
+ 445      000000
+ 446 03cd EB2E     		jmp	.L35
+ 447              	.L39:
+ 154:libusbwrap.c  **** 				}
+ 155:libusbwrap.c  **** 			}
+ 156:libusbwrap.c  **** 			return USB_SUCCESS;
+ 448              		.loc 1 156 0
+ 449 03cf B8000000 		movl	$0, %eax
+ 449      00
+ 450 03d4 EB2A     		jmp	.L40
+ 451              	.L28:
+ 157:libusbwrap.c  **** 		}
+ 158:libusbwrap.c  **** 	}
+ 159:libusbwrap.c  **** 	// No USB buses on this system!?!?
+ 160:libusbwrap.c  **** 	//
+ 161:libusbwrap.c  **** 	*devHandlePtr = NULL;
+ 452              		.loc 1 161 0
+ 453 03d6 488B45C0 		movq	-64(%rbp), %rax
+ 454 03da 48C70000 		movq	$0, (%rax)
+ 454      000000
+ 162:libusbwrap.c  **** 	errRender(error, "No USB buses found. Did you forget to call usbInitialise()?");
+ 455              		.loc 1 162 0
+ 456 03e1 488D3500 		leaq	.LC0(%rip), %rsi
+ 456      000000
+ 457 03e8 488B7D10 		movq	16(%rbp), %rdi
+ 458 03ec B8000000 		movl	$0, %eax
+ 458      00
+ 459 03f1 E8000000 		call	errRender@PLT
+ 459      00
+ 163:libusbwrap.c  **** 	returnCode = USB_NO_BUSES;
+ 460              		.loc 1 163 0
+ 461 03f6 C745E002 		movl	$2, -32(%rbp)
+ 461      000000
+ 462              	.L35:
+ 164:libusbwrap.c  **** cleanup:
+ 165:libusbwrap.c  **** 	return returnCode;
+ 463              		.loc 1 165 0
+ 464 03fd 8B45E0   		movl	-32(%rbp), %eax
+ 465              	.L40:
+ 166:libusbwrap.c  **** }
+ 466              		.loc 1 166 0
+ 467 0400 C9       		leave
+ 468              		.cfi_def_cfa 7, 8
+ 469 0401 C3       		ret
+ 470              		.cfi_endproc
+ 471              	.LFE7:
+ 473              		.section	.rodata
+ 474 00b7 00       		.align 8
+ 475              	.LC6:
+ 476 00b8 54686520 		.string	"The supplied VID:PID \"%s\" is invalid; it should look like 04B4:8613"
+ 476      73757070 
+ 476      6C696564 
+ 476      20564944 
+ 476      3A504944 
+ 477              		.text
+ 478              		.globl	usbOpenDeviceVP
+ 480              	usbOpenDeviceVP:
+ 481              	.LFB8:
+ 167:libusbwrap.c  **** 
+ 168:libusbwrap.c  **** // Accept VID:PID as a string
+ 169:libusbwrap.c  **** //
+ 170:libusbwrap.c  **** USBStatus usbOpenDeviceVP(
+ 171:libusbwrap.c  **** 	const char *vp, int configuration, int iface, int alternateInterface,
+ 172:libusbwrap.c  **** 	struct usb_dev_handle **devHandlePtr, const char **error)
+ 173:libusbwrap.c  **** {
+ 482              		.loc 1 173 0
+ 483              		.cfi_startproc
+ 484 0402 55       		pushq	%rbp
+ 485              		.cfi_def_cfa_offset 16
+ 486              		.cfi_offset 6, -16
+ 487 0403 4889E5   		movq	%rsp, %rbp
+ 488              		.cfi_def_cfa_register 6
+ 489 0406 4883EC40 		subq	$64, %rsp
+ 490 040a 48897DE8 		movq	%rdi, -24(%rbp)
+ 491 040e 8975E4   		movl	%esi, -28(%rbp)
+ 492 0411 8955E0   		movl	%edx, -32(%rbp)
+ 493 0414 894DDC   		movl	%ecx, -36(%rbp)
+ 494 0417 4C8945D0 		movq	%r8, -48(%rbp)
+ 495 041b 4C894DC8 		movq	%r9, -56(%rbp)
+ 174:libusbwrap.c  **** 	uint16 vid, pid;
+ 175:libusbwrap.c  **** 	if ( !usbValidateVidPid(vp) ) {
+ 496              		.loc 1 175 0
+ 497 041f 488B45E8 		movq	-24(%rbp), %rax
+ 498 0423 4889C7   		movq	%rax, %rdi
+ 499 0426 E8000000 		call	usbValidateVidPid@PLT
+ 499      00
+ 500 042b 83F001   		xorl	$1, %eax
+ 501 042e 84C0     		testb	%al, %al
+ 502 0430 7423     		je	.L42
+ 176:libusbwrap.c  **** 		errRender(error, "The supplied VID:PID \"%s\" is invalid; it should look like 04B4:8613", vp);
+ 503              		.loc 1 176 0
+ 504 0432 488B55E8 		movq	-24(%rbp), %rdx
+ 505 0436 488B45C8 		movq	-56(%rbp), %rax
+ 506 043a 488D3500 		leaq	.LC6(%rip), %rsi
+ 506      000000
+ 507 0441 4889C7   		movq	%rax, %rdi
+ 508 0444 B8000000 		movl	$0, %eax
+ 508      00
+ 509 0449 E8000000 		call	errRender@PLT
+ 509      00
+ 177:libusbwrap.c  **** 		return USB_INVALID_VIDPID;
+ 510              		.loc 1 177 0
+ 511 044e B8010000 		movl	$1, %eax
+ 511      00
+ 512 0453 EB65     		jmp	.L43
+ 513              	.L42:
+ 178:libusbwrap.c  **** 	}
+ 179:libusbwrap.c  **** 	vid = (uint16)strtoul(vp, NULL, 16);
+ 514              		.loc 1 179 0
+ 515 0455 488B45E8 		movq	-24(%rbp), %rax
+ 516 0459 BA100000 		movl	$16, %edx
+ 516      00
+ 517 045e BE000000 		movl	$0, %esi
+ 517      00
+ 518 0463 4889C7   		movq	%rax, %rdi
+ 519 0466 E8000000 		call	strtoul@PLT
+ 519      00
+ 520 046b 668945FC 		movw	%ax, -4(%rbp)
+ 180:libusbwrap.c  **** 	pid = (uint16)strtoul(vp+5, NULL, 16);
+ 521              		.loc 1 180 0
+ 522 046f 488B45E8 		movq	-24(%rbp), %rax
+ 523 0473 4883C005 		addq	$5, %rax
+ 524 0477 BA100000 		movl	$16, %edx
+ 524      00
+ 525 047c BE000000 		movl	$0, %esi
+ 525      00
+ 526 0481 4889C7   		movq	%rax, %rdi
+ 527 0484 E8000000 		call	strtoul@PLT
+ 527      00
+ 528 0489 668945FE 		movw	%ax, -2(%rbp)
+ 181:libusbwrap.c  **** 	return usbOpenDevice(
+ 529              		.loc 1 181 0
+ 530 048d 0FB775FE 		movzwl	-2(%rbp), %esi
+ 531 0491 0FB745FC 		movzwl	-4(%rbp), %eax
+ 532 0495 4883EC08 		subq	$8, %rsp
+ 533 0499 4C8B45D0 		movq	-48(%rbp), %r8
+ 534 049d 8B7DDC   		movl	-36(%rbp), %edi
+ 535 04a0 8B4DE0   		movl	-32(%rbp), %ecx
+ 536 04a3 8B55E4   		movl	-28(%rbp), %edx
+ 537 04a6 FF75C8   		pushq	-56(%rbp)
+ 538 04a9 4D89C1   		movq	%r8, %r9
+ 539 04ac 4189F8   		movl	%edi, %r8d
+ 540 04af 89C7     		movl	%eax, %edi
+ 541 04b1 E8000000 		call	usbOpenDevice@PLT
+ 541      00
+ 542 04b6 4883C410 		addq	$16, %rsp
+ 543              	.L43:
+ 182:libusbwrap.c  **** 		vid, pid, configuration, iface, alternateInterface, devHandlePtr, error);
+ 183:libusbwrap.c  **** }
+ 544              		.loc 1 183 0
+ 545 04ba C9       		leave
+ 546              		.cfi_def_cfa 7, 8
+ 547 04bb C3       		ret
+ 548              		.cfi_endproc
+ 549              	.LFE8:
+ 551              	.Letext0:
+ 552              		.file 2 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestu
+ 553              		.file 3 "/usr/include/stdint.h"
+ 554              		.file 4 "/usr/include/usb.h"
+ 555              		.file 5 "libusbwrap.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 libusbwrap.c
+     /tmp/ccxmrpmv.s:6      .text:0000000000000000 usbValidateVidPid
+     /tmp/ccxmrpmv.s:141    .text:00000000000000fb usbInitialise
+     /tmp/ccxmrpmv.s:166    .text:0000000000000106 usbIsDeviceAvailable
+     /tmp/ccxmrpmv.s:272    .text:00000000000001d5 usbOpenDevice
+     /tmp/ccxmrpmv.s:480    .text:0000000000000402 usbOpenDeviceVP
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+strlen
+usb_init
+usb_find_busses
+usb_get_busses
+errRender
+usb_find_devices
+usb_open
+usb_strerror
+usb_set_configuration
+usb_claim_interface
+usb_set_altinterface
+strtoul

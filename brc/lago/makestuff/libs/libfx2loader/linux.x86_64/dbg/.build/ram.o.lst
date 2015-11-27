@@ -1,0 +1,356 @@
+   1              		.file	"ram.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.section	.rodata
+   5              		.align 8
+   6              	.LC0:
+   7 0000 66783257 		.string	"fx2WriteRAM(): Failed to put the CPU in reset - usb_control_msg() failed returnCode %d: %
+   7      72697465 
+   7      52414D28 
+   7      293A2046 
+   7      61696C65 
+   8 005b 00000000 		.align 8
+   8      00
+   9              	.LC1:
+  10 0060 66783257 		.string	"fx2WriteRAM(): Failed to write block of 4096 bytes at 0x%04X - usb_control_msg() failed r
+  10      72697465 
+  10      52414D28 
+  10      293A2046 
+  10      61696C65 
+  11 00ca 00000000 		.align 8
+  11      0000
+  12              	.LC2:
+  13 00d0 66783257 		.string	"fx2WriteRAM(): Failed to write block of %d bytes at 0x%04X - usb_control_msg() failed ret
+  13      72697465 
+  13      52414D28 
+  13      293A2046 
+  13      61696C65 
+  14              		.text
+  15              		.globl	fx2WriteRAM
+  17              	fx2WriteRAM:
+  18              	.LFB4:
+  19              		.file 1 "ram.c"
+   1:ram.c         **** /*
+   2:ram.c         ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:ram.c         ****  *
+   4:ram.c         ****  * This program is free software: you can redistribute it and/or modify
+   5:ram.c         ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:ram.c         ****  * the Free Software Foundation, either version 3 of the License, or
+   7:ram.c         ****  * (at your option) any later version.
+   8:ram.c         ****  *
+   9:ram.c         ****  * This program is distributed in the hope that it will be useful,
+  10:ram.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:ram.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:ram.c         ****  * GNU Lesser General Public License for more details.
+  13:ram.c         ****  *
+  14:ram.c         ****  * You should have received a copy of the GNU Lesser General Public License
+  15:ram.c         ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:ram.c         ****  */
+  17:ram.c         **** #include <makestuff.h>
+  18:ram.c         **** #include <libusbwrap.h>
+  19:ram.c         **** #ifdef WIN32
+  20:ram.c         **** 	#include <lusb0_usb.h>
+  21:ram.c         **** #else
+  22:ram.c         **** 	#include <usb.h>
+  23:ram.c         **** #endif
+  24:ram.c         **** #include <liberror.h>
+  25:ram.c         **** #include "libfx2loader.h"
+  26:ram.c         **** 
+  27:ram.c         **** // Write the supplied reader buffer to RAM, using the supplied VID/PID.
+  28:ram.c         **** //
+  29:ram.c         **** DLLEXPORT(FX2Status) fx2WriteRAM(
+  30:ram.c         **** 	struct usb_dev_handle *device, const uint8 *bufPtr, int numBytes, const char **error)
+  31:ram.c         **** {
+  20              		.loc 1 31 0
+  21              		.cfi_startproc
+  22 0000 55       		pushq	%rbp
+  23              		.cfi_def_cfa_offset 16
+  24              		.cfi_offset 6, -16
+  25 0001 4889E5   		movq	%rsp, %rbp
+  26              		.cfi_def_cfa_register 6
+  27 0004 4883EC40 		subq	$64, %rsp
+  28 0008 48897DD8 		movq	%rdi, -40(%rbp)
+  29 000c 488975D0 		movq	%rsi, -48(%rbp)
+  30 0010 8955CC   		movl	%edx, -52(%rbp)
+  31 0013 48894DC0 		movq	%rcx, -64(%rbp)
+  32              		.loc 1 31 0
+  33 0017 64488B04 		movq	%fs:40, %rax
+  33      25280000 
+  33      00
+  34 0020 488945F8 		movq	%rax, -8(%rbp)
+  35 0024 31C0     		xorl	%eax, %eax
+  32:ram.c         **** 	FX2Status returnCode;
+  33:ram.c         **** 	int uStatus;
+  34:ram.c         **** 	uint16 address = 0x0000;
+  36              		.loc 1 34 0
+  37 0026 66C745EE 		movw	$0, -18(%rbp)
+  37      0000
+  35:ram.c         **** 	char byte = 0x01;
+  38              		.loc 1 35 0
+  39 002c C645ED01 		movb	$1, -19(%rbp)
+  36:ram.c         **** 	uStatus = usb_control_msg(
+  40              		.loc 1 36 0
+  41 0030 488D55ED 		leaq	-19(%rbp), %rdx
+  42 0034 488B45D8 		movq	-40(%rbp), %rax
+  43 0038 68881300 		pushq	$5000
+  43      00
+  44 003d 6A01     		pushq	$1
+  45 003f 4989D1   		movq	%rdx, %r9
+  46 0042 41B80000 		movl	$0, %r8d
+  46      0000
+  47 0048 B900E600 		movl	$58880, %ecx
+  47      00
+  48 004d BAA00000 		movl	$160, %edx
+  48      00
+  49 0052 BE400000 		movl	$64, %esi
+  49      00
+  50 0057 4889C7   		movq	%rax, %rdi
+  51 005a E8000000 		call	usb_control_msg@PLT
+  51      00
+  52 005f 4883C410 		addq	$16, %rsp
+  53 0063 8945F4   		movl	%eax, -12(%rbp)
+  37:ram.c         **** 		device,
+  38:ram.c         **** 		(USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE),
+  39:ram.c         **** 		0xA0, 0xE600, 0x0000, &byte, 1, 5000
+  40:ram.c         **** 	);
+  41:ram.c         **** 	if ( uStatus != 1 ) {
+  54              		.loc 1 41 0
+  55 0066 837DF401 		cmpl	$1, -12(%rbp)
+  56 006a 742F     		je	.L2
+  42:ram.c         **** 		errRender(
+  57              		.loc 1 42 0
+  58 006c E8000000 		call	usb_strerror@PLT
+  58      00
+  59 0071 4889C1   		movq	%rax, %rcx
+  60 0074 8B55F4   		movl	-12(%rbp), %edx
+  61 0077 488B45C0 		movq	-64(%rbp), %rax
+  62 007b 488D3500 		leaq	.LC0(%rip), %rsi
+  62      000000
+  63 0082 4889C7   		movq	%rax, %rdi
+  64 0085 B8000000 		movl	$0, %eax
+  64      00
+  65 008a E8000000 		call	errRender@PLT
+  65      00
+  43:ram.c         **** 			error,
+  44:ram.c         **** 			"fx2WriteRAM(): Failed to put the CPU in reset - usb_control_msg() failed returnCode %d: %s",
+  45:ram.c         **** 			uStatus, usb_strerror());
+  46:ram.c         **** 		FAIL(FX2_USB_ERR);
+  66              		.loc 1 46 0
+  67 008f C745F001 		movl	$1, -16(%rbp)
+  67      000000
+  68 0096 E9580100 		jmp	.L3
+  68      00
+  69              	.L2:
+  47:ram.c         **** 	}
+  48:ram.c         **** 	while ( numBytes > 4096 ) {
+  70              		.loc 1 48 0
+  71 009b E98E0000 		jmp	.L4
+  71      00
+  72              	.L6:
+  49:ram.c         **** 		uStatus = usb_control_msg(
+  73              		.loc 1 49 0
+  74 00a0 0FB755EE 		movzwl	-18(%rbp), %edx
+  75 00a4 488B4DD0 		movq	-48(%rbp), %rcx
+  76 00a8 488B45D8 		movq	-40(%rbp), %rax
+  77 00ac 68881300 		pushq	$5000
+  77      00
+  78 00b1 68001000 		pushq	$4096
+  78      00
+  79 00b6 4989C9   		movq	%rcx, %r9
+  80 00b9 41B80000 		movl	$0, %r8d
+  80      0000
+  81 00bf 89D1     		movl	%edx, %ecx
+  82 00c1 BAA00000 		movl	$160, %edx
+  82      00
+  83 00c6 BE400000 		movl	$64, %esi
+  83      00
+  84 00cb 4889C7   		movq	%rax, %rdi
+  85 00ce E8000000 		call	usb_control_msg@PLT
+  85      00
+  86 00d3 4883C410 		addq	$16, %rsp
+  87 00d7 8945F4   		movl	%eax, -12(%rbp)
+  50:ram.c         **** 			device,
+  51:ram.c         **** 			(USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE),
+  52:ram.c         **** 			0xA0, address, 0x0000, (char*)bufPtr, 4096, 5000
+  53:ram.c         **** 		);
+  54:ram.c         **** 		if ( uStatus != 4096 ) {
+  88              		.loc 1 54 0
+  89 00da 817DF400 		cmpl	$4096, -12(%rbp)
+  89      100000
+  90 00e1 7436     		je	.L5
+  55:ram.c         **** 			errRender(
+  91              		.loc 1 55 0
+  92 00e3 E8000000 		call	usb_strerror@PLT
+  92      00
+  93 00e8 4889C6   		movq	%rax, %rsi
+  94 00eb 0FB755EE 		movzwl	-18(%rbp), %edx
+  95 00ef 8B4DF4   		movl	-12(%rbp), %ecx
+  96 00f2 488B45C0 		movq	-64(%rbp), %rax
+  97 00f6 4989F0   		movq	%rsi, %r8
+  98 00f9 488D3500 		leaq	.LC1(%rip), %rsi
+  98      000000
+  99 0100 4889C7   		movq	%rax, %rdi
+ 100 0103 B8000000 		movl	$0, %eax
+ 100      00
+ 101 0108 E8000000 		call	errRender@PLT
+ 101      00
+  56:ram.c         **** 				error,
+  57:ram.c         **** 				"fx2WriteRAM(): Failed to write block of 4096 bytes at 0x%04X - usb_control_msg() failed return
+  58:ram.c         **** 				address, uStatus, usb_strerror());
+  59:ram.c         **** 			FAIL(FX2_USB_ERR);
+ 102              		.loc 1 59 0
+ 103 010d C745F001 		movl	$1, -16(%rbp)
+ 103      000000
+ 104 0114 E9DA0000 		jmp	.L3
+ 104      00
+ 105              	.L5:
+  60:ram.c         **** 		}
+  61:ram.c         **** 		numBytes -= 4096;
+ 106              		.loc 1 61 0
+ 107 0119 816DCC00 		subl	$4096, -52(%rbp)
+ 107      100000
+  62:ram.c         **** 		bufPtr += 4096;
+ 108              		.loc 1 62 0
+ 109 0120 488145D0 		addq	$4096, -48(%rbp)
+ 109      00100000 
+  63:ram.c         **** 		address += 4096;
+ 110              		.loc 1 63 0
+ 111 0128 668145EE 		addw	$4096, -18(%rbp)
+ 111      0010
+ 112              	.L4:
+  48:ram.c         **** 		uStatus = usb_control_msg(
+ 113              		.loc 1 48 0
+ 114 012e 817DCC00 		cmpl	$4096, -52(%rbp)
+ 114      100000
+ 115 0135 0F8F65FF 		jg	.L6
+ 115      FFFF
+  64:ram.c         **** 	}
+  65:ram.c         **** 	uStatus = usb_control_msg(
+ 116              		.loc 1 65 0
+ 117 013b 0FB755EE 		movzwl	-18(%rbp), %edx
+ 118 013f 488B75D0 		movq	-48(%rbp), %rsi
+ 119 0143 488B45D8 		movq	-40(%rbp), %rax
+ 120 0147 68881300 		pushq	$5000
+ 120      00
+ 121 014c 8B4DCC   		movl	-52(%rbp), %ecx
+ 122 014f 51       		pushq	%rcx
+ 123 0150 4989F1   		movq	%rsi, %r9
+ 124 0153 41B80000 		movl	$0, %r8d
+ 124      0000
+ 125 0159 89D1     		movl	%edx, %ecx
+ 126 015b BAA00000 		movl	$160, %edx
+ 126      00
+ 127 0160 BE400000 		movl	$64, %esi
+ 127      00
+ 128 0165 4889C7   		movq	%rax, %rdi
+ 129 0168 E8000000 		call	usb_control_msg@PLT
+ 129      00
+ 130 016d 4883C410 		addq	$16, %rsp
+ 131 0171 8945F4   		movl	%eax, -12(%rbp)
+  66:ram.c         **** 		device,
+  67:ram.c         **** 		(USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE),
+  68:ram.c         **** 		0xA0, address, 0x0000, (char*)bufPtr, numBytes, 5000
+  69:ram.c         **** 	);
+  70:ram.c         **** 	if ( uStatus != numBytes ) {
+ 132              		.loc 1 70 0
+ 133 0174 8B45F4   		movl	-12(%rbp), %eax
+ 134 0177 3B45CC   		cmpl	-52(%rbp), %eax
+ 135 017a 7439     		je	.L7
+  71:ram.c         **** 		errRender(
+ 136              		.loc 1 71 0
+ 137 017c E8000000 		call	usb_strerror@PLT
+ 137      00
+ 138 0181 4889C7   		movq	%rax, %rdi
+ 139 0184 0FB74DEE 		movzwl	-18(%rbp), %ecx
+ 140 0188 8B75F4   		movl	-12(%rbp), %esi
+ 141 018b 8B55CC   		movl	-52(%rbp), %edx
+ 142 018e 488B45C0 		movq	-64(%rbp), %rax
+ 143 0192 4989F9   		movq	%rdi, %r9
+ 144 0195 4189F0   		movl	%esi, %r8d
+ 145 0198 488D3500 		leaq	.LC2(%rip), %rsi
+ 145      000000
+ 146 019f 4889C7   		movq	%rax, %rdi
+ 147 01a2 B8000000 		movl	$0, %eax
+ 147      00
+ 148 01a7 E8000000 		call	errRender@PLT
+ 148      00
+  72:ram.c         **** 			error,
+  73:ram.c         **** 			"fx2WriteRAM(): Failed to write block of %d bytes at 0x%04X - usb_control_msg() failed returnCod
+  74:ram.c         **** 			numBytes, address, uStatus, usb_strerror());
+  75:ram.c         **** 		FAIL(FX2_USB_ERR);
+ 149              		.loc 1 75 0
+ 150 01ac C745F001 		movl	$1, -16(%rbp)
+ 150      000000
+ 151 01b3 EB3E     		jmp	.L3
+ 152              	.L7:
+  76:ram.c         **** 	}
+  77:ram.c         **** 
+  78:ram.c         **** 	// Since this brings the FX2 out of reset, the host may get a 'failed' returnCode. We have to
+  79:ram.c         **** 	// assume that it worked nevertheless.
+  80:ram.c         **** 	byte = 0x00;
+ 153              		.loc 1 80 0
+ 154 01b5 C645ED00 		movb	$0, -19(%rbp)
+  81:ram.c         **** 	usb_control_msg(
+ 155              		.loc 1 81 0
+ 156 01b9 488D55ED 		leaq	-19(%rbp), %rdx
+ 157 01bd 488B45D8 		movq	-40(%rbp), %rax
+ 158 01c1 68881300 		pushq	$5000
+ 158      00
+ 159 01c6 6A01     		pushq	$1
+ 160 01c8 4989D1   		movq	%rdx, %r9
+ 161 01cb 41B80000 		movl	$0, %r8d
+ 161      0000
+ 162 01d1 B900E600 		movl	$58880, %ecx
+ 162      00
+ 163 01d6 BAA00000 		movl	$160, %edx
+ 163      00
+ 164 01db BE400000 		movl	$64, %esi
+ 164      00
+ 165 01e0 4889C7   		movq	%rax, %rdi
+ 166 01e3 E8000000 		call	usb_control_msg@PLT
+ 166      00
+ 167 01e8 4883C410 		addq	$16, %rsp
+  82:ram.c         **** 		device,
+  83:ram.c         **** 		(USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE),
+  84:ram.c         **** 		0xA0, 0xE600, 0x0000, &byte, 1, 5000
+  85:ram.c         **** 	);
+  86:ram.c         **** 	return FX2_SUCCESS;
+ 168              		.loc 1 86 0
+ 169 01ec B8000000 		movl	$0, %eax
+ 169      00
+ 170 01f1 EB03     		jmp	.L9
+ 171              	.L3:
+  87:ram.c         **** cleanup:
+  88:ram.c         **** 	return returnCode;
+ 172              		.loc 1 88 0
+ 173 01f3 8B45F0   		movl	-16(%rbp), %eax
+ 174              	.L9:
+  89:ram.c         **** }
+ 175              		.loc 1 89 0 discriminator 1
+ 176 01f6 488B7DF8 		movq	-8(%rbp), %rdi
+ 177 01fa 6448333C 		xorq	%fs:40, %rdi
+ 177      25280000 
+ 177      00
+ 178 0203 7405     		je	.L10
+ 179              		.loc 1 89 0 is_stmt 0
+ 180 0205 E8000000 		call	__stack_chk_fail@PLT
+ 180      00
+ 181              	.L10:
+ 182 020a C9       		leave
+ 183              		.cfi_def_cfa 7, 8
+ 184 020b C3       		ret
+ 185              		.cfi_endproc
+ 186              	.LFE4:
+ 188              	.Letext0:
+ 189              		.file 2 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestu
+ 190              		.file 3 "libfx2loader.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ram.c
+     /tmp/ccbIW4no.s:17     .text:0000000000000000 fx2WriteRAM
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+usb_control_msg
+usb_strerror
+errRender
+__stack_chk_fail

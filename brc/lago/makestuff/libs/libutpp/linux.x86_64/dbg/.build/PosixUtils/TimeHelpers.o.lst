@@ -1,0 +1,206 @@
+   1              		.file	"TimeHelpers.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.align 2
+   5              		.globl	_ZN8UnitTest5TimerC2Ev
+   7              	_ZN8UnitTest5TimerC2Ev:
+   8              	.LFB1:
+   9              		.file 1 "PosixUtils/TimeHelpers.cpp"
+   1:PosixUtils/TimeHelpers.cpp **** #include "TimeHelpers.h"
+   2:PosixUtils/TimeHelpers.cpp **** #include <unistd.h>
+   3:PosixUtils/TimeHelpers.cpp **** 
+   4:PosixUtils/TimeHelpers.cpp **** namespace UnitTest {
+   5:PosixUtils/TimeHelpers.cpp **** 
+   6:PosixUtils/TimeHelpers.cpp **** Timer::Timer()
+  10              		.loc 1 6 0
+  11              		.cfi_startproc
+  12 0000 55       		pushq	%rbp
+  13              		.cfi_def_cfa_offset 16
+  14              		.cfi_offset 6, -16
+  15 0001 4889E5   		movq	%rsp, %rbp
+  16              		.cfi_def_cfa_register 6
+  17 0004 48897DF8 		movq	%rdi, -8(%rbp)
+  18              	.LBB2:
+   7:PosixUtils/TimeHelpers.cpp **** {
+   8:PosixUtils/TimeHelpers.cpp ****     m_startTime.tv_sec = 0;
+  19              		.loc 1 8 0
+  20 0008 488B45F8 		movq	-8(%rbp), %rax
+  21 000c 48C70000 		movq	$0, (%rax)
+  21      000000
+   9:PosixUtils/TimeHelpers.cpp ****     m_startTime.tv_usec = 0;
+  22              		.loc 1 9 0
+  23 0013 488B45F8 		movq	-8(%rbp), %rax
+  24 0017 48C74008 		movq	$0, 8(%rax)
+  24      00000000 
+  25              	.LBE2:
+  10:PosixUtils/TimeHelpers.cpp **** }
+  26              		.loc 1 10 0
+  27 001f 5D       		popq	%rbp
+  28              		.cfi_def_cfa 7, 8
+  29 0020 C3       		ret
+  30              		.cfi_endproc
+  31              	.LFE1:
+  33              		.globl	_ZN8UnitTest5TimerC1Ev
+  34              		.set	_ZN8UnitTest5TimerC1Ev,_ZN8UnitTest5TimerC2Ev
+  35 0021 90       		.align 2
+  36              		.globl	_ZN8UnitTest5Timer5StartEv
+  38              	_ZN8UnitTest5Timer5StartEv:
+  39              	.LFB3:
+  11:PosixUtils/TimeHelpers.cpp **** 
+  12:PosixUtils/TimeHelpers.cpp **** void Timer::Start()
+  13:PosixUtils/TimeHelpers.cpp **** {
+  40              		.loc 1 13 0
+  41              		.cfi_startproc
+  42 0022 55       		pushq	%rbp
+  43              		.cfi_def_cfa_offset 16
+  44              		.cfi_offset 6, -16
+  45 0023 4889E5   		movq	%rsp, %rbp
+  46              		.cfi_def_cfa_register 6
+  47 0026 4883EC10 		subq	$16, %rsp
+  48 002a 48897DF8 		movq	%rdi, -8(%rbp)
+  14:PosixUtils/TimeHelpers.cpp ****     gettimeofday(&m_startTime, 0);
+  49              		.loc 1 14 0
+  50 002e 488B45F8 		movq	-8(%rbp), %rax
+  51 0032 BE000000 		movl	$0, %esi
+  51      00
+  52 0037 4889C7   		movq	%rax, %rdi
+  53 003a E8000000 		call	gettimeofday@PLT
+  53      00
+  15:PosixUtils/TimeHelpers.cpp **** }
+  54              		.loc 1 15 0
+  55 003f C9       		leave
+  56              		.cfi_def_cfa 7, 8
+  57 0040 C3       		ret
+  58              		.cfi_endproc
+  59              	.LFE3:
+  61 0041 90       		.align 2
+  62              		.globl	_ZNK8UnitTest5Timer11GetTimeInMsEv
+  64              	_ZNK8UnitTest5Timer11GetTimeInMsEv:
+  65              	.LFB4:
+  16:PosixUtils/TimeHelpers.cpp **** 
+  17:PosixUtils/TimeHelpers.cpp **** 
+  18:PosixUtils/TimeHelpers.cpp **** int Timer::GetTimeInMs() const
+  19:PosixUtils/TimeHelpers.cpp **** {
+  66              		.loc 1 19 0
+  67              		.cfi_startproc
+  68 0042 55       		pushq	%rbp
+  69              		.cfi_def_cfa_offset 16
+  70              		.cfi_offset 6, -16
+  71 0043 4889E5   		movq	%rsp, %rbp
+  72              		.cfi_def_cfa_register 6
+  73 0046 4883EC40 		subq	$64, %rsp
+  74 004a 48897DC8 		movq	%rdi, -56(%rbp)
+  75              		.loc 1 19 0
+  76 004e 64488B04 		movq	%fs:40, %rax
+  76      25280000 
+  76      00
+  77 0057 488945F8 		movq	%rax, -8(%rbp)
+  78 005b 31C0     		xorl	%eax, %eax
+  79              	.LBB3:
+  20:PosixUtils/TimeHelpers.cpp ****     struct timeval currentTime;
+  21:PosixUtils/TimeHelpers.cpp ****     gettimeofday(&currentTime, 0);
+  80              		.loc 1 21 0
+  81 005d 488D45E0 		leaq	-32(%rbp), %rax
+  82 0061 BE000000 		movl	$0, %esi
+  82      00
+  83 0066 4889C7   		movq	%rax, %rdi
+  84 0069 E8000000 		call	gettimeofday@PLT
+  84      00
+  22:PosixUtils/TimeHelpers.cpp ****     int const dsecs = currentTime.tv_sec - m_startTime.tv_sec;
+  85              		.loc 1 22 0
+  86 006e 488B45E0 		movq	-32(%rbp), %rax
+  87 0072 89C2     		movl	%eax, %edx
+  88 0074 488B45C8 		movq	-56(%rbp), %rax
+  89 0078 488B00   		movq	(%rax), %rax
+  90 007b 29C2     		subl	%eax, %edx
+  91 007d 89D0     		movl	%edx, %eax
+  92 007f 8945D8   		movl	%eax, -40(%rbp)
+  23:PosixUtils/TimeHelpers.cpp ****     int const dus = currentTime.tv_usec - m_startTime.tv_usec;
+  93              		.loc 1 23 0
+  94 0082 488B45E8 		movq	-24(%rbp), %rax
+  95 0086 89C2     		movl	%eax, %edx
+  96 0088 488B45C8 		movq	-56(%rbp), %rax
+  97 008c 488B4008 		movq	8(%rax), %rax
+  98 0090 29C2     		subl	%eax, %edx
+  99 0092 89D0     		movl	%edx, %eax
+ 100 0094 8945DC   		movl	%eax, -36(%rbp)
+  24:PosixUtils/TimeHelpers.cpp ****     return dsecs*1000 + dus/1000;
+ 101              		.loc 1 24 0
+ 102 0097 8B45D8   		movl	-40(%rbp), %eax
+ 103 009a 69F0E803 		imull	$1000, %eax, %esi
+ 103      0000
+ 104 00a0 8B4DDC   		movl	-36(%rbp), %ecx
+ 105 00a3 BAD34D62 		movl	$274877907, %edx
+ 105      10
+ 106 00a8 89C8     		movl	%ecx, %eax
+ 107 00aa F7EA     		imull	%edx
+ 108 00ac C1FA06   		sarl	$6, %edx
+ 109 00af 89C8     		movl	%ecx, %eax
+ 110 00b1 C1F81F   		sarl	$31, %eax
+ 111 00b4 29C2     		subl	%eax, %edx
+ 112 00b6 89D0     		movl	%edx, %eax
+ 113 00b8 01F0     		addl	%esi, %eax
+ 114              	.LBE3:
+  25:PosixUtils/TimeHelpers.cpp **** }
+ 115              		.loc 1 25 0
+ 116 00ba 488B7DF8 		movq	-8(%rbp), %rdi
+ 117 00be 6448333C 		xorq	%fs:40, %rdi
+ 117      25280000 
+ 117      00
+ 118 00c7 7405     		je	.L5
+ 119 00c9 E8000000 		call	__stack_chk_fail@PLT
+ 119      00
+ 120              	.L5:
+ 121 00ce C9       		leave
+ 122              		.cfi_def_cfa 7, 8
+ 123 00cf C3       		ret
+ 124              		.cfi_endproc
+ 125              	.LFE4:
+ 127              		.globl	_ZN8UnitTest11TimeHelpers7SleepMsEi
+ 129              	_ZN8UnitTest11TimeHelpers7SleepMsEi:
+ 130              	.LFB5:
+  26:PosixUtils/TimeHelpers.cpp **** 
+  27:PosixUtils/TimeHelpers.cpp **** 
+  28:PosixUtils/TimeHelpers.cpp **** void TimeHelpers::SleepMs (int ms)
+  29:PosixUtils/TimeHelpers.cpp **** {
+ 131              		.loc 1 29 0
+ 132              		.cfi_startproc
+ 133 00d0 55       		pushq	%rbp
+ 134              		.cfi_def_cfa_offset 16
+ 135              		.cfi_offset 6, -16
+ 136 00d1 4889E5   		movq	%rsp, %rbp
+ 137              		.cfi_def_cfa_register 6
+ 138 00d4 4883EC10 		subq	$16, %rsp
+ 139 00d8 897DFC   		movl	%edi, -4(%rbp)
+  30:PosixUtils/TimeHelpers.cpp ****     usleep(ms * 1000);
+ 140              		.loc 1 30 0
+ 141 00db 8B45FC   		movl	-4(%rbp), %eax
+ 142 00de 69C0E803 		imull	$1000, %eax, %eax
+ 142      0000
+ 143 00e4 89C7     		movl	%eax, %edi
+ 144 00e6 E8000000 		call	usleep@PLT
+ 144      00
+  31:PosixUtils/TimeHelpers.cpp **** }
+ 145              		.loc 1 31 0
+ 146 00eb C9       		leave
+ 147              		.cfi_def_cfa 7, 8
+ 148 00ec C3       		ret
+ 149              		.cfi_endproc
+ 150              	.LFE5:
+ 152              	.Letext0:
+ 153              		.file 2 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 154              		.file 3 "/usr/include/x86_64-linux-gnu/bits/time.h"
+ 155              		.file 4 "PosixUtils/TimeHelpers.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TimeHelpers.cpp
+     /tmp/ccDJfwaa.s:7      .text:0000000000000000 _ZN8UnitTest5TimerC2Ev
+     /tmp/ccDJfwaa.s:7      .text:0000000000000000 _ZN8UnitTest5TimerC1Ev
+     /tmp/ccDJfwaa.s:38     .text:0000000000000022 _ZN8UnitTest5Timer5StartEv
+     /tmp/ccDJfwaa.s:64     .text:0000000000000042 _ZNK8UnitTest5Timer11GetTimeInMsEv
+     /tmp/ccDJfwaa.s:129    .text:00000000000000d0 _ZN8UnitTest11TimeHelpers7SleepMsEi
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+gettimeofday
+__stack_chk_fail
+usleep

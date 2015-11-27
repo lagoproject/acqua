@@ -1,0 +1,36 @@
+########################################################
+# Archivo de configuración de adquisicion
+# LAGO LS-DAQ v 0.1 
+########################################################
+#
+# Atencion!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 
+# SI USTED VA A MODIFICAR ESTE ARCHIVO, ANTES EJECUTE
+# ESTE COMANDO: 
+# cp configs configs_$(date -u +%Y%m%d_%H%M%S)
+#
+# Atencion!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+########################################################
+
+# DETECTOR
+name=hyo00 # No modificar
+diametro=3200 # mm, diámetro
+altura=1000 # mm altura del agua
+lat=-12.041327 #-S
+long=-75.32090  #-W
+alt=3350 # altitud del detector en m snm
+pmt="ET"
+elec="BRC v2r0 2012"
+
+# CALIBRACION
+hv1=0 # Voltaje de sálida 
+hv2=1750 # Voltaje de sálida 
+hv3=0 # Voltaje de sálida 
+t1=1000 # Umbral canal 1
+t2=1000 # Umbral canal 2
+t3=200  # Umbral canal 3
+
+# ADQUISICION
+work=/root/lago  # directorio de operación
+user=root # No modificar
+usb=/mnt/usb/

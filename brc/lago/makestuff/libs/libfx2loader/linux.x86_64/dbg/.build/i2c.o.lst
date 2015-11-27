@@ -1,0 +1,1186 @@
+   1              		.file	"i2c.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.globl	i2cInitialise
+   6              	i2cInitialise:
+   7              	.LFB4:
+   8              		.file 1 "i2c.c"
+   1:i2c.c         **** /*
+   2:i2c.c         ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:i2c.c         ****  *
+   4:i2c.c         ****  * This program is free software: you can redistribute it and/or modify
+   5:i2c.c         ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:i2c.c         ****  * the Free Software Foundation, either version 3 of the License, or
+   7:i2c.c         ****  * (at your option) any later version.
+   8:i2c.c         ****  *
+   9:i2c.c         ****  * This program is distributed in the hope that it will be useful,
+  10:i2c.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:i2c.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:i2c.c         ****  * GNU Lesser General Public License for more details.
+  13:i2c.c         ****  *
+  14:i2c.c         ****  * You should have received a copy of the GNU Lesser General Public License
+  15:i2c.c         ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:i2c.c         ****  */
+  17:i2c.c         **** #include <stddef.h>
+  18:i2c.c         **** #include <makestuff.h>
+  19:i2c.c         **** #include <liberror.h>
+  20:i2c.c         **** #include <libbuffer.h>
+  21:i2c.c         **** #include "libfx2loader.h"
+  22:i2c.c         **** 
+  23:i2c.c         **** #define LSB(x) ((x) & 0xFF)
+  24:i2c.c         **** #define MSB(x) ((x) >> 8)
+  25:i2c.c         **** 
+  26:i2c.c         **** // Initialise the buffer as a C2 loader, using supplied values. It seems like for C2 loaders the
+  27:i2c.c         **** // values of vid & pid are never used though. The configByte has only two bits - bit zero selects
+  28:i2c.c         **** // 400kHz I2C bus speed and bit six sets the USBCS.3 bit "DISCON" so the chip comes up disconnected
+  29:i2c.c         **** //
+  30:i2c.c         **** DLLEXPORT(void) i2cInitialise(
+  31:i2c.c         **** 	struct Buffer *buf, uint16 vid, uint16 pid, uint16 did, uint8 configByte)
+  32:i2c.c         **** {
+   9              		.loc 1 32 0
+  10              		.cfi_startproc
+  11 0000 55       		pushq	%rbp
+  12              		.cfi_def_cfa_offset 16
+  13              		.cfi_offset 6, -16
+  14 0001 4889E5   		movq	%rsp, %rbp
+  15              		.cfi_def_cfa_register 6
+  16 0004 48897DF8 		movq	%rdi, -8(%rbp)
+  17 0008 89C8     		movl	%ecx, %eax
+  18 000a 4489C1   		movl	%r8d, %ecx
+  19 000d 668975F4 		movw	%si, -12(%rbp)
+  20 0011 668955F0 		movw	%dx, -16(%rbp)
+  21 0015 668945EC 		movw	%ax, -20(%rbp)
+  22 0019 884DE8   		movb	%cl, -24(%rbp)
+  33:i2c.c         **** 	buf->length = 8;
+  23              		.loc 1 33 0
+  24 001c 488B45F8 		movq	-8(%rbp), %rax
+  25 0020 C7400808 		movl	$8, 8(%rax)
+  25      000000
+  34:i2c.c         **** 	buf->data[0] = 0xC2;
+  26              		.loc 1 34 0
+  27 0027 488B45F8 		movq	-8(%rbp), %rax
+  28 002b 488B00   		movq	(%rax), %rax
+  29 002e C600C2   		movb	$-62, (%rax)
+  35:i2c.c         **** 	buf->data[1] = LSB(vid);
+  30              		.loc 1 35 0
+  31 0031 488B45F8 		movq	-8(%rbp), %rax
+  32 0035 488B00   		movq	(%rax), %rax
+  33 0038 4883C001 		addq	$1, %rax
+  34 003c 0FB755F4 		movzwl	-12(%rbp), %edx
+  35 0040 8810     		movb	%dl, (%rax)
+  36:i2c.c         **** 	buf->data[2] = MSB(vid);
+  36              		.loc 1 36 0
+  37 0042 488B45F8 		movq	-8(%rbp), %rax
+  38 0046 488B00   		movq	(%rax), %rax
+  39 0049 4883C002 		addq	$2, %rax
+  40 004d 0FB755F4 		movzwl	-12(%rbp), %edx
+  41 0051 66C1EA08 		shrw	$8, %dx
+  42 0055 8810     		movb	%dl, (%rax)
+  37:i2c.c         **** 	buf->data[3] = LSB(pid);
+  43              		.loc 1 37 0
+  44 0057 488B45F8 		movq	-8(%rbp), %rax
+  45 005b 488B00   		movq	(%rax), %rax
+  46 005e 4883C003 		addq	$3, %rax
+  47 0062 0FB755F0 		movzwl	-16(%rbp), %edx
+  48 0066 8810     		movb	%dl, (%rax)
+  38:i2c.c         **** 	buf->data[4] = MSB(pid);
+  49              		.loc 1 38 0
+  50 0068 488B45F8 		movq	-8(%rbp), %rax
+  51 006c 488B00   		movq	(%rax), %rax
+  52 006f 4883C004 		addq	$4, %rax
+  53 0073 0FB755F0 		movzwl	-16(%rbp), %edx
+  54 0077 66C1EA08 		shrw	$8, %dx
+  55 007b 8810     		movb	%dl, (%rax)
+  39:i2c.c         **** 	buf->data[5] = LSB(did);
+  56              		.loc 1 39 0
+  57 007d 488B45F8 		movq	-8(%rbp), %rax
+  58 0081 488B00   		movq	(%rax), %rax
+  59 0084 4883C005 		addq	$5, %rax
+  60 0088 0FB755EC 		movzwl	-20(%rbp), %edx
+  61 008c 8810     		movb	%dl, (%rax)
+  40:i2c.c         **** 	buf->data[6] = MSB(did);
+  62              		.loc 1 40 0
+  63 008e 488B45F8 		movq	-8(%rbp), %rax
+  64 0092 488B00   		movq	(%rax), %rax
+  65 0095 4883C006 		addq	$6, %rax
+  66 0099 0FB755EC 		movzwl	-20(%rbp), %edx
+  67 009d 66C1EA08 		shrw	$8, %dx
+  68 00a1 8810     		movb	%dl, (%rax)
+  41:i2c.c         **** 	buf->data[7] = configByte;
+  69              		.loc 1 41 0
+  70 00a3 488B45F8 		movq	-8(%rbp), %rax
+  71 00a7 488B00   		movq	(%rax), %rax
+  72 00aa 488D5007 		leaq	7(%rax), %rdx
+  73 00ae 0FB645E8 		movzbl	-24(%rbp), %eax
+  74 00b2 8802     		movb	%al, (%rdx)
+  42:i2c.c         **** }
+  75              		.loc 1 42 0
+  76 00b4 5D       		popq	%rbp
+  77              		.cfi_def_cfa 7, 8
+  78 00b5 C3       		ret
+  79              		.cfi_endproc
+  80              	.LFE4:
+  82              		.section	.rodata
+  83              	.LC0:
+  84 0000 64756D70 		.string	"dumpChunk()"
+  84      4368756E 
+  84      6B282900 
+  85              		.text
+  87              	dumpChunk:
+  88              	.LFB5:
+  43:i2c.c         **** 
+  44:i2c.c         **** // Dump the selected range of the HexReader buffers as I2C records to the supplied buffer. This wil
+  45:i2c.c         **** // split up large chunks into chunks 1023 bytes or smaller so chunk lengths fit in ten bits.
+  46:i2c.c         **** // (see TRM 3.4.3)
+  47:i2c.c         **** //
+  48:i2c.c         **** static I2CStatus dumpChunk(
+  49:i2c.c         **** 	struct Buffer *destination, const struct Buffer *sourceData, const struct Buffer *sourceMask,
+  50:i2c.c         **** 	uint16 address, uint16 length, const char **error)
+  51:i2c.c         **** {
+  89              		.loc 1 51 0
+  90              		.cfi_startproc
+  91 00b6 55       		pushq	%rbp
+  92              		.cfi_def_cfa_offset 16
+  93              		.cfi_offset 6, -16
+  94 00b7 4889E5   		movq	%rsp, %rbp
+  95              		.cfi_def_cfa_register 6
+  96 00ba 4883EC50 		subq	$80, %rsp
+  97 00be 48897DD8 		movq	%rdi, -40(%rbp)
+  98 00c2 488975D0 		movq	%rsi, -48(%rbp)
+  99 00c6 488955C8 		movq	%rdx, -56(%rbp)
+ 100 00ca 89C8     		movl	%ecx, %eax
+ 101 00cc 4489C2   		movl	%r8d, %edx
+ 102 00cf 4C894DB8 		movq	%r9, -72(%rbp)
+ 103 00d3 668945C4 		movw	%ax, -60(%rbp)
+ 104 00d7 668955C0 		movw	%dx, -64(%rbp)
+  52:i2c.c         **** 	I2CStatus iStatus, returnCode = I2C_SUCCESS;
+ 105              		.loc 1 52 0
+ 106 00db C745E400 		movl	$0, -28(%rbp)
+ 106      000000
+  53:i2c.c         **** 	BufferStatus bStatus;
+  54:i2c.c         **** 	size_t i, startBlock;
+  55:i2c.c         **** 	if ( length == 0 ) {
+ 107              		.loc 1 55 0
+ 108 00e2 66837DC0 		cmpw	$0, -64(%rbp)
+ 108      00
+ 109 00e7 750A     		jne	.L3
+  56:i2c.c         **** 		return I2C_SUCCESS;
+ 110              		.loc 1 56 0
+ 111 00e9 B8000000 		movl	$0, %eax
+ 111      00
+ 112 00ee E9830100 		jmp	.L4
+ 112      00
+ 113              	.L3:
+  57:i2c.c         **** 	}
+  58:i2c.c         **** 	while ( length > 1023 ) {
+ 114              		.loc 1 58 0
+ 115 00f3 EB58     		jmp	.L5
+ 116              	.L8:
+  59:i2c.c         **** 		iStatus = dumpChunk(destination, sourceData, sourceMask, address, 1023, error);
+ 117              		.loc 1 59 0
+ 118 00f5 0FB74DC4 		movzwl	-60(%rbp), %ecx
+ 119 00f9 488B7DB8 		movq	-72(%rbp), %rdi
+ 120 00fd 488B55C8 		movq	-56(%rbp), %rdx
+ 121 0101 488B75D0 		movq	-48(%rbp), %rsi
+ 122 0105 488B45D8 		movq	-40(%rbp), %rax
+ 123 0109 4989F9   		movq	%rdi, %r9
+ 124 010c 41B8FF03 		movl	$1023, %r8d
+ 124      0000
+ 125 0112 4889C7   		movq	%rax, %rdi
+ 126 0115 E89CFFFF 		call	dumpChunk
+ 126      FF
+ 127 011a 8945E8   		movl	%eax, -24(%rbp)
+  60:i2c.c         **** 		CHECK_STATUS(iStatus, "dumpChunk()", iStatus);
+ 128              		.loc 1 60 0
+ 129 011d 837DE800 		cmpl	$0, -24(%rbp)
+ 130 0121 741E     		je	.L6
+ 131              		.loc 1 60 0 is_stmt 0 discriminator 1
+ 132 0123 488B45B8 		movq	-72(%rbp), %rax
+ 133 0127 488D3500 		leaq	.LC0(%rip), %rsi
+ 133      000000
+ 134 012e 4889C7   		movq	%rax, %rdi
+ 135 0131 E8000000 		call	errPrefix@PLT
+ 135      00
+ 136 0136 8B45E8   		movl	-24(%rbp), %eax
+ 137 0139 8945E4   		movl	%eax, -28(%rbp)
+ 138 013c E9320100 		jmp	.L7
+ 138      00
+ 139              	.L6:
+  61:i2c.c         **** 		address += 1023;
+ 140              		.loc 1 61 0 is_stmt 1
+ 141 0141 668145C4 		addw	$1023, -60(%rbp)
+ 141      FF03
+  62:i2c.c         **** 		length -= 1023;
+ 142              		.loc 1 62 0
+ 143 0147 66816DC0 		subw	$1023, -64(%rbp)
+ 143      FF03
+ 144              	.L5:
+  58:i2c.c         **** 		iStatus = dumpChunk(destination, sourceData, sourceMask, address, 1023, error);
+ 145              		.loc 1 58 0
+ 146 014d 66817DC0 		cmpw	$1023, -64(%rbp)
+ 146      FF03
+ 147 0153 77A0     		ja	.L8
+  63:i2c.c         **** 	}
+  64:i2c.c         **** 	bStatus = bufAppendWordBE(destination, length, error);
+ 148              		.loc 1 64 0
+ 149 0155 0FB74DC0 		movzwl	-64(%rbp), %ecx
+ 150 0159 488B55B8 		movq	-72(%rbp), %rdx
+ 151 015d 488B45D8 		movq	-40(%rbp), %rax
+ 152 0161 89CE     		movl	%ecx, %esi
+ 153 0163 4889C7   		movq	%rax, %rdi
+ 154 0166 E8000000 		call	bufAppendWordBE@PLT
+ 154      00
+ 155 016b 8945EC   		movl	%eax, -20(%rbp)
+  65:i2c.c         **** 	CHECK_STATUS(bStatus, "dumpChunk()", I2C_BUFFER_ERROR);
+ 156              		.loc 1 65 0
+ 157 016e 837DEC00 		cmpl	$0, -20(%rbp)
+ 158 0172 741F     		je	.L9
+ 159              		.loc 1 65 0 is_stmt 0 discriminator 1
+ 160 0174 488B45B8 		movq	-72(%rbp), %rax
+ 161 0178 488D3500 		leaq	.LC0(%rip), %rsi
+ 161      000000
+ 162 017f 4889C7   		movq	%rax, %rdi
+ 163 0182 E8000000 		call	errPrefix@PLT
+ 163      00
+ 164 0187 C745E401 		movl	$1, -28(%rbp)
+ 164      000000
+ 165 018e E9E00000 		jmp	.L7
+ 165      00
+ 166              	.L9:
+  66:i2c.c         **** 	bStatus = bufAppendWordBE(destination, address, error);
+ 167              		.loc 1 66 0 is_stmt 1
+ 168 0193 0FB74DC4 		movzwl	-60(%rbp), %ecx
+ 169 0197 488B55B8 		movq	-72(%rbp), %rdx
+ 170 019b 488B45D8 		movq	-40(%rbp), %rax
+ 171 019f 89CE     		movl	%ecx, %esi
+ 172 01a1 4889C7   		movq	%rax, %rdi
+ 173 01a4 E8000000 		call	bufAppendWordBE@PLT
+ 173      00
+ 174 01a9 8945EC   		movl	%eax, -20(%rbp)
+  67:i2c.c         **** 	CHECK_STATUS(bStatus, "dumpChunk()", I2C_BUFFER_ERROR);
+ 175              		.loc 1 67 0
+ 176 01ac 837DEC00 		cmpl	$0, -20(%rbp)
+ 177 01b0 741F     		je	.L10
+ 178              		.loc 1 67 0 is_stmt 0 discriminator 1
+ 179 01b2 488B45B8 		movq	-72(%rbp), %rax
+ 180 01b6 488D3500 		leaq	.LC0(%rip), %rsi
+ 180      000000
+ 181 01bd 4889C7   		movq	%rax, %rdi
+ 182 01c0 E8000000 		call	errPrefix@PLT
+ 182      00
+ 183 01c5 C745E401 		movl	$1, -28(%rbp)
+ 183      000000
+ 184 01cc E9A20000 		jmp	.L7
+ 184      00
+ 185              	.L10:
+  68:i2c.c         **** 	startBlock = destination->length;
+ 186              		.loc 1 68 0 is_stmt 1
+ 187 01d1 488B45D8 		movq	-40(%rbp), %rax
+ 188 01d5 8B4008   		movl	8(%rax), %eax
+ 189 01d8 89C0     		movl	%eax, %eax
+ 190 01da 488945F8 		movq	%rax, -8(%rbp)
+  69:i2c.c         **** 	bStatus = bufAppendBlock(destination, sourceData->data + address, length, error);
+ 191              		.loc 1 69 0
+ 192 01de 0FB755C0 		movzwl	-64(%rbp), %edx
+ 193 01e2 488B45D0 		movq	-48(%rbp), %rax
+ 194 01e6 488B08   		movq	(%rax), %rcx
+ 195 01e9 0FB745C4 		movzwl	-60(%rbp), %eax
+ 196 01ed 488D3401 		leaq	(%rcx,%rax), %rsi
+ 197 01f1 488B4DB8 		movq	-72(%rbp), %rcx
+ 198 01f5 488B45D8 		movq	-40(%rbp), %rax
+ 199 01f9 4889C7   		movq	%rax, %rdi
+ 200 01fc E8000000 		call	bufAppendBlock@PLT
+ 200      00
+ 201 0201 8945EC   		movl	%eax, -20(%rbp)
+  70:i2c.c         **** 	CHECK_STATUS(bStatus, "dumpChunk()", I2C_BUFFER_ERROR);
+ 202              		.loc 1 70 0
+ 203 0204 837DEC00 		cmpl	$0, -20(%rbp)
+ 204 0208 741C     		je	.L11
+ 205              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 206 020a 488B45B8 		movq	-72(%rbp), %rax
+ 207 020e 488D3500 		leaq	.LC0(%rip), %rsi
+ 207      000000
+ 208 0215 4889C7   		movq	%rax, %rdi
+ 209 0218 E8000000 		call	errPrefix@PLT
+ 209      00
+ 210 021d C745E401 		movl	$1, -28(%rbp)
+ 210      000000
+ 211 0224 EB4D     		jmp	.L7
+ 212              	.L11:
+  71:i2c.c         **** 	for ( i = 0; i < length; i++ ) {
+ 213              		.loc 1 71 0 is_stmt 1
+ 214 0226 48C745F0 		movq	$0, -16(%rbp)
+ 214      00000000 
+ 215 022e EB39     		jmp	.L12
+ 216              	.L14:
+  72:i2c.c         **** 		if ( sourceMask->data[address + i] == 0x00 ) {
+ 217              		.loc 1 72 0
+ 218 0230 488B45C8 		movq	-56(%rbp), %rax
+ 219 0234 488B00   		movq	(%rax), %rax
+ 220 0237 0FB74DC4 		movzwl	-60(%rbp), %ecx
+ 221 023b 488B55F0 		movq	-16(%rbp), %rdx
+ 222 023f 4801CA   		addq	%rcx, %rdx
+ 223 0242 4801D0   		addq	%rdx, %rax
+ 224 0245 0FB600   		movzbl	(%rax), %eax
+ 225 0248 84C0     		testb	%al, %al
+ 226 024a 7518     		jne	.L13
+  73:i2c.c         **** 			destination->data[startBlock + i] = 0x00;
+ 227              		.loc 1 73 0
+ 228 024c 488B45D8 		movq	-40(%rbp), %rax
+ 229 0250 488B00   		movq	(%rax), %rax
+ 230 0253 488B4DF8 		movq	-8(%rbp), %rcx
+ 231 0257 488B55F0 		movq	-16(%rbp), %rdx
+ 232 025b 4801CA   		addq	%rcx, %rdx
+ 233 025e 4801D0   		addq	%rdx, %rax
+ 234 0261 C60000   		movb	$0, (%rax)
+ 235              	.L13:
+  71:i2c.c         **** 	for ( i = 0; i < length; i++ ) {
+ 236              		.loc 1 71 0 discriminator 2
+ 237 0264 488345F0 		addq	$1, -16(%rbp)
+ 237      01
+ 238              	.L12:
+  71:i2c.c         **** 	for ( i = 0; i < length; i++ ) {
+ 239              		.loc 1 71 0 is_stmt 0 discriminator 1
+ 240 0269 0FB745C0 		movzwl	-64(%rbp), %eax
+ 241 026d 483B45F0 		cmpq	-16(%rbp), %rax
+ 242 0271 77BD     		ja	.L14
+ 243              	.L7:
+  74:i2c.c         **** 		}
+  75:i2c.c         **** 	}
+  76:i2c.c         **** cleanup:
+  77:i2c.c         **** 	return returnCode;
+ 244              		.loc 1 77 0 is_stmt 1
+ 245 0273 8B45E4   		movl	-28(%rbp), %eax
+ 246              	.L4:
+  78:i2c.c         **** }
+ 247              		.loc 1 78 0
+ 248 0276 C9       		leave
+ 249              		.cfi_def_cfa 7, 8
+ 250 0277 C3       		ret
+ 251              		.cfi_endproc
+ 252              	.LFE5:
+ 254              		.section	.rodata
+ 255 000c 00000000 		.align 8
+ 256              	.LC1:
+ 257 0010 69326357 		.string	"i2cWritePromRecords(): the buffer was not initialised"
+ 257      72697465 
+ 257      50726F6D 
+ 257      5265636F 
+ 257      72647328 
+ 258              		.text
+ 259              		.globl	i2cWritePromRecords
+ 261              	i2cWritePromRecords:
+ 262              	.LFB6:
+  79:i2c.c         **** 
+  80:i2c.c         **** // Build EEPROM records from the data/mask source buffers and write to the destination buffer.
+  81:i2c.c         **** //
+  82:i2c.c         **** DLLEXPORT(I2CStatus) i2cWritePromRecords(
+  83:i2c.c         **** 	struct Buffer *destination, const struct Buffer *sourceData, const struct Buffer *sourceMask,
+  84:i2c.c         **** 	const char **error)
+  85:i2c.c         **** {
+ 263              		.loc 1 85 0
+ 264              		.cfi_startproc
+ 265 0278 55       		pushq	%rbp
+ 266              		.cfi_def_cfa_offset 16
+ 267              		.cfi_offset 6, -16
+ 268 0279 4889E5   		movq	%rsp, %rbp
+ 269              		.cfi_def_cfa_register 6
+ 270 027c 4883EC30 		subq	$48, %rsp
+ 271 0280 48897DE8 		movq	%rdi, -24(%rbp)
+ 272 0284 488975E0 		movq	%rsi, -32(%rbp)
+ 273 0288 488955D8 		movq	%rdx, -40(%rbp)
+ 274 028c 48894DD0 		movq	%rcx, -48(%rbp)
+  86:i2c.c         **** 	uint16 i, chunkStart;
+  87:i2c.c         **** 	I2CStatus status;
+  88:i2c.c         **** 	if ( destination->length != 8 || destination->data[0] != 0xC2 ) {
+ 275              		.loc 1 88 0
+ 276 0290 488B45E8 		movq	-24(%rbp), %rax
+ 277 0294 8B4008   		movl	8(%rax), %eax
+ 278 0297 83F808   		cmpl	$8, %eax
+ 279 029a 750E     		jne	.L16
+ 280              		.loc 1 88 0 is_stmt 0 discriminator 1
+ 281 029c 488B45E8 		movq	-24(%rbp), %rax
+ 282 02a0 488B00   		movq	(%rax), %rax
+ 283 02a3 0FB600   		movzbl	(%rax), %eax
+ 284 02a6 3CC2     		cmpb	$-62, %al
+ 285 02a8 7422     		je	.L17
+ 286              	.L16:
+  89:i2c.c         **** 		errRender(error, "i2cWritePromRecords(): the buffer was not initialised");
+ 287              		.loc 1 89 0 is_stmt 1
+ 288 02aa 488B45D0 		movq	-48(%rbp), %rax
+ 289 02ae 488D3500 		leaq	.LC1(%rip), %rsi
+ 289      000000
+ 290 02b5 4889C7   		movq	%rax, %rdi
+ 291 02b8 B8000000 		movl	$0, %eax
+ 291      00
+ 292 02bd E8000000 		call	errRender@PLT
+ 292      00
+  90:i2c.c         **** 		return I2C_NOT_INITIALISED;
+ 293              		.loc 1 90 0
+ 294 02c2 B8020000 		movl	$2, %eax
+ 294      00
+ 295 02c7 E95A0200 		jmp	.L18
+ 295      00
+ 296              	.L17:
+  91:i2c.c         **** 	}
+  92:i2c.c         **** 
+  93:i2c.c         **** 	i = 0;
+ 297              		.loc 1 93 0
+ 298 02cc 66C745F8 		movw	$0, -8(%rbp)
+ 298      0000
+  94:i2c.c         **** 	while ( !sourceMask->data[i] && i < sourceData->length ) {
+ 299              		.loc 1 94 0
+ 300 02d2 EB0B     		jmp	.L19
+ 301              	.L21:
+  95:i2c.c         **** 		i++;
+ 302              		.loc 1 95 0
+ 303 02d4 0FB745F8 		movzwl	-8(%rbp), %eax
+ 304 02d8 83C001   		addl	$1, %eax
+ 305 02db 668945F8 		movw	%ax, -8(%rbp)
+ 306              	.L19:
+  94:i2c.c         **** 	while ( !sourceMask->data[i] && i < sourceData->length ) {
+ 307              		.loc 1 94 0
+ 308 02df 488B45D8 		movq	-40(%rbp), %rax
+ 309 02e3 488B10   		movq	(%rax), %rdx
+ 310 02e6 0FB745F8 		movzwl	-8(%rbp), %eax
+ 311 02ea 4801D0   		addq	%rdx, %rax
+ 312 02ed 0FB600   		movzbl	(%rax), %eax
+ 313 02f0 84C0     		testb	%al, %al
+ 314 02f2 750F     		jne	.L20
+  94:i2c.c         **** 	while ( !sourceMask->data[i] && i < sourceData->length ) {
+ 315              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 316 02f4 0FB755F8 		movzwl	-8(%rbp), %edx
+ 317 02f8 488B45E0 		movq	-32(%rbp), %rax
+ 318 02fc 8B4008   		movl	8(%rax), %eax
+ 319 02ff 39C2     		cmpl	%eax, %edx
+ 320 0301 72D1     		jb	.L21
+ 321              	.L20:
+  96:i2c.c         **** 	}
+  97:i2c.c         **** 	if ( i == sourceData->length ) {
+ 322              		.loc 1 97 0 is_stmt 1
+ 323 0303 0FB755F8 		movzwl	-8(%rbp), %edx
+ 324 0307 488B45E0 		movq	-32(%rbp), %rax
+ 325 030b 8B4008   		movl	8(%rax), %eax
+ 326 030e 39C2     		cmpl	%eax, %edx
+ 327 0310 750A     		jne	.L22
+  98:i2c.c         **** 		return I2C_SUCCESS;  // There are no data
+ 328              		.loc 1 98 0
+ 329 0312 B8000000 		movl	$0, %eax
+ 329      00
+ 330 0317 E90A0200 		jmp	.L18
+ 330      00
+ 331              	.L22:
+  99:i2c.c         **** 	}
+ 100:i2c.c         **** 
+ 101:i2c.c         **** 	// There is definitely some data to write
+ 102:i2c.c         **** 	//
+ 103:i2c.c         **** 	chunkStart = i;  // keep a record of where this block starts
+ 332              		.loc 1 103 0
+ 333 031c 0FB745F8 		movzwl	-8(%rbp), %eax
+ 334 0320 668945FA 		movw	%ax, -6(%rbp)
+ 335              	.L40:
+ 104:i2c.c         **** 	do {
+ 105:i2c.c         **** 		// Find the end of this block of ones
+ 106:i2c.c         **** 		//
+ 107:i2c.c         **** 		while ( sourceMask->data[i] && i < sourceData->length ) {
+ 336              		.loc 1 107 0
+ 337 0324 EB0B     		jmp	.L23
+ 338              	.L25:
+ 108:i2c.c         **** 			i++;
+ 339              		.loc 1 108 0
+ 340 0326 0FB745F8 		movzwl	-8(%rbp), %eax
+ 341 032a 83C001   		addl	$1, %eax
+ 342 032d 668945F8 		movw	%ax, -8(%rbp)
+ 343              	.L23:
+ 107:i2c.c         **** 			i++;
+ 344              		.loc 1 107 0
+ 345 0331 488B45D8 		movq	-40(%rbp), %rax
+ 346 0335 488B10   		movq	(%rax), %rdx
+ 347 0338 0FB745F8 		movzwl	-8(%rbp), %eax
+ 348 033c 4801D0   		addq	%rdx, %rax
+ 349 033f 0FB600   		movzbl	(%rax), %eax
+ 350 0342 84C0     		testb	%al, %al
+ 351 0344 740F     		je	.L24
+ 107:i2c.c         **** 			i++;
+ 352              		.loc 1 107 0 is_stmt 0 discriminator 1
+ 353 0346 0FB755F8 		movzwl	-8(%rbp), %edx
+ 354 034a 488B45E0 		movq	-32(%rbp), %rax
+ 355 034e 8B4008   		movl	8(%rax), %eax
+ 356 0351 39C2     		cmpl	%eax, %edx
+ 357 0353 72D1     		jb	.L25
+ 358              	.L24:
+ 109:i2c.c         **** 		}
+ 110:i2c.c         **** 		if ( i == sourceData->length ) {
+ 359              		.loc 1 110 0 is_stmt 1
+ 360 0355 0FB755F8 		movzwl	-8(%rbp), %edx
+ 361 0359 488B45E0 		movq	-32(%rbp), %rax
+ 362 035d 8B4008   		movl	8(%rax), %eax
+ 363 0360 39C2     		cmpl	%eax, %edx
+ 364 0362 7546     		jne	.L26
+ 111:i2c.c         **** 			status = dumpChunk(
+ 112:i2c.c         **** 				destination, sourceData, sourceMask, chunkStart,
+ 113:i2c.c         **** 				(uint16)sourceData->length - chunkStart, error);
+ 365              		.loc 1 113 0
+ 366 0364 488B45E0 		movq	-32(%rbp), %rax
+ 367 0368 8B4008   		movl	8(%rax), %eax
+ 111:i2c.c         **** 			status = dumpChunk(
+ 368              		.loc 1 111 0
+ 369 036b 662B45FA 		subw	-6(%rbp), %ax
+ 370 036f 0FB7F8   		movzwl	%ax, %edi
+ 371 0372 0FB74DFA 		movzwl	-6(%rbp), %ecx
+ 372 0376 4C8B45D0 		movq	-48(%rbp), %r8
+ 373 037a 488B55D8 		movq	-40(%rbp), %rdx
+ 374 037e 488B75E0 		movq	-32(%rbp), %rsi
+ 375 0382 488B45E8 		movq	-24(%rbp), %rax
+ 376 0386 4D89C1   		movq	%r8, %r9
+ 377 0389 4189F8   		movl	%edi, %r8d
+ 378 038c 4889C7   		movq	%rax, %rdi
+ 379 038f E822FDFF 		call	dumpChunk
+ 379      FF
+ 380 0394 8945FC   		movl	%eax, -4(%rbp)
+ 114:i2c.c         **** 			if ( status != I2C_SUCCESS ) {
+ 381              		.loc 1 114 0
+ 382 0397 837DFC00 		cmpl	$0, -4(%rbp)
+ 383 039b 7408     		je	.L27
+ 115:i2c.c         **** 				return status;
+ 384              		.loc 1 115 0
+ 385 039d 8B45FC   		movl	-4(%rbp), %eax
+ 386 03a0 E9810100 		jmp	.L18
+ 386      00
+ 387              	.L27:
+ 116:i2c.c         **** 			}
+ 117:i2c.c         **** 			break;
+ 388              		.loc 1 117 0
+ 389 03a5 E9770100 		jmp	.L28
+ 389      00
+ 390              	.L26:
+ 118:i2c.c         **** 		}
+ 119:i2c.c         **** 
+ 120:i2c.c         **** 		// Now check: is this run of zeroes worth splitting the block for?
+ 121:i2c.c         **** 		//
+ 122:i2c.c         **** 		// There are four bytes of overhead to opening a new record, so on balance it appears that
+ 123:i2c.c         **** 		// the smallest run of zeros worth breaking a block is FIVE. But since the maximum record
+ 124:i2c.c         **** 		// length is 1023 bytes, it's actually good to break on FOUR bytes - it costs nothing
+ 125:i2c.c         **** 		// extra, but it hopefully keeps the number of forced (1023-byte) breaks to a minimum.
+ 126:i2c.c         **** 		//
+ 127:i2c.c         **** 		if ( i < sourceData->length-4 ) {
+ 391              		.loc 1 127 0
+ 392 03aa 0FB755F8 		movzwl	-8(%rbp), %edx
+ 393 03ae 488B45E0 		movq	-32(%rbp), %rax
+ 394 03b2 8B4008   		movl	8(%rax), %eax
+ 395 03b5 83E804   		subl	$4, %eax
+ 396 03b8 39C2     		cmpl	%eax, %edx
+ 397 03ba 0F830E01 		jnb	.L29
+ 397      0000
+ 128:i2c.c         **** 			// We are not within five bytes of the end
+ 129:i2c.c         **** 			//
+ 130:i2c.c         **** 			if ( !sourceMask->data[i] && !sourceMask->data[i+1] &&
+ 398              		.loc 1 130 0
+ 399 03c0 488B45D8 		movq	-40(%rbp), %rax
+ 400 03c4 488B10   		movq	(%rax), %rdx
+ 401 03c7 0FB745F8 		movzwl	-8(%rbp), %eax
+ 402 03cb 4801D0   		addq	%rdx, %rax
+ 403 03ce 0FB600   		movzbl	(%rax), %eax
+ 404 03d1 84C0     		testb	%al, %al
+ 405 03d3 0F85D100 		jne	.L30
+ 405      0000
+ 406              		.loc 1 130 0 is_stmt 0 discriminator 1
+ 407 03d9 488B45D8 		movq	-40(%rbp), %rax
+ 408 03dd 488B00   		movq	(%rax), %rax
+ 409 03e0 0FB755F8 		movzwl	-8(%rbp), %edx
+ 410 03e4 4883C201 		addq	$1, %rdx
+ 411 03e8 4801D0   		addq	%rdx, %rax
+ 412 03eb 0FB600   		movzbl	(%rax), %eax
+ 413 03ee 84C0     		testb	%al, %al
+ 414 03f0 0F85B400 		jne	.L30
+ 414      0000
+ 131:i2c.c         **** 			     !sourceMask->data[i+2] && !sourceMask->data[i+3] )
+ 415              		.loc 1 131 0 is_stmt 1 discriminator 2
+ 416 03f6 488B45D8 		movq	-40(%rbp), %rax
+ 417 03fa 488B00   		movq	(%rax), %rax
+ 418 03fd 0FB755F8 		movzwl	-8(%rbp), %edx
+ 419 0401 4883C202 		addq	$2, %rdx
+ 420 0405 4801D0   		addq	%rdx, %rax
+ 421 0408 0FB600   		movzbl	(%rax), %eax
+ 130:i2c.c         **** 			     !sourceMask->data[i+2] && !sourceMask->data[i+3] )
+ 422              		.loc 1 130 0 discriminator 2
+ 423 040b 84C0     		testb	%al, %al
+ 424 040d 0F859700 		jne	.L30
+ 424      0000
+ 425              		.loc 1 131 0
+ 426 0413 488B45D8 		movq	-40(%rbp), %rax
+ 427 0417 488B00   		movq	(%rax), %rax
+ 428 041a 0FB755F8 		movzwl	-8(%rbp), %edx
+ 429 041e 4883C203 		addq	$3, %rdx
+ 430 0422 4801D0   		addq	%rdx, %rax
+ 431 0425 0FB600   		movzbl	(%rax), %eax
+ 432 0428 84C0     		testb	%al, %al
+ 433 042a 757E     		jne	.L30
+ 132:i2c.c         **** 			{
+ 133:i2c.c         **** 				// Yes, let's split it - dump the current block and start a fresh one
+ 134:i2c.c         **** 				//
+ 135:i2c.c         **** 				status = dumpChunk(
+ 434              		.loc 1 135 0
+ 435 042c 0FB745F8 		movzwl	-8(%rbp), %eax
+ 436 0430 662B45FA 		subw	-6(%rbp), %ax
+ 437 0434 0FB7F8   		movzwl	%ax, %edi
+ 438 0437 0FB74DFA 		movzwl	-6(%rbp), %ecx
+ 439 043b 4C8B45D0 		movq	-48(%rbp), %r8
+ 440 043f 488B55D8 		movq	-40(%rbp), %rdx
+ 441 0443 488B75E0 		movq	-32(%rbp), %rsi
+ 442 0447 488B45E8 		movq	-24(%rbp), %rax
+ 443 044b 4D89C1   		movq	%r8, %r9
+ 444 044e 4189F8   		movl	%edi, %r8d
+ 445 0451 4889C7   		movq	%rax, %rdi
+ 446 0454 E85DFCFF 		call	dumpChunk
+ 446      FF
+ 447 0459 8945FC   		movl	%eax, -4(%rbp)
+ 136:i2c.c         **** 					destination, sourceData, sourceMask, chunkStart, i - chunkStart, error);
+ 137:i2c.c         **** 				if ( status != I2C_SUCCESS ) {
+ 448              		.loc 1 137 0
+ 449 045c 837DFC00 		cmpl	$0, -4(%rbp)
+ 450 0460 7408     		je	.L31
+ 138:i2c.c         **** 					return status;
+ 451              		.loc 1 138 0
+ 452 0462 8B45FC   		movl	-4(%rbp), %eax
+ 453 0465 E9BC0000 		jmp	.L18
+ 453      00
+ 454              	.L31:
+ 139:i2c.c         **** 				}
+ 140:i2c.c         **** 				
+ 141:i2c.c         **** 				// Skip these four...we know they're zero
+ 142:i2c.c         **** 				//
+ 143:i2c.c         **** 				i += 4;
+ 455              		.loc 1 143 0
+ 456 046a 668345F8 		addw	$4, -8(%rbp)
+ 456      04
+ 144:i2c.c         **** 				
+ 145:i2c.c         **** 				// Find the next block of ones
+ 146:i2c.c         **** 				//
+ 147:i2c.c         **** 				while ( i < sourceMask->length && !sourceMask->data[i] ) {
+ 457              		.loc 1 147 0
+ 458 046f EB0B     		jmp	.L32
+ 459              	.L34:
+ 148:i2c.c         **** 					i++;
+ 460              		.loc 1 148 0
+ 461 0471 0FB745F8 		movzwl	-8(%rbp), %eax
+ 462 0475 83C001   		addl	$1, %eax
+ 463 0478 668945F8 		movw	%ax, -8(%rbp)
+ 464              	.L32:
+ 147:i2c.c         **** 					i++;
+ 465              		.loc 1 147 0
+ 466 047c 0FB755F8 		movzwl	-8(%rbp), %edx
+ 467 0480 488B45D8 		movq	-40(%rbp), %rax
+ 468 0484 8B4008   		movl	8(%rax), %eax
+ 469 0487 39C2     		cmpl	%eax, %edx
+ 470 0489 7315     		jnb	.L33
+ 147:i2c.c         **** 					i++;
+ 471              		.loc 1 147 0 is_stmt 0 discriminator 1
+ 472 048b 488B45D8 		movq	-40(%rbp), %rax
+ 473 048f 488B10   		movq	(%rax), %rdx
+ 474 0492 0FB745F8 		movzwl	-8(%rbp), %eax
+ 475 0496 4801D0   		addq	%rdx, %rax
+ 476 0499 0FB600   		movzbl	(%rax), %eax
+ 477 049c 84C0     		testb	%al, %al
+ 478 049e 74D1     		je	.L34
+ 479              	.L33:
+ 149:i2c.c         **** 				}
+ 150:i2c.c         **** 				chunkStart = i;
+ 480              		.loc 1 150 0 is_stmt 1
+ 481 04a0 0FB745F8 		movzwl	-8(%rbp), %eax
+ 482 04a4 668945FA 		movw	%ax, -6(%rbp)
+ 483 04a8 EB64     		jmp	.L38
+ 484              	.L30:
+ 151:i2c.c         **** 			} else {
+ 152:i2c.c         **** 				// This is four or fewer zeros - not worth splitting for so skip over them
+ 153:i2c.c         **** 				//
+ 154:i2c.c         **** 				while ( !sourceMask->data[i] ) {
+ 485              		.loc 1 154 0
+ 486 04aa EB0B     		jmp	.L36
+ 487              	.L37:
+ 155:i2c.c         **** 					i++;
+ 488              		.loc 1 155 0
+ 489 04ac 0FB745F8 		movzwl	-8(%rbp), %eax
+ 490 04b0 83C001   		addl	$1, %eax
+ 491 04b3 668945F8 		movw	%ax, -8(%rbp)
+ 492              	.L36:
+ 154:i2c.c         **** 					i++;
+ 493              		.loc 1 154 0
+ 494 04b7 488B45D8 		movq	-40(%rbp), %rax
+ 495 04bb 488B10   		movq	(%rax), %rdx
+ 496 04be 0FB745F8 		movzwl	-8(%rbp), %eax
+ 497 04c2 4801D0   		addq	%rdx, %rax
+ 498 04c5 0FB600   		movzbl	(%rax), %eax
+ 499 04c8 84C0     		testb	%al, %al
+ 500 04ca 74E0     		je	.L37
+ 501 04cc EB40     		jmp	.L38
+ 502              	.L29:
+ 156:i2c.c         **** 				}
+ 157:i2c.c         **** 			}
+ 158:i2c.c         **** 		} else {
+ 159:i2c.c         **** 			// We are within four bytes of the end - include the remainder, whatever it is
+ 160:i2c.c         **** 			//
+ 161:i2c.c         **** 			status = dumpChunk(
+ 162:i2c.c         **** 				destination, sourceData, sourceMask, chunkStart,
+ 163:i2c.c         **** 				(uint16)sourceMask->length - chunkStart, error);
+ 503              		.loc 1 163 0
+ 504 04ce 488B45D8 		movq	-40(%rbp), %rax
+ 505 04d2 8B4008   		movl	8(%rax), %eax
+ 161:i2c.c         **** 				destination, sourceData, sourceMask, chunkStart,
+ 506              		.loc 1 161 0
+ 507 04d5 662B45FA 		subw	-6(%rbp), %ax
+ 508 04d9 0FB7F8   		movzwl	%ax, %edi
+ 509 04dc 0FB74DFA 		movzwl	-6(%rbp), %ecx
+ 510 04e0 4C8B45D0 		movq	-48(%rbp), %r8
+ 511 04e4 488B55D8 		movq	-40(%rbp), %rdx
+ 512 04e8 488B75E0 		movq	-32(%rbp), %rsi
+ 513 04ec 488B45E8 		movq	-24(%rbp), %rax
+ 514 04f0 4D89C1   		movq	%r8, %r9
+ 515 04f3 4189F8   		movl	%edi, %r8d
+ 516 04f6 4889C7   		movq	%rax, %rdi
+ 517 04f9 E8B8FBFF 		call	dumpChunk
+ 517      FF
+ 518 04fe 8945FC   		movl	%eax, -4(%rbp)
+ 164:i2c.c         **** 			if ( status != I2C_SUCCESS ) {
+ 519              		.loc 1 164 0
+ 520 0501 837DFC00 		cmpl	$0, -4(%rbp)
+ 521 0505 7405     		je	.L39
+ 165:i2c.c         **** 				return status;
+ 522              		.loc 1 165 0
+ 523 0507 8B45FC   		movl	-4(%rbp), %eax
+ 524 050a EB1A     		jmp	.L18
+ 525              	.L39:
+ 166:i2c.c         **** 			}
+ 167:i2c.c         **** 			break;
+ 526              		.loc 1 167 0
+ 527 050c EB13     		jmp	.L28
+ 528              	.L38:
+ 168:i2c.c         **** 		}
+ 169:i2c.c         **** 	} while ( i < sourceData->length );
+ 529              		.loc 1 169 0
+ 530 050e 0FB755F8 		movzwl	-8(%rbp), %edx
+ 531 0512 488B45E0 		movq	-32(%rbp), %rax
+ 532 0516 8B4008   		movl	8(%rax), %eax
+ 533 0519 39C2     		cmpl	%eax, %edx
+ 534 051b 0F8203FE 		jb	.L40
+ 534      FFFF
+ 535              	.L28:
+ 170:i2c.c         **** 	
+ 171:i2c.c         **** 	return I2C_SUCCESS;
+ 536              		.loc 1 171 0
+ 537 0521 B8000000 		movl	$0, %eax
+ 537      00
+ 538              	.L18:
+ 172:i2c.c         **** }
+ 539              		.loc 1 172 0
+ 540 0526 C9       		leave
+ 541              		.cfi_def_cfa 7, 8
+ 542 0527 C3       		ret
+ 543              		.cfi_endproc
+ 544              	.LFE6:
+ 546              		.section	.rodata
+ 547 0046 0000     		.align 8
+ 548              	.LC2:
+ 549 0048 69326352 		.string	"i2cReadPromRecords(): the EEPROM records appear to be corrupt"
+ 549      65616450 
+ 549      726F6D52 
+ 549      65636F72 
+ 549      64732829 
+ 550 0086 0000     		.align 8
+ 551              	.LC3:
+ 552 0088 69326352 		.string	"i2cReadPromRecords(): the destination buffer is not empty"
+ 552      65616450 
+ 552      726F6D52 
+ 552      65636F72 
+ 552      64732829 
+ 553              	.LC4:
+ 554 00c2 69326352 		.string	"i2cReadPromRecords()"
+ 554      65616450 
+ 554      726F6D52 
+ 554      65636F72 
+ 554      64732829 
+ 555              		.text
+ 556              		.globl	i2cReadPromRecords
+ 558              	i2cReadPromRecords:
+ 559              	.LFB7:
+ 173:i2c.c         **** 
+ 174:i2c.c         **** // Read EEPROM records from the source buffer and write the decoded data to the data/mask
+ 175:i2c.c         **** // destination buffers.
+ 176:i2c.c         **** //
+ 177:i2c.c         **** DLLEXPORT(I2CStatus) i2cReadPromRecords(
+ 178:i2c.c         **** 	struct Buffer *destData, struct Buffer *destMask, const struct Buffer *source,
+ 179:i2c.c         **** 	const char **error)
+ 180:i2c.c         **** {
+ 560              		.loc 1 180 0
+ 561              		.cfi_startproc
+ 562 0528 55       		pushq	%rbp
+ 563              		.cfi_def_cfa_offset 16
+ 564              		.cfi_offset 6, -16
+ 565 0529 4889E5   		movq	%rsp, %rbp
+ 566              		.cfi_def_cfa_register 6
+ 567 052c 4883EC40 		subq	$64, %rsp
+ 568 0530 48897DD8 		movq	%rdi, -40(%rbp)
+ 569 0534 488975D0 		movq	%rsi, -48(%rbp)
+ 570 0538 488955C8 		movq	%rdx, -56(%rbp)
+ 571 053c 48894DC0 		movq	%rcx, -64(%rbp)
+ 181:i2c.c         **** 	I2CStatus returnCode = I2C_SUCCESS;
+ 572              		.loc 1 181 0
+ 573 0540 C745E800 		movl	$0, -24(%rbp)
+ 573      000000
+ 182:i2c.c         **** 	uint16 chunkAddress, chunkLength;
+ 183:i2c.c         **** 	const uint8 *ptr = source->data;
+ 574              		.loc 1 183 0
+ 575 0547 488B45C8 		movq	-56(%rbp), %rax
+ 576 054b 488B00   		movq	(%rax), %rax
+ 577 054e 488945F0 		movq	%rax, -16(%rbp)
+ 184:i2c.c         **** 	const uint8 *const ptrEnd = ptr + source->length;
+ 578              		.loc 1 184 0
+ 579 0552 488B45C8 		movq	-56(%rbp), %rax
+ 580 0556 8B4008   		movl	8(%rax), %eax
+ 581 0559 89C2     		movl	%eax, %edx
+ 582 055b 488B45F0 		movq	-16(%rbp), %rax
+ 583 055f 4801D0   		addq	%rdx, %rax
+ 584 0562 488945F8 		movq	%rax, -8(%rbp)
+ 185:i2c.c         **** 	BufferStatus bStatus;
+ 186:i2c.c         **** 	if ( source->length < 8+5 || ptr[0] != 0xC2 ) {
+ 585              		.loc 1 186 0
+ 586 0566 488B45C8 		movq	-56(%rbp), %rax
+ 587 056a 8B4008   		movl	8(%rax), %eax
+ 588 056d 83F80C   		cmpl	$12, %eax
+ 589 0570 760B     		jbe	.L42
+ 590              		.loc 1 186 0 is_stmt 0 discriminator 1
+ 591 0572 488B45F0 		movq	-16(%rbp), %rax
+ 592 0576 0FB600   		movzbl	(%rax), %eax
+ 593 0579 3CC2     		cmpb	$-62, %al
+ 594 057b 7424     		je	.L43
+ 595              	.L42:
+ 187:i2c.c         **** 		errRender(error, "i2cReadPromRecords(): the EEPROM records appear to be corrupt");
+ 596              		.loc 1 187 0 is_stmt 1
+ 597 057d 488B45C0 		movq	-64(%rbp), %rax
+ 598 0581 488D3500 		leaq	.LC2(%rip), %rsi
+ 598      000000
+ 599 0588 4889C7   		movq	%rax, %rdi
+ 600 058b B8000000 		movl	$0, %eax
+ 600      00
+ 601 0590 E8000000 		call	errRender@PLT
+ 601      00
+ 188:i2c.c         **** 		FAIL(I2C_NOT_INITIALISED);
+ 602              		.loc 1 188 0
+ 603 0595 C745E802 		movl	$2, -24(%rbp)
+ 603      000000
+ 604 059c E9480100 		jmp	.L44
+ 604      00
+ 605              	.L43:
+ 189:i2c.c         **** 	}
+ 190:i2c.c         **** 	if ( destData->length != 0 || destMask->length != 0 ) {
+ 606              		.loc 1 190 0
+ 607 05a1 488B45D8 		movq	-40(%rbp), %rax
+ 608 05a5 8B4008   		movl	8(%rax), %eax
+ 609 05a8 85C0     		testl	%eax, %eax
+ 610 05aa 750B     		jne	.L45
+ 611              		.loc 1 190 0 is_stmt 0 discriminator 1
+ 612 05ac 488B45D0 		movq	-48(%rbp), %rax
+ 613 05b0 8B4008   		movl	8(%rax), %eax
+ 614 05b3 85C0     		testl	%eax, %eax
+ 615 05b5 7424     		je	.L46
+ 616              	.L45:
+ 191:i2c.c         **** 		errRender(error, "i2cReadPromRecords(): the destination buffer is not empty");
+ 617              		.loc 1 191 0 is_stmt 1
+ 618 05b7 488B45C0 		movq	-64(%rbp), %rax
+ 619 05bb 488D3500 		leaq	.LC3(%rip), %rsi
+ 619      000000
+ 620 05c2 4889C7   		movq	%rax, %rdi
+ 621 05c5 B8000000 		movl	$0, %eax
+ 621      00
+ 622 05ca E8000000 		call	errRender@PLT
+ 622      00
+ 192:i2c.c         **** 		FAIL(I2C_DEST_BUFFER_NOT_EMPTY);
+ 623              		.loc 1 192 0
+ 624 05cf C745E803 		movl	$3, -24(%rbp)
+ 624      000000
+ 625 05d6 E90E0100 		jmp	.L44
+ 625      00
+ 626              	.L46:
+ 193:i2c.c         **** 	}
+ 194:i2c.c         **** 	ptr += 8;  // skip over the header
+ 627              		.loc 1 194 0
+ 628 05db 488345F0 		addq	$8, -16(%rbp)
+ 628      08
+ 195:i2c.c         **** 	while ( ptr < ptrEnd ) {
+ 629              		.loc 1 195 0
+ 630 05e0 E9F60000 		jmp	.L47
+ 630      00
+ 631              	.L51:
+ 196:i2c.c         **** 		chunkLength = ((ptr[0] << 8) + ptr[1]);
+ 632              		.loc 1 196 0
+ 633 05e5 488B45F0 		movq	-16(%rbp), %rax
+ 634 05e9 0FB600   		movzbl	(%rax), %eax
+ 635 05ec 0FB6C0   		movzbl	%al, %eax
+ 636 05ef C1E008   		sall	$8, %eax
+ 637 05f2 89C2     		movl	%eax, %edx
+ 638 05f4 488B45F0 		movq	-16(%rbp), %rax
+ 639 05f8 4883C001 		addq	$1, %rax
+ 640 05fc 0FB600   		movzbl	(%rax), %eax
+ 641 05ff 0FB6C0   		movzbl	%al, %eax
+ 642 0602 01D0     		addl	%edx, %eax
+ 643 0604 668945E4 		movw	%ax, -28(%rbp)
+ 197:i2c.c         **** 		chunkAddress = (ptr[2] << 8) + ptr[3];
+ 644              		.loc 1 197 0
+ 645 0608 488B45F0 		movq	-16(%rbp), %rax
+ 646 060c 4883C002 		addq	$2, %rax
+ 647 0610 0FB600   		movzbl	(%rax), %eax
+ 648 0613 0FB6C0   		movzbl	%al, %eax
+ 649 0616 C1E008   		sall	$8, %eax
+ 650 0619 89C2     		movl	%eax, %edx
+ 651 061b 488B45F0 		movq	-16(%rbp), %rax
+ 652 061f 4883C003 		addq	$3, %rax
+ 653 0623 0FB600   		movzbl	(%rax), %eax
+ 654 0626 0FB6C0   		movzbl	%al, %eax
+ 655 0629 01D0     		addl	%edx, %eax
+ 656 062b 668945E6 		movw	%ax, -26(%rbp)
+ 198:i2c.c         **** 		if ( chunkLength & 0x8000 ) {
+ 657              		.loc 1 198 0
+ 658 062f 0FB745E4 		movzwl	-28(%rbp), %eax
+ 659 0633 6685C0   		testw	%ax, %ax
+ 660 0636 7905     		jns	.L48
+ 199:i2c.c         **** 			break;
+ 661              		.loc 1 199 0
+ 662 0638 E9AC0000 		jmp	.L44
+ 662      00
+ 663              	.L48:
+ 200:i2c.c         **** 		}
+ 201:i2c.c         **** 		chunkLength &= 0x03FF;
+ 664              		.loc 1 201 0
+ 665 063d 668165E4 		andw	$1023, -28(%rbp)
+ 665      FF03
+ 202:i2c.c         **** 		ptr += 4;
+ 666              		.loc 1 202 0
+ 667 0643 488345F0 		addq	$4, -16(%rbp)
+ 667      04
+ 203:i2c.c         **** 		bStatus = bufWriteBlock(destData, chunkAddress, ptr, chunkLength, error);
+ 668              		.loc 1 203 0
+ 669 0648 0FB74DE4 		movzwl	-28(%rbp), %ecx
+ 670 064c 0FB775E6 		movzwl	-26(%rbp), %esi
+ 671 0650 488B7DC0 		movq	-64(%rbp), %rdi
+ 672 0654 488B55F0 		movq	-16(%rbp), %rdx
+ 673 0658 488B45D8 		movq	-40(%rbp), %rax
+ 674 065c 4989F8   		movq	%rdi, %r8
+ 675 065f 4889C7   		movq	%rax, %rdi
+ 676 0662 E8000000 		call	bufWriteBlock@PLT
+ 676      00
+ 677 0667 8945EC   		movl	%eax, -20(%rbp)
+ 204:i2c.c         **** 		CHECK_STATUS(bStatus, "i2cReadPromRecords()", I2C_BUFFER_ERROR);
+ 678              		.loc 1 204 0
+ 679 066a 837DEC00 		cmpl	$0, -20(%rbp)
+ 680 066e 741C     		je	.L49
+ 681              		.loc 1 204 0 is_stmt 0 discriminator 1
+ 682 0670 488B45C0 		movq	-64(%rbp), %rax
+ 683 0674 488D3500 		leaq	.LC4(%rip), %rsi
+ 683      000000
+ 684 067b 4889C7   		movq	%rax, %rdi
+ 685 067e E8000000 		call	errPrefix@PLT
+ 685      00
+ 686 0683 C745E801 		movl	$1, -24(%rbp)
+ 686      000000
+ 687 068a EB5D     		jmp	.L44
+ 688              	.L49:
+ 205:i2c.c         **** 		bStatus = bufWriteConst(destMask, chunkAddress, 0x01, chunkLength, error);
+ 689              		.loc 1 205 0 is_stmt 1
+ 690 068c 0FB755E4 		movzwl	-28(%rbp), %edx
+ 691 0690 0FB775E6 		movzwl	-26(%rbp), %esi
+ 692 0694 488B4DC0 		movq	-64(%rbp), %rcx
+ 693 0698 488B45D0 		movq	-48(%rbp), %rax
+ 694 069c 4989C8   		movq	%rcx, %r8
+ 695 069f 89D1     		movl	%edx, %ecx
+ 696 06a1 BA010000 		movl	$1, %edx
+ 696      00
+ 697 06a6 4889C7   		movq	%rax, %rdi
+ 698 06a9 E8000000 		call	bufWriteConst@PLT
+ 698      00
+ 699 06ae 8945EC   		movl	%eax, -20(%rbp)
+ 206:i2c.c         **** 		CHECK_STATUS(bStatus, "i2cReadPromRecords()", I2C_BUFFER_ERROR);
+ 700              		.loc 1 206 0
+ 701 06b1 837DEC00 		cmpl	$0, -20(%rbp)
+ 702 06b5 741C     		je	.L50
+ 703              		.loc 1 206 0 is_stmt 0 discriminator 1
+ 704 06b7 488B45C0 		movq	-64(%rbp), %rax
+ 705 06bb 488D3500 		leaq	.LC4(%rip), %rsi
+ 705      000000
+ 706 06c2 4889C7   		movq	%rax, %rdi
+ 707 06c5 E8000000 		call	errPrefix@PLT
+ 707      00
+ 708 06ca C745E801 		movl	$1, -24(%rbp)
+ 708      000000
+ 709 06d1 EB16     		jmp	.L44
+ 710              	.L50:
+ 207:i2c.c         **** 		ptr += chunkLength;
+ 711              		.loc 1 207 0 is_stmt 1
+ 712 06d3 0FB745E4 		movzwl	-28(%rbp), %eax
+ 713 06d7 480145F0 		addq	%rax, -16(%rbp)
+ 714              	.L47:
+ 195:i2c.c         **** 		chunkLength = ((ptr[0] << 8) + ptr[1]);
+ 715              		.loc 1 195 0
+ 716 06db 488B45F0 		movq	-16(%rbp), %rax
+ 717 06df 483B45F8 		cmpq	-8(%rbp), %rax
+ 718 06e3 0F82FCFE 		jb	.L51
+ 718      FFFF
+ 719              	.L44:
+ 208:i2c.c         **** 	}
+ 209:i2c.c         **** cleanup:
+ 210:i2c.c         **** 	return returnCode;
+ 720              		.loc 1 210 0
+ 721 06e9 8B45E8   		movl	-24(%rbp), %eax
+ 211:i2c.c         **** }
+ 722              		.loc 1 211 0
+ 723 06ec C9       		leave
+ 724              		.cfi_def_cfa 7, 8
+ 725 06ed C3       		ret
+ 726              		.cfi_endproc
+ 727              	.LFE7:
+ 729              		.section	.rodata
+ 730 00d7 00       		.align 8
+ 731              	.LC5:
+ 732 00d8 69326346 		.string	"i2cFinalise(): the buffer was not initialised"
+ 732      696E616C 
+ 732      69736528 
+ 732      293A2074 
+ 732      68652062 
+ 733              	.LC6:
+ 734 0106 69326346 		.string	"i2cFinalise()"
+ 734      696E616C 
+ 734      69736528 
+ 734      2900
+ 735              		.text
+ 736              		.globl	i2cFinalise
+ 738              	i2cFinalise:
+ 739              	.LFB8:
+ 212:i2c.c         **** 
+ 213:i2c.c         **** // Finalise the I2C buffers. This involves writing the final record which resets the chip.
+ 214:i2c.c         **** //
+ 215:i2c.c         **** DLLEXPORT(I2CStatus) i2cFinalise(struct Buffer *buf, const char **error) {
+ 740              		.loc 1 215 0
+ 741              		.cfi_startproc
+ 742 06ee 55       		pushq	%rbp
+ 743              		.cfi_def_cfa_offset 16
+ 744              		.cfi_offset 6, -16
+ 745 06ef 4889E5   		movq	%rsp, %rbp
+ 746              		.cfi_def_cfa_register 6
+ 747 06f2 4883EC30 		subq	$48, %rsp
+ 748 06f6 48897DD8 		movq	%rdi, -40(%rbp)
+ 749 06fa 488975D0 		movq	%rsi, -48(%rbp)
+ 750              		.loc 1 215 0
+ 751 06fe 64488B04 		movq	%fs:40, %rax
+ 751      25280000 
+ 751      00
+ 752 0707 488945F8 		movq	%rax, -8(%rbp)
+ 753 070b 31C0     		xorl	%eax, %eax
+ 216:i2c.c         **** 	I2CStatus returnCode = I2C_SUCCESS;
+ 754              		.loc 1 216 0
+ 755 070d C745E800 		movl	$0, -24(%rbp)
+ 755      000000
+ 217:i2c.c         **** 	BufferStatus bStatus;
+ 218:i2c.c         **** 	const uint8 lastRecord[] = {0x80, 0x01, 0xe6, 0x00, 0x00};
+ 756              		.loc 1 218 0
+ 757 0714 C645F080 		movb	$-128, -16(%rbp)
+ 758 0718 C645F101 		movb	$1, -15(%rbp)
+ 759 071c C645F2E6 		movb	$-26, -14(%rbp)
+ 760 0720 C645F300 		movb	$0, -13(%rbp)
+ 761 0724 C645F400 		movb	$0, -12(%rbp)
+ 219:i2c.c         **** 	if ( buf->length < 8 || buf->data[0] != 0xC2 ) {
+ 762              		.loc 1 219 0
+ 763 0728 488B45D8 		movq	-40(%rbp), %rax
+ 764 072c 8B4008   		movl	8(%rax), %eax
+ 765 072f 83F807   		cmpl	$7, %eax
+ 766 0732 760E     		jbe	.L54
+ 767              		.loc 1 219 0 is_stmt 0 discriminator 1
+ 768 0734 488B45D8 		movq	-40(%rbp), %rax
+ 769 0738 488B00   		movq	(%rax), %rax
+ 770 073b 0FB600   		movzbl	(%rax), %eax
+ 771 073e 3CC2     		cmpb	$-62, %al
+ 772 0740 7421     		je	.L55
+ 773              	.L54:
+ 220:i2c.c         **** 		errRender(error, "i2cFinalise(): the buffer was not initialised");
+ 774              		.loc 1 220 0 is_stmt 1
+ 775 0742 488B45D0 		movq	-48(%rbp), %rax
+ 776 0746 488D3500 		leaq	.LC5(%rip), %rsi
+ 776      000000
+ 777 074d 4889C7   		movq	%rax, %rdi
+ 778 0750 B8000000 		movl	$0, %eax
+ 778      00
+ 779 0755 E8000000 		call	errRender@PLT
+ 779      00
+ 221:i2c.c         **** 		FAIL(I2C_NOT_INITIALISED);
+ 780              		.loc 1 221 0
+ 781 075a C745E802 		movl	$2, -24(%rbp)
+ 781      000000
+ 782 0761 EB40     		jmp	.L56
+ 783              	.L55:
+ 222:i2c.c         **** 	}
+ 223:i2c.c         **** 	bStatus = bufAppendBlock(buf, lastRecord, 5, error);
+ 784              		.loc 1 223 0
+ 785 0763 488B55D0 		movq	-48(%rbp), %rdx
+ 786 0767 488D75F0 		leaq	-16(%rbp), %rsi
+ 787 076b 488B45D8 		movq	-40(%rbp), %rax
+ 788 076f 4889D1   		movq	%rdx, %rcx
+ 789 0772 BA050000 		movl	$5, %edx
+ 789      00
+ 790 0777 4889C7   		movq	%rax, %rdi
+ 791 077a E8000000 		call	bufAppendBlock@PLT
+ 791      00
+ 792 077f 8945EC   		movl	%eax, -20(%rbp)
+ 224:i2c.c         **** 	CHECK_STATUS(bStatus, "i2cFinalise()", I2C_BUFFER_ERROR);
+ 793              		.loc 1 224 0
+ 794 0782 837DEC00 		cmpl	$0, -20(%rbp)
+ 795 0786 741B     		je	.L56
+ 796              		.loc 1 224 0 is_stmt 0 discriminator 1
+ 797 0788 488B45D0 		movq	-48(%rbp), %rax
+ 798 078c 488D3500 		leaq	.LC6(%rip), %rsi
+ 798      000000
+ 799 0793 4889C7   		movq	%rax, %rdi
+ 800 0796 E8000000 		call	errPrefix@PLT
+ 800      00
+ 801 079b C745E801 		movl	$1, -24(%rbp)
+ 801      000000
+ 802 07a2 90       		nop
+ 803              	.L56:
+ 225:i2c.c         **** cleanup:
+ 226:i2c.c         **** 	return returnCode;
+ 804              		.loc 1 226 0 is_stmt 1
+ 805 07a3 8B45E8   		movl	-24(%rbp), %eax
+ 227:i2c.c         **** }
+ 806              		.loc 1 227 0
+ 807 07a6 488B4DF8 		movq	-8(%rbp), %rcx
+ 808 07aa 6448330C 		xorq	%fs:40, %rcx
+ 808      25280000 
+ 808      00
+ 809 07b3 7405     		je	.L58
+ 810 07b5 E8000000 		call	__stack_chk_fail@PLT
+ 810      00
+ 811              	.L58:
+ 812 07ba C9       		leave
+ 813              		.cfi_def_cfa 7, 8
+ 814 07bb C3       		ret
+ 815              		.cfi_endproc
+ 816              	.LFE8:
+ 818              	.Letext0:
+ 819              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h"
+ 820              		.file 3 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestu
+ 821              		.file 4 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/libs/libbuffer
+ 822              		.file 5 "libfx2loader.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 i2c.c
+     /tmp/ccSR7Nut.s:6      .text:0000000000000000 i2cInitialise
+     /tmp/ccSR7Nut.s:87     .text:00000000000000b6 dumpChunk
+     /tmp/ccSR7Nut.s:261    .text:0000000000000278 i2cWritePromRecords
+     /tmp/ccSR7Nut.s:558    .text:0000000000000528 i2cReadPromRecords
+     /tmp/ccSR7Nut.s:738    .text:00000000000006ee i2cFinalise
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+errPrefix
+bufAppendWordBE
+bufAppendBlock
+errRender
+bufWriteBlock
+bufWriteConst
+__stack_chk_fail

@@ -1,0 +1,1821 @@
+   1              		.file	"libnero.c"
+   2              		.text
+   3              	.Ltext0:
+   5              	littleEndian16:
+   6              	.LFB2:
+   7              		.file 1 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestu
+   1:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** /*
+   2:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * Copyright (C) 2009 Chris McClelland
+   3:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  *
+   4:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * This program is free software: you can redistribute it and/or modify
+   5:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * it under the terms of the GNU General Public License as published by
+   6:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * the Free Software Foundation, either version 3 of the License, or
+   7:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * (at your option) any later version.
+   8:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  *
+   9:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * This program is distributed in the hope that it will be useful,
+  10:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * GNU General Public License for more details.
+  13:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  *
+  14:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * You should have received a copy of the GNU General Public License
+  15:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h ****  */
+  17:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  18:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifndef MAKESTUFF_H
+  19:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #define MAKESTUFF_H
+  20:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  21:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  22:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#ifdef WIN32
+  23:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		typedef char bool;
+  24:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		enum {
+  25:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			false = 0,
+  26:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			true = 1
+  27:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		};
+  28:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#else
+  29:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		#include <stdbool.h>
+  30:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#endif
+  31:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  32:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  33:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifdef WIN32
+  34:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT
+  35:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) __declspec(dllexport) t __stdcall
+  36:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #else
+  37:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+  38:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) t
+  39:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  40:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  41:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifndef NULL
+  42:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define NULL ((void*)0)
+  43:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  44:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  45:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** typedef unsigned char      uint8;
+  46:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** typedef unsigned short     uint16;
+  47:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  48:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef unsigned long long uint64;
+  49:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  50:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  51:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** typedef signed char        int8;
+  52:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** typedef signed short       int16;
+  53:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  54:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #if (defined __AVR__ && defined __GNUC__) || defined SDCC
+  55:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	// The embedded platforms have sizeof(int) = 2, so use long
+  56:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef signed long    int32;
+  57:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef unsigned long  uint32;
+  58:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #else
+  59:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	// The i686 & x86_64 have sizeof(int) = 4
+  60:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef signed int     int32;
+  61:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef unsigned int   uint32;
+  62:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  63:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  64:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  65:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	typedef signed long long   int64;
+  66:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  67:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  68:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** typedef unsigned int       bitfield;
+  69:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  70:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #if defined __GNUC__
+  71:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define swap32(x) __builtin_bswap32(x)
+  72:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #elif defined WIN32
+  73:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#define swap32(x) _byteswap_ulong(x)
+  74:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #define inline __inline
+  75:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #endif
+  76:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #define swap16(x) ((((x) & 0x00FF) << 8) | (((x) >> 8) & 0x00FF))
+  77:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 
+  78:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** #ifdef BYTE_ORDER
+  79:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 	#if BYTE_ORDER == 1234
+  80:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		// Little-endian machines
+  81:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		static inline uint16 bigEndian16(uint16 x) {
+  82:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			return swap16(x);
+  83:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		}
+  84:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		static inline uint32 bigEndian32(uint32 x) {
+  85:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			return swap32(x);
+  86:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		}
+  87:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		static inline uint16 littleEndian16(uint16 x) {
+   8              		.loc 1 87 0
+   9              		.cfi_startproc
+  10 0000 55       		pushq	%rbp
+  11              		.cfi_def_cfa_offset 16
+  12              		.cfi_offset 6, -16
+  13 0001 4889E5   		movq	%rsp, %rbp
+  14              		.cfi_def_cfa_register 6
+  15 0004 89F8     		movl	%edi, %eax
+  16 0006 668945FC 		movw	%ax, -4(%rbp)
+  88:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			return x;
+  17              		.loc 1 88 0
+  18 000a 0FB745FC 		movzwl	-4(%rbp), %eax
+  89:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		}
+  19              		.loc 1 89 0
+  20 000e 5D       		popq	%rbp
+  21              		.cfi_def_cfa 7, 8
+  22 000f C3       		ret
+  23              		.cfi_endproc
+  24              	.LFE2:
+  27              	littleEndian32:
+  28              	.LFB3:
+  90:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		static inline uint32 littleEndian32(uint32 x) {
+  29              		.loc 1 90 0
+  30              		.cfi_startproc
+  31 0010 55       		pushq	%rbp
+  32              		.cfi_def_cfa_offset 16
+  33              		.cfi_offset 6, -16
+  34 0011 4889E5   		movq	%rsp, %rbp
+  35              		.cfi_def_cfa_register 6
+  36 0014 897DFC   		movl	%edi, -4(%rbp)
+  91:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 			return x;
+  37              		.loc 1 91 0
+  38 0017 8B45FC   		movl	-4(%rbp), %eax
+  92:/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestuff.h **** 		}
+  39              		.loc 1 92 0
+  40 001a 5D       		popq	%rbp
+  41              		.cfi_def_cfa 7, 8
+  42 001b C3       		ret
+  43              		.cfi_endproc
+  44              	.LFE3:
+  46              		.section	.rodata
+  47              	.LC0:
+  48 0000 6E65726F 		.string	"neroInitialise()"
+  48      496E6974 
+  48      69616C69 
+  48      73652829 
+  48      00
+  49              		.text
+  50              		.globl	neroInitialise
+  52              	neroInitialise:
+  53              	.LFB4:
+  54              		.file 2 "libnero.c"
+   1:libnero.c     **** /*
+   2:libnero.c     ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:libnero.c     ****  *
+   4:libnero.c     ****  * This program is free software: you can redistribute it and/or modify
+   5:libnero.c     ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:libnero.c     ****  * the Free Software Foundation, either version 3 of the License, or
+   7:libnero.c     ****  * (at your option) any later version.
+   8:libnero.c     ****  *
+   9:libnero.c     ****  * This program is distributed in the hope that it will be useful,
+  10:libnero.c     ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:libnero.c     ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:libnero.c     ****  * GNU Lesser General Public License for more details.
+  13:libnero.c     ****  *
+  14:libnero.c     ****  * You should have received a copy of the GNU Lesser General Public License
+  15:libnero.c     ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:libnero.c     ****  */
+  17:libnero.c     **** #include <makestuff.h>
+  18:libnero.c     **** #include <libusbwrap.h>
+  19:libnero.c     **** #ifdef WIN32
+  20:libnero.c     **** 	#include <lusb0_usb.h>
+  21:libnero.c     **** #else
+  22:libnero.c     **** 	#include <usb.h>
+  23:libnero.c     **** #endif
+  24:libnero.c     **** #include <liberror.h>
+  25:libnero.c     **** #include <vendorCommands.h>
+  26:libnero.c     **** #include "libnero.h"
+  27:libnero.c     **** 
+  28:libnero.c     **** // ------------------------------------------------------------------------------------------------
+  29:libnero.c     **** // Declaration of private types & functions
+  30:libnero.c     **** // ------------------------------------------------------------------------------------------------
+  31:libnero.c     **** 
+  32:libnero.c     **** typedef enum {
+  33:libnero.c     **** 	SEND_ZEROS,
+  34:libnero.c     **** 	SEND_ONES,
+  35:libnero.c     **** 	SEND_DATA,
+  36:libnero.c     **** 	SEND_MASK
+  37:libnero.c     **** } SendType;
+  38:libnero.c     **** 
+  39:libnero.c     **** enum {
+  40:libnero.c     **** 	IS_RESPONSE_NEEDED = 0,
+  41:libnero.c     **** 	IS_LAST = 1,
+  42:libnero.c     **** 	SEND_TYPE = 2
+  43:libnero.c     **** };
+  44:libnero.c     **** 
+  45:libnero.c     **** static NeroStatus beginShift(
+  46:libnero.c     **** 	struct NeroHandle *handle, uint32 numBits, SendType sendType, bool isLast,
+  47:libnero.c     **** 	bool isResponseNeeded, const char **error
+  48:libnero.c     **** ) WARN_UNUSED_RESULT;
+  49:libnero.c     **** 
+  50:libnero.c     **** static NeroStatus doSend(
+  51:libnero.c     **** 	struct NeroHandle *handle, const uint8 *sendPtr, uint16 chunkSize, const char **error
+  52:libnero.c     **** ) WARN_UNUSED_RESULT;
+  53:libnero.c     **** 
+  54:libnero.c     **** static NeroStatus doReceive(
+  55:libnero.c     **** 	struct NeroHandle *handle, uint8 *receivePtr, uint16 chunkSize, const char **error
+  56:libnero.c     **** ) WARN_UNUSED_RESULT;
+  57:libnero.c     **** 
+  58:libnero.c     **** static NeroStatus setEndpointSize(
+  59:libnero.c     **** 	struct NeroHandle *handle, const char **error
+  60:libnero.c     **** ) WARN_UNUSED_RESULT;
+  61:libnero.c     **** 
+  62:libnero.c     **** static NeroStatus setJtagMode(
+  63:libnero.c     **** 	struct NeroHandle *handle, bool enable, const char **error
+  64:libnero.c     **** ) WARN_UNUSED_RESULT;
+  65:libnero.c     **** 
+  66:libnero.c     **** // ------------------------------------------------------------------------------------------------
+  67:libnero.c     **** // Public functions
+  68:libnero.c     **** // ------------------------------------------------------------------------------------------------
+  69:libnero.c     **** 
+  70:libnero.c     **** // Find the NeroJTAG device, open it.
+  71:libnero.c     **** //
+  72:libnero.c     **** NeroStatus neroInitialise(
+  73:libnero.c     **** 	struct usb_dev_handle *device, struct NeroHandle *handle, const char **error)
+  74:libnero.c     **** {
+  55              		.loc 2 74 0
+  56              		.cfi_startproc
+  57 001c 55       		pushq	%rbp
+  58              		.cfi_def_cfa_offset 16
+  59              		.cfi_offset 6, -16
+  60 001d 4889E5   		movq	%rsp, %rbp
+  61              		.cfi_def_cfa_register 6
+  62 0020 4883EC30 		subq	$48, %rsp
+  63 0024 48897DE8 		movq	%rdi, -24(%rbp)
+  64 0028 488975E0 		movq	%rsi, -32(%rbp)
+  65 002c 488955D8 		movq	%rdx, -40(%rbp)
+  75:libnero.c     **** 	NeroStatus returnCode, nStatus;
+  76:libnero.c     **** 	handle->device = device;
+  66              		.loc 2 76 0
+  67 0030 488B45E0 		movq	-32(%rbp), %rax
+  68 0034 488B55E8 		movq	-24(%rbp), %rdx
+  69 0038 488910   		movq	%rdx, (%rax)
+  77:libnero.c     **** 	nStatus = setEndpointSize(handle, error);
+  70              		.loc 2 77 0
+  71 003b 488B55D8 		movq	-40(%rbp), %rdx
+  72 003f 488B45E0 		movq	-32(%rbp), %rax
+  73 0043 4889D6   		movq	%rdx, %rsi
+  74 0046 4889C7   		movq	%rax, %rdi
+  75 0049 E8E60500 		call	setEndpointSize
+  75      00
+  76 004e 8945FC   		movl	%eax, -4(%rbp)
+  78:libnero.c     **** 	CHECK_STATUS(nStatus, "neroInitialise()", NERO_ENDPOINTS);
+  77              		.loc 2 78 0
+  78 0051 837DFC00 		cmpl	$0, -4(%rbp)
+  79 0055 741C     		je	.L6
+  80              		.loc 2 78 0 is_stmt 0 discriminator 1
+  81 0057 488B45D8 		movq	-40(%rbp), %rax
+  82 005b 488D3500 		leaq	.LC0(%rip), %rsi
+  82      000000
+  83 0062 4889C7   		movq	%rax, %rdi
+  84 0065 E8000000 		call	errPrefix@PLT
+  84      00
+  85 006a C745F803 		movl	$3, -8(%rbp)
+  85      000000
+  86 0071 EB41     		jmp	.L7
+  87              	.L6:
+  79:libnero.c     **** 	nStatus = setJtagMode(handle, true, error);
+  88              		.loc 2 79 0 is_stmt 1
+  89 0073 488B55D8 		movq	-40(%rbp), %rdx
+  90 0077 488B45E0 		movq	-32(%rbp), %rax
+  91 007b BE010000 		movl	$1, %esi
+  91      00
+  92 0080 4889C7   		movq	%rax, %rdi
+  93 0083 E8650800 		call	setJtagMode
+  93      00
+  94 0088 8945FC   		movl	%eax, -4(%rbp)
+  80:libnero.c     **** 	CHECK_STATUS(nStatus, "neroInitialise()", NERO_ENABLE);
+  95              		.loc 2 80 0
+  96 008b 837DFC00 		cmpl	$0, -4(%rbp)
+  97 008f 741C     		je	.L8
+  98              		.loc 2 80 0 is_stmt 0 discriminator 1
+  99 0091 488B45D8 		movq	-40(%rbp), %rax
+ 100 0095 488D3500 		leaq	.LC0(%rip), %rsi
+ 100      000000
+ 101 009c 4889C7   		movq	%rax, %rdi
+ 102 009f E8000000 		call	errPrefix@PLT
+ 102      00
+ 103 00a4 C745F809 		movl	$9, -8(%rbp)
+ 103      000000
+ 104 00ab EB07     		jmp	.L7
+ 105              	.L8:
+  81:libnero.c     **** 	return NERO_SUCCESS;
+ 106              		.loc 2 81 0 is_stmt 1
+ 107 00ad B8000000 		movl	$0, %eax
+ 107      00
+ 108 00b2 EB18     		jmp	.L9
+ 109              	.L7:
+  82:libnero.c     **** cleanup:
+  83:libnero.c     **** 	handle->device = NULL;
+ 110              		.loc 2 83 0
+ 111 00b4 488B45E0 		movq	-32(%rbp), %rax
+ 112 00b8 48C70000 		movq	$0, (%rax)
+ 112      000000
+  84:libnero.c     **** 	handle->endpointSize = 0;
+ 113              		.loc 2 84 0
+ 114 00bf 488B45E0 		movq	-32(%rbp), %rax
+ 115 00c3 66C74008 		movw	$0, 8(%rax)
+ 115      0000
+  85:libnero.c     **** 	return returnCode;
+ 116              		.loc 2 85 0
+ 117 00c9 8B45F8   		movl	-8(%rbp), %eax
+ 118              	.L9:
+  86:libnero.c     **** }
+ 119              		.loc 2 86 0
+ 120 00cc C9       		leave
+ 121              		.cfi_def_cfa 7, 8
+ 122 00cd C3       		ret
+ 123              		.cfi_endproc
+ 124              	.LFE4:
+ 126              		.section	.rodata
+ 127              	.LC1:
+ 128 0011 6E65726F 		.string	"neroClose()"
+ 128      436C6F73 
+ 128      65282900 
+ 129              		.text
+ 130              		.globl	neroClose
+ 132              	neroClose:
+ 133              	.LFB5:
+  87:libnero.c     **** 
+  88:libnero.c     **** // Close the cable...drop the USB connection.
+  89:libnero.c     **** //
+  90:libnero.c     **** NeroStatus neroClose(struct NeroHandle *handle, const char **error) {
+ 134              		.loc 2 90 0
+ 135              		.cfi_startproc
+ 136 00ce 55       		pushq	%rbp
+ 137              		.cfi_def_cfa_offset 16
+ 138              		.cfi_offset 6, -16
+ 139 00cf 4889E5   		movq	%rsp, %rbp
+ 140              		.cfi_def_cfa_register 6
+ 141 00d2 4883EC20 		subq	$32, %rsp
+ 142 00d6 48897DE8 		movq	%rdi, -24(%rbp)
+ 143 00da 488975E0 		movq	%rsi, -32(%rbp)
+  91:libnero.c     **** 	NeroStatus returnCode, nStatus;
+  92:libnero.c     **** 	if ( handle->device ) {
+ 144              		.loc 2 92 0
+ 145 00de 488B45E8 		movq	-24(%rbp), %rax
+ 146 00e2 488B00   		movq	(%rax), %rax
+ 147 00e5 4885C0   		testq	%rax, %rax
+ 148 00e8 743A     		je	.L11
+  93:libnero.c     **** 		nStatus = setJtagMode(handle, false, error);
+ 149              		.loc 2 93 0
+ 150 00ea 488B55E0 		movq	-32(%rbp), %rdx
+ 151 00ee 488B45E8 		movq	-24(%rbp), %rax
+ 152 00f2 BE000000 		movl	$0, %esi
+ 152      00
+ 153 00f7 4889C7   		movq	%rax, %rdi
+ 154 00fa E8EE0700 		call	setJtagMode
+ 154      00
+ 155 00ff 8945FC   		movl	%eax, -4(%rbp)
+  94:libnero.c     **** 		CHECK_STATUS(nStatus, "neroClose()", NERO_ENABLE);
+ 156              		.loc 2 94 0
+ 157 0102 837DFC00 		cmpl	$0, -4(%rbp)
+ 158 0106 741C     		je	.L11
+ 159              		.loc 2 94 0 is_stmt 0 discriminator 1
+ 160 0108 488B45E0 		movq	-32(%rbp), %rax
+ 161 010c 488D3500 		leaq	.LC1(%rip), %rsi
+ 161      000000
+ 162 0113 4889C7   		movq	%rax, %rdi
+ 163 0116 E8000000 		call	errPrefix@PLT
+ 163      00
+ 164 011b C745F809 		movl	$9, -8(%rbp)
+ 164      000000
+ 165 0122 EB07     		jmp	.L12
+ 166              	.L11:
+  95:libnero.c     **** 	}
+  96:libnero.c     **** 	returnCode = NERO_SUCCESS;
+ 167              		.loc 2 96 0 is_stmt 1
+ 168 0124 C745F800 		movl	$0, -8(%rbp)
+ 168      000000
+ 169              	.L12:
+  97:libnero.c     **** cleanup:
+  98:libnero.c     **** 	handle->device = NULL;
+ 170              		.loc 2 98 0
+ 171 012b 488B45E8 		movq	-24(%rbp), %rax
+ 172 012f 48C70000 		movq	$0, (%rax)
+ 172      000000
+  99:libnero.c     **** 	handle->endpointSize = 0;
+ 173              		.loc 2 99 0
+ 174 0136 488B45E8 		movq	-24(%rbp), %rax
+ 175 013a 66C74008 		movw	$0, 8(%rax)
+ 175      0000
+ 100:libnero.c     **** 	return returnCode;
+ 176              		.loc 2 100 0
+ 177 0140 8B45F8   		movl	-8(%rbp), %eax
+ 101:libnero.c     **** }
+ 178              		.loc 2 101 0
+ 179 0143 C9       		leave
+ 180              		.cfi_def_cfa 7, 8
+ 181 0144 C3       		ret
+ 182              		.cfi_endproc
+ 183              	.LFE5:
+ 185              		.section	.rodata
+ 186              	.LC2:
+ 187 001d 6E65726F 		.string	"neroShift()"
+ 187      53686966 
+ 187      74282900 
+ 188              		.text
+ 189              		.globl	neroShift
+ 191              	neroShift:
+ 192              	.LFB6:
+ 102:libnero.c     **** 
+ 103:libnero.c     **** // Shift data into and out of JTAG chain.
+ 104:libnero.c     **** //   In pointer may be ZEROS (shift in zeros) or ONES (shift in ones).
+ 105:libnero.c     **** //   Out pointer may be NULL (not interested in data shifted out of the chain).
+ 106:libnero.c     **** //
+ 107:libnero.c     **** NeroStatus neroShift(
+ 108:libnero.c     **** 	struct NeroHandle *handle, uint32 numBits, const uint8 *inData, uint8 *outData, bool isLast,
+ 109:libnero.c     **** 	const char **error)
+ 110:libnero.c     **** {
+ 193              		.loc 2 110 0
+ 194              		.cfi_startproc
+ 195 0145 55       		pushq	%rbp
+ 196              		.cfi_def_cfa_offset 16
+ 197              		.cfi_offset 6, -16
+ 198 0146 4889E5   		movq	%rsp, %rbp
+ 199              		.cfi_def_cfa_register 6
+ 200 0149 4883EC50 		subq	$80, %rsp
+ 201 014d 48897DD8 		movq	%rdi, -40(%rbp)
+ 202 0151 8975D4   		movl	%esi, -44(%rbp)
+ 203 0154 488955C8 		movq	%rdx, -56(%rbp)
+ 204 0158 48894DC0 		movq	%rcx, -64(%rbp)
+ 205 015c 4489C0   		movl	%r8d, %eax
+ 206 015f 4C894DB8 		movq	%r9, -72(%rbp)
+ 207 0163 8845D0   		movb	%al, -48(%rbp)
+ 111:libnero.c     **** 	NeroStatus returnCode, nStatus;
+ 112:libnero.c     **** 	uint32 numBytes;
+ 113:libnero.c     **** 	uint16 chunkSize;
+ 114:libnero.c     **** 	SendType sendType;
+ 115:libnero.c     **** 	bool isResponseNeeded;
+ 116:libnero.c     **** 
+ 117:libnero.c     **** 	if ( inData == ZEROS ) {
+ 208              		.loc 2 117 0
+ 209 0166 48837DC8 		cmpq	$0, -56(%rbp)
+ 209      00
+ 210 016b 7509     		jne	.L15
+ 118:libnero.c     **** 		sendType = SEND_ZEROS;
+ 211              		.loc 2 118 0
+ 212 016d C745F800 		movl	$0, -8(%rbp)
+ 212      000000
+ 213 0174 EB17     		jmp	.L16
+ 214              	.L15:
+ 119:libnero.c     **** 	} else if ( inData == ONES ) {
+ 215              		.loc 2 119 0
+ 216 0176 48837DC8 		cmpq	$-1, -56(%rbp)
+ 216      FF
+ 217 017b 7509     		jne	.L17
+ 120:libnero.c     **** 		sendType = SEND_ONES;
+ 218              		.loc 2 120 0
+ 219 017d C745F801 		movl	$1, -8(%rbp)
+ 219      000000
+ 220 0184 EB07     		jmp	.L16
+ 221              	.L17:
+ 121:libnero.c     **** 	} else {
+ 122:libnero.c     **** 		sendType = SEND_DATA;
+ 222              		.loc 2 122 0
+ 223 0186 C745F802 		movl	$2, -8(%rbp)
+ 223      000000
+ 224              	.L16:
+ 123:libnero.c     **** 	}
+ 124:libnero.c     **** 	if ( outData ) {
+ 225              		.loc 2 124 0
+ 226 018d 48837DC0 		cmpq	$0, -64(%rbp)
+ 226      00
+ 227 0192 7406     		je	.L18
+ 125:libnero.c     **** 		isResponseNeeded = true;
+ 228              		.loc 2 125 0
+ 229 0194 C645ED01 		movb	$1, -19(%rbp)
+ 230 0198 EB04     		jmp	.L19
+ 231              	.L18:
+ 126:libnero.c     **** 	} else {
+ 127:libnero.c     **** 		isResponseNeeded = false;
+ 232              		.loc 2 127 0
+ 233 019a C645ED00 		movb	$0, -19(%rbp)
+ 234              	.L19:
+ 128:libnero.c     **** 	}
+ 129:libnero.c     **** 	nStatus = beginShift(handle, numBits, sendType, isLast, isResponseNeeded, error);
+ 235              		.loc 2 129 0
+ 236 019e 0FB67DED 		movzbl	-19(%rbp), %edi
+ 237 01a2 0FB64DD0 		movzbl	-48(%rbp), %ecx
+ 238 01a6 4C8B45B8 		movq	-72(%rbp), %r8
+ 239 01aa 8B55F8   		movl	-8(%rbp), %edx
+ 240 01ad 8B75D4   		movl	-44(%rbp), %esi
+ 241 01b0 488B45D8 		movq	-40(%rbp), %rax
+ 242 01b4 4D89C1   		movq	%r8, %r9
+ 243 01b7 4189F8   		movl	%edi, %r8d
+ 244 01ba 4889C7   		movq	%rax, %rdi
+ 245 01bd E87D0200 		call	beginShift
+ 245      00
+ 246 01c2 8945FC   		movl	%eax, -4(%rbp)
+ 130:libnero.c     **** 	CHECK_STATUS(nStatus, "neroShift()", NERO_BEGIN_SHIFT);
+ 247              		.loc 2 130 0
+ 248 01c5 837DFC00 		cmpl	$0, -4(%rbp)
+ 249 01c9 741F     		je	.L20
+ 250              		.loc 2 130 0 is_stmt 0 discriminator 1
+ 251 01cb 488B45B8 		movq	-72(%rbp), %rax
+ 252 01cf 488D3500 		leaq	.LC2(%rip), %rsi
+ 252      000000
+ 253 01d6 4889C7   		movq	%rax, %rdi
+ 254 01d9 E8000000 		call	errPrefix@PLT
+ 254      00
+ 255 01de C745F006 		movl	$6, -16(%rbp)
+ 255      000000
+ 256 01e5 E9F70000 		jmp	.L21
+ 256      00
+ 257              	.L20:
+ 131:libnero.c     **** 	numBytes = bitsToBytes(numBits);
+ 258              		.loc 2 131 0 is_stmt 1
+ 259 01ea 8B45D4   		movl	-44(%rbp), %eax
+ 260 01ed C1E803   		shrl	$3, %eax
+ 261 01f0 89C2     		movl	%eax, %edx
+ 262 01f2 8B45D4   		movl	-44(%rbp), %eax
+ 263 01f5 83E007   		andl	$7, %eax
+ 264 01f8 85C0     		testl	%eax, %eax
+ 265 01fa 7407     		je	.L22
+ 266              		.loc 2 131 0 is_stmt 0 discriminator 1
+ 267 01fc B8010000 		movl	$1, %eax
+ 267      00
+ 268 0201 EB05     		jmp	.L23
+ 269              	.L22:
+ 270              		.loc 2 131 0 discriminator 2
+ 271 0203 B8000000 		movl	$0, %eax
+ 271      00
+ 272              	.L23:
+ 273              		.loc 2 131 0 discriminator 4
+ 274 0208 01D0     		addl	%edx, %eax
+ 275 020a 8945F4   		movl	%eax, -12(%rbp)
+ 132:libnero.c     **** 	while ( numBytes ) {
+ 276              		.loc 2 132 0 is_stmt 1 discriminator 4
+ 277 020d E9BE0000 		jmp	.L24
+ 277      00
+ 278              	.L31:
+ 133:libnero.c     **** 		chunkSize = (numBytes>=handle->endpointSize) ? handle->endpointSize : (uint16)numBytes;
+ 279              		.loc 2 133 0
+ 280 0212 488B45D8 		movq	-40(%rbp), %rax
+ 281 0216 0FB74008 		movzwl	8(%rax), %eax
+ 282 021a 0FB7C0   		movzwl	%ax, %eax
+ 283 021d 3B45F4   		cmpl	-12(%rbp), %eax
+ 284 0220 770A     		ja	.L25
+ 285              		.loc 2 133 0 is_stmt 0 discriminator 1
+ 286 0222 488B45D8 		movq	-40(%rbp), %rax
+ 287 0226 0FB74008 		movzwl	8(%rax), %eax
+ 288 022a EB03     		jmp	.L26
+ 289              	.L25:
+ 290              		.loc 2 133 0 discriminator 2
+ 291 022c 8B45F4   		movl	-12(%rbp), %eax
+ 292              	.L26:
+ 293              		.loc 2 133 0 discriminator 4
+ 294 022f 668945EE 		movw	%ax, -18(%rbp)
+ 134:libnero.c     **** 		if ( sendType == SEND_DATA ) {
+ 295              		.loc 2 134 0 is_stmt 1 discriminator 4
+ 296 0233 837DF802 		cmpl	$2, -8(%rbp)
+ 297 0237 7545     		jne	.L27
+ 135:libnero.c     **** 			nStatus = doSend(handle, inData, chunkSize, error);
+ 298              		.loc 2 135 0
+ 299 0239 0FB755EE 		movzwl	-18(%rbp), %edx
+ 300 023d 488B4DB8 		movq	-72(%rbp), %rcx
+ 301 0241 488B75C8 		movq	-56(%rbp), %rsi
+ 302 0245 488B45D8 		movq	-40(%rbp), %rax
+ 303 0249 4889C7   		movq	%rax, %rdi
+ 304 024c E8E10200 		call	doSend
+ 304      00
+ 305 0251 8945FC   		movl	%eax, -4(%rbp)
+ 136:libnero.c     **** 			CHECK_STATUS(nStatus, "neroShift()", NERO_SEND);
+ 306              		.loc 2 136 0
+ 307 0254 837DFC00 		cmpl	$0, -4(%rbp)
+ 308 0258 741C     		je	.L28
+ 309              		.loc 2 136 0 is_stmt 0 discriminator 1
+ 310 025a 488B45B8 		movq	-72(%rbp), %rax
+ 311 025e 488D3500 		leaq	.LC2(%rip), %rsi
+ 311      000000
+ 312 0265 4889C7   		movq	%rax, %rdi
+ 313 0268 E8000000 		call	errPrefix@PLT
+ 313      00
+ 314 026d C745F007 		movl	$7, -16(%rbp)
+ 314      000000
+ 315 0274 EB6B     		jmp	.L21
+ 316              	.L28:
+ 137:libnero.c     **** 			inData += chunkSize;
+ 317              		.loc 2 137 0 is_stmt 1
+ 318 0276 0FB745EE 		movzwl	-18(%rbp), %eax
+ 319 027a 480145C8 		addq	%rax, -56(%rbp)
+ 320              	.L27:
+ 138:libnero.c     **** 		}
+ 139:libnero.c     **** 		if ( isResponseNeeded ) {
+ 321              		.loc 2 139 0
+ 322 027e 807DED00 		cmpb	$0, -19(%rbp)
+ 323 0282 7445     		je	.L29
+ 140:libnero.c     **** 			nStatus = doReceive(handle, outData, chunkSize, error);
+ 324              		.loc 2 140 0
+ 325 0284 0FB755EE 		movzwl	-18(%rbp), %edx
+ 326 0288 488B4DB8 		movq	-72(%rbp), %rcx
+ 327 028c 488B75C0 		movq	-64(%rbp), %rsi
+ 328 0290 488B45D8 		movq	-40(%rbp), %rax
+ 329 0294 4889C7   		movq	%rax, %rdi
+ 330 0297 E8170300 		call	doReceive
+ 330      00
+ 331 029c 8945FC   		movl	%eax, -4(%rbp)
+ 141:libnero.c     **** 			CHECK_STATUS(nStatus, "neroShift()", NERO_RECEIVE);
+ 332              		.loc 2 141 0
+ 333 029f 837DFC00 		cmpl	$0, -4(%rbp)
+ 334 02a3 741C     		je	.L30
+ 335              		.loc 2 141 0 is_stmt 0 discriminator 1
+ 336 02a5 488B45B8 		movq	-72(%rbp), %rax
+ 337 02a9 488D3500 		leaq	.LC2(%rip), %rsi
+ 337      000000
+ 338 02b0 4889C7   		movq	%rax, %rdi
+ 339 02b3 E8000000 		call	errPrefix@PLT
+ 339      00
+ 340 02b8 C745F008 		movl	$8, -16(%rbp)
+ 340      000000
+ 341 02bf EB20     		jmp	.L21
+ 342              	.L30:
+ 142:libnero.c     **** 			outData += chunkSize;
+ 343              		.loc 2 142 0 is_stmt 1
+ 344 02c1 0FB745EE 		movzwl	-18(%rbp), %eax
+ 345 02c5 480145C0 		addq	%rax, -64(%rbp)
+ 346              	.L29:
+ 143:libnero.c     **** 		}
+ 144:libnero.c     **** 		numBytes -= chunkSize;
+ 347              		.loc 2 144 0
+ 348 02c9 0FB745EE 		movzwl	-18(%rbp), %eax
+ 349 02cd 2945F4   		subl	%eax, -12(%rbp)
+ 350              	.L24:
+ 132:libnero.c     **** 		chunkSize = (numBytes>=handle->endpointSize) ? handle->endpointSize : (uint16)numBytes;
+ 351              		.loc 2 132 0
+ 352 02d0 837DF400 		cmpl	$0, -12(%rbp)
+ 353 02d4 0F8538FF 		jne	.L31
+ 353      FFFF
+ 145:libnero.c     **** 	}
+ 146:libnero.c     **** 	return NERO_SUCCESS;
+ 354              		.loc 2 146 0
+ 355 02da B8000000 		movl	$0, %eax
+ 355      00
+ 356 02df EB03     		jmp	.L32
+ 357              	.L21:
+ 147:libnero.c     **** cleanup:
+ 148:libnero.c     **** 	return returnCode;
+ 358              		.loc 2 148 0
+ 359 02e1 8B45F0   		movl	-16(%rbp), %eax
+ 360              	.L32:
+ 149:libnero.c     **** }
+ 361              		.loc 2 149 0
+ 362 02e4 C9       		leave
+ 363              		.cfi_def_cfa 7, 8
+ 364 02e5 C3       		ret
+ 365              		.cfi_endproc
+ 366              	.LFE6:
+ 368              		.section	.rodata
+ 369              	.LC3:
+ 370 0029 6E65726F 		.string	"neroClockFSM(): %s (%d)"
+ 370      436C6F63 
+ 370      6B46534D 
+ 370      28293A20 
+ 370      25732028 
+ 371              		.text
+ 372              		.globl	neroClockFSM
+ 374              	neroClockFSM:
+ 375              	.LFB7:
+ 150:libnero.c     **** 
+ 151:libnero.c     **** // Apply the supplied bit pattern to TMS, to move the TAP to a specific state.
+ 152:libnero.c     **** //
+ 153:libnero.c     **** NeroStatus neroClockFSM(
+ 154:libnero.c     **** 	struct NeroHandle *handle, uint32 bitPattern, uint8 transitionCount, const char **error)
+ 155:libnero.c     **** {
+ 376              		.loc 2 155 0
+ 377              		.cfi_startproc
+ 378 02e6 55       		pushq	%rbp
+ 379              		.cfi_def_cfa_offset 16
+ 380              		.cfi_offset 6, -16
+ 381 02e7 4889E5   		movq	%rsp, %rbp
+ 382              		.cfi_def_cfa_register 6
+ 383 02ea 4883EC40 		subq	$64, %rsp
+ 384 02ee 48897DD8 		movq	%rdi, -40(%rbp)
+ 385 02f2 8975D4   		movl	%esi, -44(%rbp)
+ 386 02f5 89D0     		movl	%edx, %eax
+ 387 02f7 48894DC8 		movq	%rcx, -56(%rbp)
+ 388 02fb 8845D0   		movb	%al, -48(%rbp)
+ 389              		.loc 2 155 0
+ 390 02fe 64488B04 		movq	%fs:40, %rax
+ 390      25280000 
+ 390      00
+ 391 0307 488945F8 		movq	%rax, -8(%rbp)
+ 392 030b 31C0     		xorl	%eax, %eax
+ 156:libnero.c     **** 	NeroStatus returnCode;
+ 157:libnero.c     **** 	const uint32 lePattern = littleEndian32(bitPattern);
+ 393              		.loc 2 157 0
+ 394 030d 8B45D4   		movl	-44(%rbp), %eax
+ 395 0310 89C7     		movl	%eax, %edi
+ 396 0312 E8F9FCFF 		call	littleEndian32
+ 396      FF
+ 397 0317 8945EC   		movl	%eax, -20(%rbp)
+ 158:libnero.c     **** 	int uStatus = usb_control_msg(
+ 398              		.loc 2 158 0
+ 399 031a 0FB655D0 		movzbl	-48(%rbp), %edx
+ 159:libnero.c     **** 		handle->device,
+ 400              		.loc 2 159 0
+ 401 031e 488B45D8 		movq	-40(%rbp), %rax
+ 402 0322 488B00   		movq	(%rax), %rax
+ 158:libnero.c     **** 	int uStatus = usb_control_msg(
+ 403              		.loc 2 158 0
+ 404 0325 488D4DEC 		leaq	-20(%rbp), %rcx
+ 405 0329 68881300 		pushq	$5000
+ 405      00
+ 406 032e 6A04     		pushq	$4
+ 407 0330 4989C9   		movq	%rcx, %r9
+ 408 0333 41B80000 		movl	$0, %r8d
+ 408      0000
+ 409 0339 89D1     		movl	%edx, %ecx
+ 410 033b BA820000 		movl	$130, %edx
+ 410      00
+ 411 0340 BE400000 		movl	$64, %esi
+ 411      00
+ 412 0345 4889C7   		movq	%rax, %rdi
+ 413 0348 E8000000 		call	usb_control_msg@PLT
+ 413      00
+ 414 034d 4883C410 		addq	$16, %rsp
+ 415 0351 8945F0   		movl	%eax, -16(%rbp)
+ 160:libnero.c     **** 		USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 161:libnero.c     **** 		CMD_JTAG_CLOCK_FSM,       // bRequest
+ 162:libnero.c     **** 		(uint16)transitionCount,  // wValue
+ 163:libnero.c     **** 		0x0000,                   // wIndex
+ 164:libnero.c     **** 		(char*)&lePattern,
+ 165:libnero.c     **** 		4,                        // wLength
+ 166:libnero.c     **** 		5000                      // timeout (ms)
+ 167:libnero.c     **** 	);
+ 168:libnero.c     **** 	if ( uStatus < 0 ) {
+ 416              		.loc 2 168 0
+ 417 0354 837DF000 		cmpl	$0, -16(%rbp)
+ 418 0358 7935     		jns	.L34
+ 169:libnero.c     **** 		errRender(error, "neroClockFSM(): %s (%d)", usb_strerror(), uStatus);
+ 419              		.loc 2 169 0
+ 420 035a E8000000 		call	usb_strerror@PLT
+ 420      00
+ 421 035f 4889C6   		movq	%rax, %rsi
+ 422 0362 8B55F0   		movl	-16(%rbp), %edx
+ 423 0365 488B45C8 		movq	-56(%rbp), %rax
+ 424 0369 89D1     		movl	%edx, %ecx
+ 425 036b 4889F2   		movq	%rsi, %rdx
+ 426 036e 488D3500 		leaq	.LC3(%rip), %rsi
+ 426      000000
+ 427 0375 4889C7   		movq	%rax, %rdi
+ 428 0378 B8000000 		movl	$0, %eax
+ 428      00
+ 429 037d E8000000 		call	errRender@PLT
+ 429      00
+ 170:libnero.c     **** 		FAIL(NERO_CLOCKFSM);
+ 430              		.loc 2 170 0
+ 431 0382 C745F404 		movl	$4, -12(%rbp)
+ 431      000000
+ 432 0389 90       		nop
+ 433              	.L35:
+ 171:libnero.c     **** 	}
+ 172:libnero.c     **** 	return NERO_SUCCESS;
+ 173:libnero.c     **** cleanup:
+ 174:libnero.c     **** 	return returnCode;
+ 434              		.loc 2 174 0
+ 435 038a 8B45F4   		movl	-12(%rbp), %eax
+ 436 038d EB05     		jmp	.L37
+ 437              	.L34:
+ 172:libnero.c     **** cleanup:
+ 438              		.loc 2 172 0
+ 439 038f B8000000 		movl	$0, %eax
+ 439      00
+ 440              	.L37:
+ 175:libnero.c     **** }
+ 441              		.loc 2 175 0 discriminator 1
+ 442 0394 488B7DF8 		movq	-8(%rbp), %rdi
+ 443 0398 6448333C 		xorq	%fs:40, %rdi
+ 443      25280000 
+ 443      00
+ 444 03a1 7405     		je	.L38
+ 445              		.loc 2 175 0 is_stmt 0
+ 446 03a3 E8000000 		call	__stack_chk_fail@PLT
+ 446      00
+ 447              	.L38:
+ 448 03a8 C9       		leave
+ 449              		.cfi_def_cfa 7, 8
+ 450 03a9 C3       		ret
+ 451              		.cfi_endproc
+ 452              	.LFE7:
+ 454              		.section	.rodata
+ 455              	.LC4:
+ 456 0041 6E65726F 		.string	"neroClocks(): %s (%d)"
+ 456      436C6F63 
+ 456      6B732829 
+ 456      3A202573 
+ 456      20282564 
+ 457              		.text
+ 458              		.globl	neroClocks
+ 460              	neroClocks:
+ 461              	.LFB8:
+ 176:libnero.c     **** 
+ 177:libnero.c     **** // Cycle the TCK line for the given number of times.
+ 178:libnero.c     **** //
+ 179:libnero.c     **** NeroStatus neroClocks(struct NeroHandle *handle, uint32 numClocks, const char **error) {
+ 462              		.loc 2 179 0 is_stmt 1
+ 463              		.cfi_startproc
+ 464 03aa 55       		pushq	%rbp
+ 465              		.cfi_def_cfa_offset 16
+ 466              		.cfi_offset 6, -16
+ 467 03ab 4889E5   		movq	%rsp, %rbp
+ 468              		.cfi_def_cfa_register 6
+ 469 03ae 4883EC30 		subq	$48, %rsp
+ 470 03b2 48897DE8 		movq	%rdi, -24(%rbp)
+ 471 03b6 8975E4   		movl	%esi, -28(%rbp)
+ 472 03b9 488955D8 		movq	%rdx, -40(%rbp)
+ 180:libnero.c     **** 	NeroStatus returnCode;
+ 181:libnero.c     **** 	int uStatus = usb_control_msg(
+ 182:libnero.c     **** 		handle->device,
+ 183:libnero.c     **** 		USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 184:libnero.c     **** 		CMD_JTAG_CLOCK,    // bRequest
+ 185:libnero.c     **** 		numClocks&0xFFFF,  // wValue
+ 186:libnero.c     **** 		numClocks>>16,     // wIndex
+ 473              		.loc 2 186 0
+ 474 03bd 8B45E4   		movl	-28(%rbp), %eax
+ 475 03c0 C1E810   		shrl	$16, %eax
+ 181:libnero.c     **** 		handle->device,
+ 476              		.loc 2 181 0
+ 477 03c3 89C1     		movl	%eax, %ecx
+ 478 03c5 8B45E4   		movl	-28(%rbp), %eax
+ 479 03c8 0FB7D0   		movzwl	%ax, %edx
+ 182:libnero.c     **** 		USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 480              		.loc 2 182 0
+ 481 03cb 488B45E8 		movq	-24(%rbp), %rax
+ 482 03cf 488B00   		movq	(%rax), %rax
+ 181:libnero.c     **** 		handle->device,
+ 483              		.loc 2 181 0
+ 484 03d2 68881300 		pushq	$5000
+ 484      00
+ 485 03d7 6A00     		pushq	$0
+ 486 03d9 41B90000 		movl	$0, %r9d
+ 486      0000
+ 487 03df 4189C8   		movl	%ecx, %r8d
+ 488 03e2 89D1     		movl	%edx, %ecx
+ 489 03e4 BA830000 		movl	$131, %edx
+ 489      00
+ 490 03e9 BE400000 		movl	$64, %esi
+ 490      00
+ 491 03ee 4889C7   		movq	%rax, %rdi
+ 492 03f1 E8000000 		call	usb_control_msg@PLT
+ 492      00
+ 493 03f6 4883C410 		addq	$16, %rsp
+ 494 03fa 8945F8   		movl	%eax, -8(%rbp)
+ 187:libnero.c     **** 		NULL,
+ 188:libnero.c     **** 		0,                 // wLength
+ 189:libnero.c     **** 		5000               // timeout (ms)
+ 190:libnero.c     **** 	);
+ 191:libnero.c     **** 	if ( uStatus < 0 ) {
+ 495              		.loc 2 191 0
+ 496 03fd 837DF800 		cmpl	$0, -8(%rbp)
+ 497 0401 7935     		jns	.L40
+ 192:libnero.c     **** 		errRender(error, "neroClocks(): %s (%d)", usb_strerror(), uStatus);
+ 498              		.loc 2 192 0
+ 499 0403 E8000000 		call	usb_strerror@PLT
+ 499      00
+ 500 0408 4889C6   		movq	%rax, %rsi
+ 501 040b 8B55F8   		movl	-8(%rbp), %edx
+ 502 040e 488B45D8 		movq	-40(%rbp), %rax
+ 503 0412 89D1     		movl	%edx, %ecx
+ 504 0414 4889F2   		movq	%rsi, %rdx
+ 505 0417 488D3500 		leaq	.LC4(%rip), %rsi
+ 505      000000
+ 506 041e 4889C7   		movq	%rax, %rdi
+ 507 0421 B8000000 		movl	$0, %eax
+ 507      00
+ 508 0426 E8000000 		call	errRender@PLT
+ 508      00
+ 193:libnero.c     **** 		FAIL(NERO_CLOCKS);
+ 509              		.loc 2 193 0
+ 510 042b C745FC05 		movl	$5, -4(%rbp)
+ 510      000000
+ 511 0432 90       		nop
+ 512              	.L41:
+ 194:libnero.c     **** 	}
+ 195:libnero.c     **** 	return NERO_SUCCESS;
+ 196:libnero.c     **** cleanup:
+ 197:libnero.c     **** 	return returnCode;
+ 513              		.loc 2 197 0
+ 514 0433 8B45FC   		movl	-4(%rbp), %eax
+ 515 0436 EB05     		jmp	.L42
+ 516              	.L40:
+ 195:libnero.c     **** cleanup:
+ 517              		.loc 2 195 0
+ 518 0438 B8000000 		movl	$0, %eax
+ 518      00
+ 519              	.L42:
+ 198:libnero.c     **** }
+ 520              		.loc 2 198 0
+ 521 043d C9       		leave
+ 522              		.cfi_def_cfa 7, 8
+ 523 043e C3       		ret
+ 524              		.cfi_endproc
+ 525              	.LFE8:
+ 527              		.section	.rodata
+ 528              	.LC5:
+ 529 0057 62656769 		.string	"beginShift(): %s (%d)"
+ 529      6E536869 
+ 529      66742829 
+ 529      3A202573 
+ 529      20282564 
+ 530              		.text
+ 532              	beginShift:
+ 533              	.LFB9:
+ 199:libnero.c     **** 
+ 200:libnero.c     **** // ------------------------------------------------------------------------------------------------
+ 201:libnero.c     **** // Implementation of private functions
+ 202:libnero.c     **** // ------------------------------------------------------------------------------------------------
+ 203:libnero.c     **** 
+ 204:libnero.c     **** // Kick off a shift operation on the micro. This will be followed by a bunch of sends and receives.
+ 205:libnero.c     **** //
+ 206:libnero.c     **** static NeroStatus beginShift(
+ 207:libnero.c     **** 	struct NeroHandle *handle, uint32 numBits, SendType sendType, bool isLast,
+ 208:libnero.c     **** 	bool isResponseNeeded, const char **error)
+ 209:libnero.c     **** {
+ 534              		.loc 2 209 0
+ 535              		.cfi_startproc
+ 536 043f 55       		pushq	%rbp
+ 537              		.cfi_def_cfa_offset 16
+ 538              		.cfi_offset 6, -16
+ 539 0440 4889E5   		movq	%rsp, %rbp
+ 540              		.cfi_def_cfa_register 6
+ 541 0443 4883EC40 		subq	$64, %rsp
+ 542 0447 48897DD8 		movq	%rdi, -40(%rbp)
+ 543 044b 8975D4   		movl	%esi, -44(%rbp)
+ 544 044e 8955D0   		movl	%edx, -48(%rbp)
+ 545 0451 89C8     		movl	%ecx, %eax
+ 546 0453 4489C2   		movl	%r8d, %edx
+ 547 0456 4C894DC0 		movq	%r9, -64(%rbp)
+ 548 045a 8845CC   		movb	%al, -52(%rbp)
+ 549 045d 8855C8   		movb	%dl, -56(%rbp)
+ 550              		.loc 2 209 0
+ 551 0460 64488B04 		movq	%fs:40, %rax
+ 551      25280000 
+ 551      00
+ 552 0469 488945F8 		movq	%rax, -8(%rbp)
+ 553 046d 31C0     		xorl	%eax, %eax
+ 210:libnero.c     **** 	NeroStatus returnCode;
+ 211:libnero.c     **** 	const uint32 leNumBits = littleEndian32(numBits);
+ 554              		.loc 2 211 0
+ 555 046f 8B45D4   		movl	-44(%rbp), %eax
+ 556 0472 89C7     		movl	%eax, %edi
+ 557 0474 E897FBFF 		call	littleEndian32
+ 557      FF
+ 558 0479 8945EC   		movl	%eax, -20(%rbp)
+ 212:libnero.c     **** 	uint16 wValue = 0x0000;
+ 559              		.loc 2 212 0
+ 560 047c 66C745EA 		movw	$0, -22(%rbp)
+ 560      0000
+ 213:libnero.c     **** 	int uStatus;
+ 214:libnero.c     **** 	if ( isLast ) {
+ 561              		.loc 2 214 0
+ 562 0482 807DCC00 		cmpb	$0, -52(%rbp)
+ 563 0486 7405     		je	.L44
+ 215:libnero.c     **** 		wValue |= (1<<IS_LAST);
+ 564              		.loc 2 215 0
+ 565 0488 66834DEA 		orw	$2, -22(%rbp)
+ 565      02
+ 566              	.L44:
+ 216:libnero.c     **** 	}
+ 217:libnero.c     **** 	if ( isResponseNeeded ) {
+ 567              		.loc 2 217 0
+ 568 048d 807DC800 		cmpb	$0, -56(%rbp)
+ 569 0491 7405     		je	.L45
+ 218:libnero.c     **** 		wValue |= (1<<IS_RESPONSE_NEEDED);
+ 570              		.loc 2 218 0
+ 571 0493 66834DEA 		orw	$1, -22(%rbp)
+ 571      01
+ 572              	.L45:
+ 219:libnero.c     **** 	}
+ 220:libnero.c     **** 	wValue |= sendType << SEND_TYPE;
+ 573              		.loc 2 220 0
+ 574 0498 8B45D0   		movl	-48(%rbp), %eax
+ 575 049b C1E002   		sall	$2, %eax
+ 576 049e 660945EA 		orw	%ax, -22(%rbp)
+ 221:libnero.c     **** 	uStatus = usb_control_msg(
+ 577              		.loc 2 221 0
+ 578 04a2 0FB755EA 		movzwl	-22(%rbp), %edx
+ 222:libnero.c     **** 		handle->device,
+ 579              		.loc 2 222 0
+ 580 04a6 488B45D8 		movq	-40(%rbp), %rax
+ 581 04aa 488B00   		movq	(%rax), %rax
+ 221:libnero.c     **** 	uStatus = usb_control_msg(
+ 582              		.loc 2 221 0
+ 583 04ad 488D4DEC 		leaq	-20(%rbp), %rcx
+ 584 04b1 68881300 		pushq	$5000
+ 584      00
+ 585 04b6 6A04     		pushq	$4
+ 586 04b8 4989C9   		movq	%rcx, %r9
+ 587 04bb 41B80000 		movl	$0, %r8d
+ 587      0000
+ 588 04c1 89D1     		movl	%edx, %ecx
+ 589 04c3 BA810000 		movl	$129, %edx
+ 589      00
+ 590 04c8 BE400000 		movl	$64, %esi
+ 590      00
+ 591 04cd 4889C7   		movq	%rax, %rdi
+ 592 04d0 E8000000 		call	usb_control_msg@PLT
+ 592      00
+ 593 04d5 4883C410 		addq	$16, %rsp
+ 594 04d9 8945F0   		movl	%eax, -16(%rbp)
+ 223:libnero.c     **** 		USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 224:libnero.c     **** 		CMD_JTAG_CLOCK_DATA,  // bRequest
+ 225:libnero.c     **** 		wValue,               // wValue
+ 226:libnero.c     **** 		0x0000,               // wIndex
+ 227:libnero.c     **** 		(char*)&leNumBits,      // send bit count
+ 228:libnero.c     **** 		4,                    // wLength
+ 229:libnero.c     **** 		5000                  // timeout (ms)
+ 230:libnero.c     **** 	);
+ 231:libnero.c     **** 	if ( uStatus < 0 ) {
+ 595              		.loc 2 231 0
+ 596 04dc 837DF000 		cmpl	$0, -16(%rbp)
+ 597 04e0 7935     		jns	.L46
+ 232:libnero.c     **** 		errRender(error, "beginShift(): %s (%d)", usb_strerror(), uStatus);
+ 598              		.loc 2 232 0
+ 599 04e2 E8000000 		call	usb_strerror@PLT
+ 599      00
+ 600 04e7 4889C6   		movq	%rax, %rsi
+ 601 04ea 8B55F0   		movl	-16(%rbp), %edx
+ 602 04ed 488B45C0 		movq	-64(%rbp), %rax
+ 603 04f1 89D1     		movl	%edx, %ecx
+ 604 04f3 4889F2   		movq	%rsi, %rdx
+ 605 04f6 488D3500 		leaq	.LC5(%rip), %rsi
+ 605      000000
+ 606 04fd 4889C7   		movq	%rax, %rdi
+ 607 0500 B8000000 		movl	$0, %eax
+ 607      00
+ 608 0505 E8000000 		call	errRender@PLT
+ 608      00
+ 233:libnero.c     **** 		FAIL(NERO_BEGIN_SHIFT);
+ 609              		.loc 2 233 0
+ 610 050a C745F406 		movl	$6, -12(%rbp)
+ 610      000000
+ 611 0511 90       		nop
+ 612              	.L47:
+ 234:libnero.c     **** 	}
+ 235:libnero.c     **** 	return NERO_SUCCESS;
+ 236:libnero.c     **** cleanup:
+ 237:libnero.c     **** 	return returnCode;
+ 613              		.loc 2 237 0
+ 614 0512 8B45F4   		movl	-12(%rbp), %eax
+ 615 0515 EB05     		jmp	.L49
+ 616              	.L46:
+ 235:libnero.c     **** cleanup:
+ 617              		.loc 2 235 0
+ 618 0517 B8000000 		movl	$0, %eax
+ 618      00
+ 619              	.L49:
+ 238:libnero.c     **** }
+ 620              		.loc 2 238 0 discriminator 1
+ 621 051c 488B7DF8 		movq	-8(%rbp), %rdi
+ 622 0520 6448333C 		xorq	%fs:40, %rdi
+ 622      25280000 
+ 622      00
+ 623 0529 7405     		je	.L50
+ 624              		.loc 2 238 0 is_stmt 0
+ 625 052b E8000000 		call	__stack_chk_fail@PLT
+ 625      00
+ 626              	.L50:
+ 627 0530 C9       		leave
+ 628              		.cfi_def_cfa 7, 8
+ 629 0531 C3       		ret
+ 630              		.cfi_endproc
+ 631              	.LFE9:
+ 633              		.section	.rodata
+ 634              	.LC6:
+ 635 006d 646F5365 		.string	"doSend(): %s (%d)"
+ 635      6E642829 
+ 635      3A202573 
+ 635      20282564 
+ 635      2900
+ 636              		.text
+ 638              	doSend:
+ 639              	.LFB10:
+ 239:libnero.c     **** 
+ 240:libnero.c     **** // Send a chunk of data to the micro.
+ 241:libnero.c     **** //
+ 242:libnero.c     **** static NeroStatus doSend(
+ 243:libnero.c     **** 	struct NeroHandle *handle, const uint8 *sendPtr, uint16 chunkSize, const char **error)
+ 244:libnero.c     **** {
+ 640              		.loc 2 244 0 is_stmt 1
+ 641              		.cfi_startproc
+ 642 0532 55       		pushq	%rbp
+ 643              		.cfi_def_cfa_offset 16
+ 644              		.cfi_offset 6, -16
+ 645 0533 4889E5   		movq	%rsp, %rbp
+ 646              		.cfi_def_cfa_register 6
+ 647 0536 4883EC30 		subq	$48, %rsp
+ 648 053a 48897DE8 		movq	%rdi, -24(%rbp)
+ 649 053e 488975E0 		movq	%rsi, -32(%rbp)
+ 650 0542 89D0     		movl	%edx, %eax
+ 651 0544 48894DD0 		movq	%rcx, -48(%rbp)
+ 652 0548 668945DC 		movw	%ax, -36(%rbp)
+ 245:libnero.c     **** 	NeroStatus returnCode;
+ 246:libnero.c     **** 	int uStatus = usb_bulk_write(
+ 653              		.loc 2 246 0
+ 654 054c 0FB74DDC 		movzwl	-36(%rbp), %ecx
+ 247:libnero.c     **** 		handle->device,
+ 655              		.loc 2 247 0
+ 656 0550 488B45E8 		movq	-24(%rbp), %rax
+ 657 0554 488B00   		movq	(%rax), %rax
+ 246:libnero.c     **** 		handle->device,
+ 658              		.loc 2 246 0
+ 659 0557 488B55E0 		movq	-32(%rbp), %rdx
+ 660 055b 41B88813 		movl	$5000, %r8d
+ 660      0000
+ 661 0561 BE020000 		movl	$2, %esi
+ 661      00
+ 662 0566 4889C7   		movq	%rax, %rdi
+ 663 0569 E8000000 		call	usb_bulk_write@PLT
+ 663      00
+ 664 056e 8945F8   		movl	%eax, -8(%rbp)
+ 248:libnero.c     **** 		USB_ENDPOINT_OUT | 2,    // write to endpoint 2
+ 249:libnero.c     **** 		(char *)sendPtr,         // write from send buffer
+ 250:libnero.c     **** 		chunkSize,               // write this many bytes
+ 251:libnero.c     **** 		5000                     // timeout in milliseconds
+ 252:libnero.c     **** 	);
+ 253:libnero.c     **** 	if ( uStatus < 0 ) {
+ 665              		.loc 2 253 0
+ 666 0571 837DF800 		cmpl	$0, -8(%rbp)
+ 667 0575 7935     		jns	.L52
+ 254:libnero.c     **** 		errRender(error, "doSend(): %s (%d)", usb_strerror(), uStatus);
+ 668              		.loc 2 254 0
+ 669 0577 E8000000 		call	usb_strerror@PLT
+ 669      00
+ 670 057c 4889C6   		movq	%rax, %rsi
+ 671 057f 8B55F8   		movl	-8(%rbp), %edx
+ 672 0582 488B45D0 		movq	-48(%rbp), %rax
+ 673 0586 89D1     		movl	%edx, %ecx
+ 674 0588 4889F2   		movq	%rsi, %rdx
+ 675 058b 488D3500 		leaq	.LC6(%rip), %rsi
+ 675      000000
+ 676 0592 4889C7   		movq	%rax, %rdi
+ 677 0595 B8000000 		movl	$0, %eax
+ 677      00
+ 678 059a E8000000 		call	errRender@PLT
+ 678      00
+ 255:libnero.c     **** 		FAIL(NERO_SEND);
+ 679              		.loc 2 255 0
+ 680 059f C745FC07 		movl	$7, -4(%rbp)
+ 680      000000
+ 681 05a6 90       		nop
+ 682              	.L53:
+ 256:libnero.c     **** 	}
+ 257:libnero.c     **** 	return NERO_SUCCESS;
+ 258:libnero.c     **** cleanup:
+ 259:libnero.c     **** 	return returnCode;
+ 683              		.loc 2 259 0
+ 684 05a7 8B45FC   		movl	-4(%rbp), %eax
+ 685 05aa EB05     		jmp	.L54
+ 686              	.L52:
+ 257:libnero.c     **** cleanup:
+ 687              		.loc 2 257 0
+ 688 05ac B8000000 		movl	$0, %eax
+ 688      00
+ 689              	.L54:
+ 260:libnero.c     **** }
+ 690              		.loc 2 260 0
+ 691 05b1 C9       		leave
+ 692              		.cfi_def_cfa 7, 8
+ 693 05b2 C3       		ret
+ 694              		.cfi_endproc
+ 695              	.LFE10:
+ 697              		.section	.rodata
+ 698              	.LC7:
+ 699 007f 646F5265 		.string	"doReceive(): %s (%d)"
+ 699      63656976 
+ 699      6528293A 
+ 699      20257320 
+ 699      28256429 
+ 700              		.text
+ 702              	doReceive:
+ 703              	.LFB11:
+ 261:libnero.c     **** 
+ 262:libnero.c     **** // Receive a chunk of data from the micro.
+ 263:libnero.c     **** //
+ 264:libnero.c     **** static NeroStatus doReceive(
+ 265:libnero.c     **** 	struct NeroHandle *handle, uint8 *receivePtr, uint16 chunkSize, const char **error)
+ 266:libnero.c     **** {
+ 704              		.loc 2 266 0
+ 705              		.cfi_startproc
+ 706 05b3 55       		pushq	%rbp
+ 707              		.cfi_def_cfa_offset 16
+ 708              		.cfi_offset 6, -16
+ 709 05b4 4889E5   		movq	%rsp, %rbp
+ 710              		.cfi_def_cfa_register 6
+ 711 05b7 4883EC30 		subq	$48, %rsp
+ 712 05bb 48897DE8 		movq	%rdi, -24(%rbp)
+ 713 05bf 488975E0 		movq	%rsi, -32(%rbp)
+ 714 05c3 89D0     		movl	%edx, %eax
+ 715 05c5 48894DD0 		movq	%rcx, -48(%rbp)
+ 716 05c9 668945DC 		movw	%ax, -36(%rbp)
+ 267:libnero.c     **** 	NeroStatus returnCode;
+ 268:libnero.c     **** 	int uStatus = usb_bulk_read(
+ 717              		.loc 2 268 0
+ 718 05cd 0FB74DDC 		movzwl	-36(%rbp), %ecx
+ 269:libnero.c     **** 		handle->device,
+ 719              		.loc 2 269 0
+ 720 05d1 488B45E8 		movq	-24(%rbp), %rax
+ 721 05d5 488B00   		movq	(%rax), %rax
+ 268:libnero.c     **** 		handle->device,
+ 722              		.loc 2 268 0
+ 723 05d8 488B55E0 		movq	-32(%rbp), %rdx
+ 724 05dc 41B88813 		movl	$5000, %r8d
+ 724      0000
+ 725 05e2 BE840000 		movl	$132, %esi
+ 725      00
+ 726 05e7 4889C7   		movq	%rax, %rdi
+ 727 05ea E8000000 		call	usb_bulk_read@PLT
+ 727      00
+ 728 05ef 8945F8   		movl	%eax, -8(%rbp)
+ 270:libnero.c     **** 		USB_ENDPOINT_IN | 4,    // read from endpoint 4
+ 271:libnero.c     **** 		(char *)receivePtr,     // read into the receive buffer
+ 272:libnero.c     **** 		chunkSize,              // read this many bytes
+ 273:libnero.c     **** 		5000                    // timeout in milliseconds
+ 274:libnero.c     **** 	);
+ 275:libnero.c     **** 	if ( uStatus < 0 ) {
+ 729              		.loc 2 275 0
+ 730 05f2 837DF800 		cmpl	$0, -8(%rbp)
+ 731 05f6 7935     		jns	.L56
+ 276:libnero.c     **** 		errRender(error, "doReceive(): %s (%d)", usb_strerror(), uStatus);
+ 732              		.loc 2 276 0
+ 733 05f8 E8000000 		call	usb_strerror@PLT
+ 733      00
+ 734 05fd 4889C6   		movq	%rax, %rsi
+ 735 0600 8B55F8   		movl	-8(%rbp), %edx
+ 736 0603 488B45D0 		movq	-48(%rbp), %rax
+ 737 0607 89D1     		movl	%edx, %ecx
+ 738 0609 4889F2   		movq	%rsi, %rdx
+ 739 060c 488D3500 		leaq	.LC7(%rip), %rsi
+ 739      000000
+ 740 0613 4889C7   		movq	%rax, %rdi
+ 741 0616 B8000000 		movl	$0, %eax
+ 741      00
+ 742 061b E8000000 		call	errRender@PLT
+ 742      00
+ 277:libnero.c     **** 		FAIL(NERO_RECEIVE);
+ 743              		.loc 2 277 0
+ 744 0620 C745FC08 		movl	$8, -4(%rbp)
+ 744      000000
+ 745 0627 90       		nop
+ 746              	.L57:
+ 278:libnero.c     **** 	}
+ 279:libnero.c     **** 	return NERO_SUCCESS;
+ 280:libnero.c     **** cleanup:
+ 281:libnero.c     **** 	return returnCode;
+ 747              		.loc 2 281 0
+ 748 0628 8B45FC   		movl	-4(%rbp), %eax
+ 749 062b EB05     		jmp	.L58
+ 750              	.L56:
+ 279:libnero.c     **** cleanup:
+ 751              		.loc 2 279 0
+ 752 062d B8000000 		movl	$0, %eax
+ 752      00
+ 753              	.L58:
+ 282:libnero.c     **** }
+ 754              		.loc 2 282 0
+ 755 0632 C9       		leave
+ 756              		.cfi_def_cfa 7, 8
+ 757 0633 C3       		ret
+ 758              		.cfi_endproc
+ 759              	.LFE11:
+ 761              		.section	.rodata
+ 762 0094 00000000 		.align 8
+ 763              	.LC8:
+ 764 0098 73657445 		.string	"setEndpointSize(): Failed to get config descriptor: %s (%d)"
+ 764      6E64706F 
+ 764      696E7453 
+ 764      697A6528 
+ 764      293A2046 
+ 765 00d4 00000000 		.align 8
+ 766              	.LC9:
+ 767 00d8 73657445 		.string	"setEndpointSize(): EP2OUT not found or not configured as a bulk endpoint!"
+ 767      6E64706F 
+ 767      696E7453 
+ 767      697A6528 
+ 767      293A2045 
+ 768 0122 00000000 		.align 8
+ 768      0000
+ 769              	.LC10:
+ 770 0128 73657445 		.string	"setEndpointSize(): EP4IN not found or not configured as a bulk endpoint!"
+ 770      6E64706F 
+ 770      696E7453 
+ 770      697A6528 
+ 770      293A2045 
+ 771 0171 00000000 		.align 8
+ 771      000000
+ 772              	.LC11:
+ 773 0178 73657445 		.string	"setEndpointSize(): EP2OUT's wMaxPacketSize differs from that of EP4IN"
+ 773      6E64706F 
+ 773      696E7453 
+ 773      697A6528 
+ 773      293A2045 
+ 774              		.text
+ 776              	setEndpointSize:
+ 777              	.LFB12:
+ 283:libnero.c     **** 
+ 284:libnero.c     **** // Find the size of the EP2OUT & EP4IN bulk endpoints (they must be the same)
+ 285:libnero.c     **** //
+ 286:libnero.c     **** static NeroStatus setEndpointSize(struct NeroHandle *handle, const char **error) {
+ 778              		.loc 2 286 0
+ 779              		.cfi_startproc
+ 780 0634 55       		pushq	%rbp
+ 781              		.cfi_def_cfa_offset 16
+ 782              		.cfi_offset 6, -16
+ 783 0635 4889E5   		movq	%rsp, %rbp
+ 784              		.cfi_def_cfa_register 6
+ 785 0638 4881EC50 		subq	$1104, %rsp
+ 785      040000
+ 786 063f 4889BDB8 		movq	%rdi, -1096(%rbp)
+ 786      FBFFFF
+ 787 0646 4889B5B0 		movq	%rsi, -1104(%rbp)
+ 787      FBFFFF
+ 788              		.loc 2 286 0
+ 789 064d 64488B04 		movq	%fs:40, %rax
+ 789      25280000 
+ 789      00
+ 790 0656 488945F8 		movq	%rax, -8(%rbp)
+ 791 065a 31C0     		xorl	%eax, %eax
+ 287:libnero.c     **** 	NeroStatus returnCode;
+ 288:libnero.c     **** 	int uStatus;
+ 289:libnero.c     **** 	char descriptorBuffer[1024];  // TODO: Fix by doing two queries
+ 290:libnero.c     **** 	char *ptr = descriptorBuffer;
+ 792              		.loc 2 290 0
+ 793 065c 488D85F0 		leaq	-1040(%rbp), %rax
+ 793      FBFFFF
+ 794 0663 488985D0 		movq	%rax, -1072(%rbp)
+ 794      FBFFFF
+ 291:libnero.c     **** 	uint8 endpointNum;
+ 292:libnero.c     **** 	uint16 ep2size = 0;
+ 795              		.loc 2 292 0
+ 796 066a 66C785C4 		movw	$0, -1084(%rbp)
+ 796      FBFFFF00 
+ 796      00
+ 293:libnero.c     **** 	uint16 ep4size = 0;
+ 797              		.loc 2 293 0
+ 798 0673 66C785C6 		movw	$0, -1082(%rbp)
+ 798      FBFFFF00 
+ 798      00
+ 294:libnero.c     **** 	struct usb_config_descriptor *configDesc;
+ 295:libnero.c     **** 	struct usb_interface_descriptor *interfaceDesc;
+ 296:libnero.c     **** 	struct usb_endpoint_descriptor *endpointDesc;
+ 297:libnero.c     **** 	handle->endpointSize = 0;
+ 799              		.loc 2 297 0
+ 800 067c 488B85B8 		movq	-1096(%rbp), %rax
+ 800      FBFFFF
+ 801 0683 66C74008 		movw	$0, 8(%rax)
+ 801      0000
+ 298:libnero.c     **** 	uStatus = usb_control_msg(
+ 299:libnero.c     **** 		handle->device,
+ 802              		.loc 2 299 0
+ 803 0689 488B85B8 		movq	-1096(%rbp), %rax
+ 803      FBFFFF
+ 804 0690 488B00   		movq	(%rax), %rax
+ 298:libnero.c     **** 	uStatus = usb_control_msg(
+ 805              		.loc 2 298 0
+ 806 0693 488D95F0 		leaq	-1040(%rbp), %rdx
+ 806      FBFFFF
+ 807 069a 68881300 		pushq	$5000
+ 807      00
+ 808 069f 68000400 		pushq	$1024
+ 808      00
+ 809 06a4 4989D1   		movq	%rdx, %r9
+ 810 06a7 41B80000 		movl	$0, %r8d
+ 810      0000
+ 811 06ad B9000200 		movl	$512, %ecx
+ 811      00
+ 812 06b2 BA060000 		movl	$6, %edx
+ 812      00
+ 813 06b7 BE800000 		movl	$128, %esi
+ 813      00
+ 814 06bc 4889C7   		movq	%rax, %rdi
+ 815 06bf E8000000 		call	usb_control_msg@PLT
+ 815      00
+ 816 06c4 4883C410 		addq	$16, %rsp
+ 817 06c8 8985CCFB 		movl	%eax, -1076(%rbp)
+ 817      FFFF
+ 300:libnero.c     **** 		USB_ENDPOINT_IN | USB_TYPE_STANDARD | USB_RECIP_DEVICE,
+ 301:libnero.c     **** 		USB_REQ_GET_DESCRIPTOR,    // bRequest
+ 302:libnero.c     **** 		0x0200,                    // wValue
+ 303:libnero.c     **** 		0x0000,     // wIndex
+ 304:libnero.c     **** 		descriptorBuffer,
+ 305:libnero.c     **** 		1024,                 // wLength
+ 306:libnero.c     **** 		5000               // timeout (ms)
+ 307:libnero.c     **** 	);
+ 308:libnero.c     **** 	if ( uStatus < 0 ) {
+ 818              		.loc 2 308 0
+ 819 06ce 83BDCCFB 		cmpl	$0, -1076(%rbp)
+ 819      FFFF00
+ 820 06d5 793D     		jns	.L60
+ 309:libnero.c     **** 		errRender(
+ 821              		.loc 2 309 0
+ 822 06d7 E8000000 		call	usb_strerror@PLT
+ 822      00
+ 823 06dc 4889C6   		movq	%rax, %rsi
+ 824 06df 8B95CCFB 		movl	-1076(%rbp), %edx
+ 824      FFFF
+ 825 06e5 488B85B0 		movq	-1104(%rbp), %rax
+ 825      FBFFFF
+ 826 06ec 89D1     		movl	%edx, %ecx
+ 827 06ee 4889F2   		movq	%rsi, %rdx
+ 828 06f1 488D3500 		leaq	.LC8(%rip), %rsi
+ 828      000000
+ 829 06f8 4889C7   		movq	%rax, %rdi
+ 830 06fb B8000000 		movl	$0, %eax
+ 830      00
+ 831 0700 E8000000 		call	errRender@PLT
+ 831      00
+ 310:libnero.c     **** 			error, "setEndpointSize(): Failed to get config descriptor: %s (%d)", usb_strerror(), uStatus);
+ 311:libnero.c     **** 		FAIL(NERO_ENDPOINTS);
+ 832              		.loc 2 311 0
+ 833 0705 C785C8FB 		movl	$3, -1080(%rbp)
+ 833      FFFF0300 
+ 833      0000
+ 834 070f E9BD0100 		jmp	.L61
+ 834      00
+ 835              	.L60:
+ 312:libnero.c     **** 	}
+ 313:libnero.c     **** 	if ( uStatus > 0 ) {
+ 836              		.loc 2 313 0
+ 837 0714 83BDCCFB 		cmpl	$0, -1076(%rbp)
+ 837      FFFF00
+ 838 071b 0F8EFB00 		jle	.L62
+ 838      0000
+ 314:libnero.c     **** 		configDesc = (struct usb_config_descriptor *)ptr;
+ 839              		.loc 2 314 0
+ 840 0721 488B85D0 		movq	-1072(%rbp), %rax
+ 840      FBFFFF
+ 841 0728 488985D8 		movq	%rax, -1064(%rbp)
+ 841      FBFFFF
+ 315:libnero.c     **** 		ptr += configDesc->bLength;
+ 842              		.loc 2 315 0
+ 843 072f 488B85D8 		movq	-1064(%rbp), %rax
+ 843      FBFFFF
+ 844 0736 0FB600   		movzbl	(%rax), %eax
+ 845 0739 0FB6C0   		movzbl	%al, %eax
+ 846 073c 480185D0 		addq	%rax, -1072(%rbp)
+ 846      FBFFFF
+ 316:libnero.c     **** 		interfaceDesc = (struct usb_interface_descriptor *)ptr;
+ 847              		.loc 2 316 0
+ 848 0743 488B85D0 		movq	-1072(%rbp), %rax
+ 848      FBFFFF
+ 849 074a 488985E0 		movq	%rax, -1056(%rbp)
+ 849      FBFFFF
+ 317:libnero.c     **** 		ptr += interfaceDesc->bLength;			
+ 850              		.loc 2 317 0
+ 851 0751 488B85E0 		movq	-1056(%rbp), %rax
+ 851      FBFFFF
+ 852 0758 0FB600   		movzbl	(%rax), %eax
+ 853 075b 0FB6C0   		movzbl	%al, %eax
+ 854 075e 480185D0 		addq	%rax, -1072(%rbp)
+ 854      FBFFFF
+ 318:libnero.c     **** 		endpointNum = interfaceDesc->bNumEndpoints;
+ 855              		.loc 2 318 0
+ 856 0765 488B85E0 		movq	-1056(%rbp), %rax
+ 856      FBFFFF
+ 857 076c 0FB64004 		movzbl	4(%rax), %eax
+ 858 0770 8885C3FB 		movb	%al, -1085(%rbp)
+ 858      FFFF
+ 319:libnero.c     **** 		while ( endpointNum-- ) {
+ 859              		.loc 2 319 0
+ 860 0776 E9890000 		jmp	.L63
+ 860      00
+ 861              	.L66:
+ 320:libnero.c     **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+ 862              		.loc 2 320 0
+ 863 077b 488B85D0 		movq	-1072(%rbp), %rax
+ 863      FBFFFF
+ 864 0782 488985E8 		movq	%rax, -1048(%rbp)
+ 864      FBFFFF
+ 321:libnero.c     **** 			if ( endpointDesc-> bmAttributes == 0x02 ) {
+ 865              		.loc 2 321 0
+ 866 0789 488B85E8 		movq	-1048(%rbp), %rax
+ 866      FBFFFF
+ 867 0790 0FB64003 		movzbl	3(%rax), %eax
+ 868 0794 3C02     		cmpb	$2, %al
+ 869 0796 7558     		jne	.L64
+ 322:libnero.c     **** 				if ( endpointDesc->bEndpointAddress == 0x02 ) {
+ 870              		.loc 2 322 0
+ 871 0798 488B85E8 		movq	-1048(%rbp), %rax
+ 871      FBFFFF
+ 872 079f 0FB64002 		movzbl	2(%rax), %eax
+ 873 07a3 3C02     		cmpb	$2, %al
+ 874 07a5 751E     		jne	.L65
+ 323:libnero.c     **** 					ep2size = littleEndian16(endpointDesc->wMaxPacketSize);
+ 875              		.loc 2 323 0
+ 876 07a7 488B85E8 		movq	-1048(%rbp), %rax
+ 876      FBFFFF
+ 877 07ae 0FB74004 		movzwl	4(%rax), %eax
+ 878 07b2 0FB7C0   		movzwl	%ax, %eax
+ 879 07b5 89C7     		movl	%eax, %edi
+ 880 07b7 E844F8FF 		call	littleEndian16
+ 880      FF
+ 881 07bc 668985C4 		movw	%ax, -1084(%rbp)
+ 881      FBFFFF
+ 882 07c3 EB2B     		jmp	.L64
+ 883              	.L65:
+ 324:libnero.c     **** 				} else if ( endpointDesc->bEndpointAddress == 0x84 ) {
+ 884              		.loc 2 324 0
+ 885 07c5 488B85E8 		movq	-1048(%rbp), %rax
+ 885      FBFFFF
+ 886 07cc 0FB64002 		movzbl	2(%rax), %eax
+ 887 07d0 3C84     		cmpb	$-124, %al
+ 888 07d2 751C     		jne	.L64
+ 325:libnero.c     **** 					ep4size = littleEndian16(endpointDesc->wMaxPacketSize);
+ 889              		.loc 2 325 0
+ 890 07d4 488B85E8 		movq	-1048(%rbp), %rax
+ 890      FBFFFF
+ 891 07db 0FB74004 		movzwl	4(%rax), %eax
+ 892 07df 0FB7C0   		movzwl	%ax, %eax
+ 893 07e2 89C7     		movl	%eax, %edi
+ 894 07e4 E817F8FF 		call	littleEndian16
+ 894      FF
+ 895 07e9 668985C6 		movw	%ax, -1082(%rbp)
+ 895      FBFFFF
+ 896              	.L64:
+ 326:libnero.c     **** 				}
+ 327:libnero.c     **** 			}
+ 328:libnero.c     **** 			ptr += endpointDesc->bLength;
+ 897              		.loc 2 328 0
+ 898 07f0 488B85E8 		movq	-1048(%rbp), %rax
+ 898      FBFFFF
+ 899 07f7 0FB600   		movzbl	(%rax), %eax
+ 900 07fa 0FB6C0   		movzbl	%al, %eax
+ 901 07fd 480185D0 		addq	%rax, -1072(%rbp)
+ 901      FBFFFF
+ 902              	.L63:
+ 319:libnero.c     **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+ 903              		.loc 2 319 0
+ 904 0804 0FB685C3 		movzbl	-1085(%rbp), %eax
+ 904      FBFFFF
+ 905 080b 8D50FF   		leal	-1(%rax), %edx
+ 906 080e 8895C3FB 		movb	%dl, -1085(%rbp)
+ 906      FFFF
+ 907 0814 84C0     		testb	%al, %al
+ 908 0816 0F855FFF 		jne	.L66
+ 908      FFFF
+ 909              	.L62:
+ 329:libnero.c     **** 		}
+ 330:libnero.c     **** 	}
+ 331:libnero.c     **** 	if ( !ep2size ) {
+ 910              		.loc 2 331 0
+ 911 081c 6683BDC4 		cmpw	$0, -1084(%rbp)
+ 911      FBFFFF00 
+ 912 0824 752A     		jne	.L67
+ 332:libnero.c     **** 		errRender(
+ 913              		.loc 2 332 0
+ 914 0826 488B85B0 		movq	-1104(%rbp), %rax
+ 914      FBFFFF
+ 915 082d 488D3500 		leaq	.LC9(%rip), %rsi
+ 915      000000
+ 916 0834 4889C7   		movq	%rax, %rdi
+ 917 0837 B8000000 		movl	$0, %eax
+ 917      00
+ 918 083c E8000000 		call	errRender@PLT
+ 918      00
+ 333:libnero.c     **** 			error, "setEndpointSize(): EP2OUT not found or not configured as a bulk endpoint!");
+ 334:libnero.c     **** 		FAIL(NERO_ENDPOINTS);
+ 919              		.loc 2 334 0
+ 920 0841 C785C8FB 		movl	$3, -1080(%rbp)
+ 920      FFFF0300 
+ 920      0000
+ 921 084b E9810000 		jmp	.L61
+ 921      00
+ 922              	.L67:
+ 335:libnero.c     **** 	}
+ 336:libnero.c     **** 	if ( !ep4size ) {
+ 923              		.loc 2 336 0
+ 924 0850 6683BDC6 		cmpw	$0, -1082(%rbp)
+ 924      FBFFFF00 
+ 925 0858 7527     		jne	.L68
+ 337:libnero.c     **** 		errRender(
+ 926              		.loc 2 337 0
+ 927 085a 488B85B0 		movq	-1104(%rbp), %rax
+ 927      FBFFFF
+ 928 0861 488D3500 		leaq	.LC10(%rip), %rsi
+ 928      000000
+ 929 0868 4889C7   		movq	%rax, %rdi
+ 930 086b B8000000 		movl	$0, %eax
+ 930      00
+ 931 0870 E8000000 		call	errRender@PLT
+ 931      00
+ 338:libnero.c     **** 			error, "setEndpointSize(): EP4IN not found or not configured as a bulk endpoint!");
+ 339:libnero.c     **** 		FAIL(NERO_ENDPOINTS);
+ 932              		.loc 2 339 0
+ 933 0875 C785C8FB 		movl	$3, -1080(%rbp)
+ 933      FFFF0300 
+ 933      0000
+ 934 087f EB50     		jmp	.L61
+ 935              	.L68:
+ 340:libnero.c     **** 	}
+ 341:libnero.c     **** 	if ( ep2size != ep4size ) {
+ 936              		.loc 2 341 0
+ 937 0881 0FB785C4 		movzwl	-1084(%rbp), %eax
+ 937      FBFFFF
+ 938 0888 663B85C6 		cmpw	-1082(%rbp), %ax
+ 938      FBFFFF
+ 939 088f 7427     		je	.L69
+ 342:libnero.c     **** 		errRender(
+ 940              		.loc 2 342 0
+ 941 0891 488B85B0 		movq	-1104(%rbp), %rax
+ 941      FBFFFF
+ 942 0898 488D3500 		leaq	.LC11(%rip), %rsi
+ 942      000000
+ 943 089f 4889C7   		movq	%rax, %rdi
+ 944 08a2 B8000000 		movl	$0, %eax
+ 944      00
+ 945 08a7 E8000000 		call	errRender@PLT
+ 945      00
+ 343:libnero.c     **** 			error, "setEndpointSize(): EP2OUT's wMaxPacketSize differs from that of EP4IN");
+ 344:libnero.c     **** 		FAIL(NERO_ENDPOINTS);
+ 946              		.loc 2 344 0
+ 947 08ac C785C8FB 		movl	$3, -1080(%rbp)
+ 947      FFFF0300 
+ 947      0000
+ 948 08b6 EB19     		jmp	.L61
+ 949              	.L69:
+ 345:libnero.c     **** 	}
+ 346:libnero.c     **** 	handle->endpointSize = ep2size;
+ 950              		.loc 2 346 0
+ 951 08b8 488B85B8 		movq	-1096(%rbp), %rax
+ 951      FBFFFF
+ 952 08bf 0FB795C4 		movzwl	-1084(%rbp), %edx
+ 952      FBFFFF
+ 953 08c6 66895008 		movw	%dx, 8(%rax)
+ 347:libnero.c     **** 	return NERO_SUCCESS;
+ 954              		.loc 2 347 0
+ 955 08ca B8000000 		movl	$0, %eax
+ 955      00
+ 956 08cf EB06     		jmp	.L71
+ 957              	.L61:
+ 348:libnero.c     **** cleanup:
+ 349:libnero.c     **** 	return returnCode;
+ 958              		.loc 2 349 0
+ 959 08d1 8B85C8FB 		movl	-1080(%rbp), %eax
+ 959      FFFF
+ 960              	.L71:
+ 350:libnero.c     **** }
+ 961              		.loc 2 350 0 discriminator 1
+ 962 08d7 488B4DF8 		movq	-8(%rbp), %rcx
+ 963 08db 6448330C 		xorq	%fs:40, %rcx
+ 963      25280000 
+ 963      00
+ 964 08e4 7405     		je	.L72
+ 965              		.loc 2 350 0 is_stmt 0
+ 966 08e6 E8000000 		call	__stack_chk_fail@PLT
+ 966      00
+ 967              	.L72:
+ 968 08eb C9       		leave
+ 969              		.cfi_def_cfa 7, 8
+ 970 08ec C3       		ret
+ 971              		.cfi_endproc
+ 972              	.LFE12:
+ 974              		.section	.rodata
+ 975              	.LC12:
+ 976 01be 656E6162 		.string	"enable"
+ 976      6C6500
+ 977              	.LC13:
+ 978 01c5 64697361 		.string	"disable"
+ 978      626C6500 
+ 979 01cd 000000   		.align 8
+ 980              	.LC14:
+ 981 01d0 7365744A 		.string	"setJtagMode(): Unable to %s JTAG mode: %s (%d)"
+ 981      7461674D 
+ 981      6F646528 
+ 981      293A2055 
+ 981      6E61626C 
+ 982              		.text
+ 984              	setJtagMode:
+ 985              	.LFB13:
+ 351:libnero.c     **** 
+ 352:libnero.c     **** // Put the device in jtag mode (i.e drive or tristate the JTAG lines)
+ 353:libnero.c     **** //
+ 354:libnero.c     **** static NeroStatus setJtagMode(struct NeroHandle *handle, bool enable, const char **error) {
+ 986              		.loc 2 354 0 is_stmt 1
+ 987              		.cfi_startproc
+ 988 08ed 55       		pushq	%rbp
+ 989              		.cfi_def_cfa_offset 16
+ 990              		.cfi_offset 6, -16
+ 991 08ee 4889E5   		movq	%rsp, %rbp
+ 992              		.cfi_def_cfa_register 6
+ 993 08f1 4883EC30 		subq	$48, %rsp
+ 994 08f5 48897DE8 		movq	%rdi, -24(%rbp)
+ 995 08f9 89F0     		movl	%esi, %eax
+ 996 08fb 488955D8 		movq	%rdx, -40(%rbp)
+ 997 08ff 8845E4   		movb	%al, -28(%rbp)
+ 355:libnero.c     **** 	NeroStatus returnCode;
+ 356:libnero.c     **** 	int uStatus = usb_control_msg(
+ 998              		.loc 2 356 0
+ 999 0902 807DE400 		cmpb	$0, -28(%rbp)
+ 1000 0906 7407     		je	.L74
+ 1001              		.loc 2 356 0 is_stmt 0 discriminator 1
+ 1002 0908 BA020000 		movl	$2, %edx
+ 1002      00
+ 1003 090d EB05     		jmp	.L75
+ 1004              	.L74:
+ 1005              		.loc 2 356 0 discriminator 2
+ 1006 090f BA000000 		movl	$0, %edx
+ 1006      00
+ 1007              	.L75:
+ 357:libnero.c     **** 		handle->device,
+ 1008              		.loc 2 357 0 is_stmt 1
+ 1009 0914 488B45E8 		movq	-24(%rbp), %rax
+ 1010 0918 488B00   		movq	(%rax), %rax
+ 356:libnero.c     **** 		handle->device,
+ 1011              		.loc 2 356 0
+ 1012 091b 68881300 		pushq	$5000
+ 1012      00
+ 1013 0920 6A00     		pushq	$0
+ 1014 0922 41B90000 		movl	$0, %r9d
+ 1014      0000
+ 1015 0928 41B80200 		movl	$2, %r8d
+ 1015      0000
+ 1016 092e 89D1     		movl	%edx, %ecx
+ 1017 0930 BA800000 		movl	$128, %edx
+ 1017      00
+ 1018 0935 BE400000 		movl	$64, %esi
+ 1018      00
+ 1019 093a 4889C7   		movq	%rax, %rdi
+ 1020 093d E8000000 		call	usb_control_msg@PLT
+ 1020      00
+ 1021 0942 4883C410 		addq	$16, %rsp
+ 1022 0946 8945F8   		movl	%eax, -8(%rbp)
+ 358:libnero.c     **** 		USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 359:libnero.c     **** 		CMD_MODE_STATUS,          // bRequest
+ 360:libnero.c     **** 		enable ? MODE_JTAG : 0,   // wValue
+ 361:libnero.c     **** 		MODE_JTAG,                // wMask
+ 362:libnero.c     **** 		NULL,
+ 363:libnero.c     **** 		0,                        // wLength
+ 364:libnero.c     **** 		5000                      // timeout (ms)
+ 365:libnero.c     **** 	);
+ 366:libnero.c     **** 	if ( uStatus < 0 ) {
+ 1023              		.loc 2 366 0
+ 1024 0949 837DF800 		cmpl	$0, -8(%rbp)
+ 1025 094d 7949     		jns	.L76
+ 367:libnero.c     **** 		errRender(
+ 1026              		.loc 2 367 0
+ 1027 094f E8000000 		call	usb_strerror@PLT
+ 1027      00
+ 1028 0954 4889C1   		movq	%rax, %rcx
+ 1029 0957 807DE400 		cmpb	$0, -28(%rbp)
+ 1030 095b 7409     		je	.L77
+ 1031              		.loc 2 367 0 is_stmt 0 discriminator 1
+ 1032 095d 488D0500 		leaq	.LC12(%rip), %rax
+ 1032      000000
+ 1033 0964 EB07     		jmp	.L78
+ 1034              	.L77:
+ 1035              		.loc 2 367 0 discriminator 2
+ 1036 0966 488D0500 		leaq	.LC13(%rip), %rax
+ 1036      000000
+ 1037              	.L78:
+ 1038              		.loc 2 367 0 discriminator 4
+ 1039 096d 8B55F8   		movl	-8(%rbp), %edx
+ 1040 0970 488B7DD8 		movq	-40(%rbp), %rdi
+ 1041 0974 4189D0   		movl	%edx, %r8d
+ 1042 0977 4889C2   		movq	%rax, %rdx
+ 1043 097a 488D3500 		leaq	.LC14(%rip), %rsi
+ 1043      000000
+ 1044 0981 B8000000 		movl	$0, %eax
+ 1044      00
+ 1045 0986 E8000000 		call	errRender@PLT
+ 1045      00
+ 368:libnero.c     **** 			error, "setJtagMode(): Unable to %s JTAG mode: %s (%d)",
+ 369:libnero.c     **** 			enable ? "enable" : "disable", usb_strerror(), uStatus);
+ 370:libnero.c     **** 		FAIL(NERO_ENABLE);
+ 1046              		.loc 2 370 0 is_stmt 1 discriminator 4
+ 1047 098b C745FC09 		movl	$9, -4(%rbp)
+ 1047      000000
+ 1048 0992 90       		nop
+ 1049              	.L79:
+ 371:libnero.c     **** 	}
+ 372:libnero.c     **** 	return NERO_SUCCESS;
+ 373:libnero.c     **** cleanup:
+ 374:libnero.c     **** 	return returnCode;
+ 1050              		.loc 2 374 0 discriminator 4
+ 1051 0993 8B45FC   		movl	-4(%rbp), %eax
+ 1052 0996 EB05     		jmp	.L80
+ 1053              	.L76:
+ 372:libnero.c     **** cleanup:
+ 1054              		.loc 2 372 0
+ 1055 0998 B8000000 		movl	$0, %eax
+ 1055      00
+ 1056              	.L80:
+ 375:libnero.c     **** }
+ 1057              		.loc 2 375 0
+ 1058 099d C9       		leave
+ 1059              		.cfi_def_cfa 7, 8
+ 1060 099e C3       		ret
+ 1061              		.cfi_endproc
+ 1062              	.LFE13:
+ 1064              	.Letext0:
+ 1065              		.file 3 "/usr/include/stdint.h"
+ 1066              		.file 4 "/usr/include/usb.h"
+ 1067              		.file 5 "libnero.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 libnero.c
+     /tmp/ccj7cQ3k.s:5      .text:0000000000000000 littleEndian16
+     /tmp/ccj7cQ3k.s:27     .text:0000000000000010 littleEndian32
+     /tmp/ccj7cQ3k.s:52     .text:000000000000001c neroInitialise
+     /tmp/ccj7cQ3k.s:776    .text:0000000000000634 setEndpointSize
+     /tmp/ccj7cQ3k.s:984    .text:00000000000008ed setJtagMode
+     /tmp/ccj7cQ3k.s:132    .text:00000000000000ce neroClose
+     /tmp/ccj7cQ3k.s:191    .text:0000000000000145 neroShift
+     /tmp/ccj7cQ3k.s:532    .text:000000000000043f beginShift
+     /tmp/ccj7cQ3k.s:638    .text:0000000000000532 doSend
+     /tmp/ccj7cQ3k.s:702    .text:00000000000005b3 doReceive
+     /tmp/ccj7cQ3k.s:374    .text:00000000000002e6 neroClockFSM
+     /tmp/ccj7cQ3k.s:460    .text:00000000000003aa neroClocks
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+errPrefix
+usb_control_msg
+usb_strerror
+errRender
+__stack_chk_fail
+usb_bulk_write
+usb_bulk_read
