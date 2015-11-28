@@ -55,8 +55,8 @@ use Switch;
 
 # Metadata containers
 %configs=();
-@paramters=();
-@paramter_questions=();
+@parameters=();
+@parameter_questions=();
 
 sub get {
   my $question = $_[0];
@@ -89,13 +89,12 @@ sub read_configs {
 		next if /^#/;
 		next if /^$/;
 		($p,$v) = split('=',$_);
-		$config{"$p"}=$v;
+		$configs{"$p"}=$v;
 	}
 	print "# SUCCESS\tPrevious configuration file read\n";
 }
 # Default options
 $help = 0;
-$batch = 0;
 
 while ($_ = $ARGV[0]) {
   last unless /^-/;
@@ -133,11 +132,50 @@ if ($help) {
   die "$usage\n";
 }
 
-##### Let's start
+# Let's start
+push @parameters, "LAGO_DAQ"; 
+push @parameter_questions, "LAGO_DAQ environment variable";
 
-cmd();
+# Check if LAGO environment is defined
+$now = gmtime();
+$home=$ENV{'HOME'};
+$pwd=$ENV{'PWD'};
+unless (defined($ENV{"$parameters[0]"})) {
+	print "# WARNING\t$parameters[0] environment variable is not defined.\n\t\tProbably this is a first installation of LAGO ACQUA in this\n\t\tsystem. I will include a line into your .bashrc (assuming\n\t\tyou are using bash. If not just add the contents of .bashrc\n\t\tinto your environments file). The original .bashrc will be\n\t\trenamed to .bashrc-lago.bak.\n";
+	$tmp=get("Please confirm (y/n)",'y',"$parameters[0]");
+	die "# STATUS\tConfiguration not changed. Bye\n" unless ($tmp eq 'y');
+	$ENV{"$parameters[0]"}=$pwd;
+	$configs{"$parameters[0]"}=$pwd;
+	open ($fh, "> tmp") or die "# ERROR\tCan't write files here!: $!\n";
+	print $fh "\n#\n# Changes added by the LAGO ACQUA suite on $now UTC\n#\n";
+	print $fh "export $parameters[0]='$pwd'\n\n";
+	close($fh);
+	cmd("cp $home/.bashrc $home/.bashrc-lago.bak");
+	cmd("cat tmp >> $home/.bashrc")	;
+	cmd("rm tmp");
+	print "# SUCCESS\tLAGO environment variable is set and .bashrc was changed\n\n";
+} else { # ok. is defined, but is the same as current directory?
+	unless ($ENV{$parameters[0]} eq $pwd) {
+		$tmp=get("# WARNING\tIt looks like you are not in the standard LAGO ACQUA location:\n\t\tStandard: $ENV{$parameters[0]}\n\t\tCurrent: $pwd\nDo you want to change it here (I will change .bashrc also)? (y/n)", 'n', "NEWENV");
+		if ($tmp eq 'y') {
+			$ENV{"$parameters[0]"}=$pwd;
+			$configs{"$parameters[0]"}=$pwd;
+			open ($fh, "> tmp") or die "# ERROR\tCan't write files here!: $!\n";
+			print $fh "\n#\n# Changes added by the LAGO ACQUA suite on $now UTC\n#\n";
+			print $fh "export $parameters[0]='$pwd'\n\n";
+			close($fh);
+			cmd("cp $home/.bashrc $home/.bashrc-lago.bak");
+			cmd("cat tmp >> $home/.bashrc")	;
+			cmd("rm tmp");
+			print "# SUCCESS\tLAGO environment variable is set and .bashrc was changed\n\n";
+		} else {
+			print "# STATUS\tNothing change, but I don't understand what do you want to do then.\n";
+		}
+	}
+}
+
 if (-e "lago-configs") {
-	$tmp=get("It looks like you will change the DAQ configuration.\nPlease confirm to continue (y/n)", 'y', "NEWCONFIG");
+	$tmp=get("# WARNING\tIt looks like you will change the DAQ configuration.\nPlease confirm to continue (y/n)", 'y', "NEWCONFIG");
 	die "# STATUS\tConfiguration not changed. Bye\n" unless ($tmp eq 'y');
 	read_configs();
 	die "# ERROR\tSomething was wrong creating new 'lago-configs' file. Nothing change.\nBye\n" unless not (cmd('mkdir -p lago-old-configs; mv lago-configs lago-old-configs/lago-configs_$(date -u +%Y%m%d_%H%M%S)'));
@@ -146,21 +184,69 @@ if (-e "lago-configs") {
 	die "\n# STATUS\tCheck if you are in the correct directory. Configuration not changed.\nBye\n" unless ($tmp eq 'y');
 }
 
+# Parameters
 print "\n# BLOCK\t\tSITE PARAMETERS\n";
-push @parameters, "sitename", "sitelat", "sitelong", "sitealt";
-push @parameter_questions, "Site Name", "Site Latitude (+/- dec deg, <0 = South)", "Site Longitude (+/- dec deg, <0 = West)", "Site Altitude (m a.s.l.)";
-foreach $i (0 .. @parameters-1) {
+push @parameters, 
+"siteName", 
+"siteLat", 
+"siteLong", 
+"siteAlt",
+"siteRespName",
+"siteRespId",
+"siteRespEmail",
+"siteInst",
+"siteDetectors",
+"detector1Name",
+"detector1Diameter",
+"detector1Height",
+"detector1HV",
+"detector1Trigger";
+
+push @parameter_questions, 
+"Site Name", 
+"Site Latitude (+/- dec deg, <0 = South)", 
+"Site Longitude (+/- dec deg, <0 = West)", 
+"Site Altitude (m a.s.l.)",
+"Site Responsible Name",
+"Site Responsible OrcId",
+"Site Responsible email",
+"Site Institution",
+"Number of Detectors in this site";
+
+
+
+# Ask the questions....
+
+foreach $i (1 .. @parameters-1) {
 	$parameter=$parameters[$i];
 	$parameter_question=$parameter_questions[$i];
-	$j=$i+1;
-	$config{"$parameter"}=get("$j. $parameter_question",$config{"$parameter"},"$parameter");
+	$configs{"$parameter"}=get("$i. $parameter_question",$configs{"$parameter"},"$parameter");
 }
 cmd();
 
+# ... and write the answers...
+
 print "# SUCCESS\tDone. Writing the new lago-configs file\n";
 open ($fh, "> lago-configs") or die "# ERROR\tCan't open lago-configs file for writing: $!\n";
-foreach $key (sort keys %config) {
-	print $fh "$key=$config{$key}\n";
+$now = gmtime();
+print $fh "#########################################################
+# LAGO AQCUA DAQ CONFIGURATION FILE						#
+# (c) The LAGO Project - lago\@lagoproject.org			#
+# 2015 - Today											#
+#														#
+# PLEASE DON'T MODIFY THIS FILE BY HAND.				#
+# IF YOU NEED TO CHANGE SOME CONFIGURATION PARAMETERS	#
+# PLEASE USE											#
+#														#
+# ./lago-config.pl										#
+#														#
+#########################################################
+
+# This file was created on $now UTC
+";
+
+foreach $key (sort keys %configs) {
+	print $fh "$key=$configs{$key}\n";
 }
 print "# SUCCESS\tAll done. Configuring and launching acquisition...\n";
 # do something here
