@@ -235,7 +235,7 @@ push @parameters,
 1,
 1000,
 
-# DAQ 148-163 (152-167 will not be asked)
+# DAQ 148-163 
 "usb",
 "Where the compressed data and processed files will be located",
 0,
@@ -243,23 +243,7 @@ push @parameters,
 "fpgaGates",
 "Number of gates of Nexys2 fpga (500/1200)",
 1,
-500,
-"work",
-"Working directory (should be the same as LAGO_DAQ)",
-0,
-"$ENV{$parameters[0]}",
-"user",
-"User operating the system",
-0,
-"$ENV{'USER'}",
-"version",
-"Version of the DAQ (./lago -v)",
-0,
-"$daq_version",
-"currentConfig",
-"Unix time of the current config",
-1,
-time;
+500;
 
 sub get {
   my $question = $_[0];
@@ -465,11 +449,13 @@ if ($configs{"siteDetectors"} > 2) {
 
 $block="# BLOCK\t\tACQUISITION SYSTEM";
 ask(148,155,$block);
-print $fh "$parameters[156]=\"$configs{$parameters[0]}\"\n";
-print $fh "$parameters[160]=\"$ENV{'USER'}\"\n";
-print $fh "$parameters[164]=\"$daq_version\"\n";
+
+# not asking values (backward compatibility)
 $now=time;
-print $fh "$parameters[168]=$now\n";
+print $fh "work=\"$configs{$parameters[0]}\"\n";
+print $fh "user=\"$ENV{'USER'}\"\n";
+print $fh "version=\"$daq_version\"\n";
+print $fh "configTime=$now\n";
 print "# SUCCESS\tDone. Writing the new lago-configs file\n";
 cmd("mv lago-configs-tmp lago-configs");
 # now, modify crontab.run
