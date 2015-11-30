@@ -8,8 +8,6 @@ else
   mount -t ext4 /dev/sda1 ${usb}
 fi
 
-crontab crontab.run
-
 cd ${work}
 #check for 1443:0020 is not needed anymore in the new DAQ version
 #flash=$(lsusb -d 1443:0020)
@@ -17,7 +15,7 @@ cd ${work}
 ./lago -x lago_fpga_vhdl_ram_${fpgaGates}k.xsvf
 sleep 10
 g=true
-# Loop to wait GPS to start working and configue true date
+# Loop to wait for GPS to start working and configue true date
 while ($g); do 
   d0=$(date) 
   date -u -s "$(./lago -g  | head -5 | tail -1 | awk '{print $3}') $(./lago -g  | head -5 | tail -1 | awk '{print $6}')"

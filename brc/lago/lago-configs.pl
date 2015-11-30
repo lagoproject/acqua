@@ -67,183 +67,213 @@ chomp($daq_version);
 # If you need to add more question, just add them in four rows:
 # 1) Parameter Id
 # 2) Question you need to ask to user
-# 3) Number(1) or string(0) parameter?
+# 3) Number(1), string(0), bool(2) parameter?
 # 4) Default value, when possible
 
 push @parameters, 
-# System, 0-3
-"LAGO_DAQ", 
-"LAGO_DAQ environment variable", 
-0,
-"",
-
-# Site, 4-39
-"siteName", 
-"Site Name (don't use white spaces or weird characters)", 
-0,
-"",
-"siteLat", 
-"Site Latitude (+/- dec deg, <0 = South)", 
-1,
-0.,
-"siteLong", 
-"Site Longitude (+/- dec deg, <0 = West)", 
-1,
-0.,
-"siteAlt",
-"Site Altitude (m a.s.l.)",
-1,
-0.,
-"siteRespName",
-"Site Responsible Name (please don't use weird characters)",
-0,
-"",
-"siteRespId",
-"Site Responsible OrcId (typical format: 0000-0000-0000-0000)",
-0,
-"0000-0000-0000-0000",
-"siteRespEmail",
-"Site Responsible email (please use a valid and frequently used email)",
-0,
-"",
-"siteInst",
-"Site Institution (as it appears in the institutions data base)",
-0,
-"",
-"siteDetectors",
-"Number of Detectors in this site (1-3 for this electronics)",
-1,
-1,
-
-# Detectors, 40-123
-# Detector 1, 40-67 
-"detector1Name",
-"Name of the detector in ch1",
-0,
-"",
-"detector1Diameter",
-"Diameter of the water volume for the ch1 detector (mm)",
-1,
-0.,
-"detector1Height",
-"Height of the water volume for the ch1 detector (mm)",
-1,
-0.,
-"detector1Material",
-"Detector material (plastic, steel, ...)",
-0,
-"plastic",
-"detector1Coating",
-"Detector internal coating (tyvek, banner, ...)",
-0,
-"Tyvek",
-"detector1PMT",
-"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
-0,
-"R5912",
-"detector1PMTowner",
-"PMT owner (use LAGO for AugerPMT, Institution instead)",
-0,
-"",
-# Detector 2, 68-95 
-"detector2Name",
-"Name of the detector in ch2",
-0,
-"",
-"detector2Diameter",
-"Diameter of the water volume for the ch2 detector (mm)",
-1,
-0.,
-"detector2Height",
-"Height of the water volume for the ch2 detector (mm)",
-1,
-0.,
-"detector2Material",
-"Detector material (plastic, steel, ...)",
-0,
-"plastic",
-"detector2Coating",
-"Detector internal coating (tyvek, banner, ...)",
-0,
-"Tyvek",
-"detector2PMT",
-"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
-0,
-"R5912",
-"detector2PMTowner",
-"PMT owner (use LAGO for AugerPMT, Institution instead)",
-0,
-"",
-# Detector 3, 96-123 
-"detector3Name",
-"Name of the detector in ch3",
-0,
-"",
-"detector3Diameter",
-"Diameter of the water volume for the ch3 detector (mm)",
-1,
-0.,
-"detector3Height",
-"Height of the water volume for the ch3 detector (mm)",
-1,
-0.,
-"detector3Material",
-"Detector material (plastic, steel, ...)",
-0,
-"plastic",
-"detector3Coating",
-"Detector internal coating (tyvek, banner, ...)",
-0,
-"Tyvek",
-"detector3PMT",
-"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
-0,
-"R5912",
-"detector3PMTowner",
-"PMT owner (use LAGO for AugerPMT, Institution instead)",
-0,
-"",
-
-# Calibración, 124-147
-# Calib1 124-131
-"detector1HV",
-"Polarization voltage in ch1 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
-1,
-0.,
-"detector1Trigger",
-"Trigger value in ADC counts for ch1",
-1,
-1000,
-
-# Calib2 132-139
-"detector2HV",
-"Polarization voltage in ch2 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
-1,
-0.,
-"detector2Trigger",
-"Trigger value in ADC counts for ch2",
-1,
-1000,
-
-# Calib2 140-147
-"detector3HV",
-"Polarization voltage in ch3 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
-1,
-0.,
-"detector3Trigger",
-"Trigger value in ADC counts for ch3",
-1,
-1000,
-
-# DAQ 148-163 
-"usb",
-"Where the compressed data and processed files will be located",
-0,
-"",
-"fpgaGates",
-"Number of gates of Nexys2 fpga (500/1200)",
-1,
-500;
+	# System, 0-3
+	"LAGO_DAQ", 
+	"LAGO_DAQ environment variable", 
+	0,
+	"",
+	
+	# Site, 4-39
+	"siteName", 
+	"Site Name (don't use white spaces or weird characters)", 
+	0,
+	"",
+	"siteLat", 
+	"Site Latitude (+/- dec deg, <0 = South)", 
+	1,
+	0.,
+	"siteLong", 
+	"Site Longitude (+/- dec deg, <0 = West)", 
+	1,
+	0.,
+	"siteAlt",
+	"Site Altitude (m a.s.l.)",
+	1,
+	0.,
+	"siteRespName",
+	"Site Responsible Name (please don't use weird characters)",
+	0,
+	"",
+	"siteRespId",
+	"Site Responsible OrcId (typical format: 0000-0000-0000-0000)",
+	0,
+	"0000-0000-0000-0000",
+	"siteRespEmail",
+	"Site Responsible email (please use a valid and frequently used email)",
+	0,
+	"",
+	"siteInst",
+	"Site Institution (as it appears in the institutions data base)",
+	0,
+	"",
+	"siteDetectors",
+	"Number of Detectors in this site (1-3 for this electronics)",
+	1,
+	1,
+	
+	# Detectors, 40-123
+	# Detector 1, 40-67 
+	"detector1Name",
+	"Name of the detector in ch1",
+	0,
+	"",
+	"detector1Diameter",
+	"Diameter of the water volume for the ch1 detector (mm)",
+	1,
+	0.,
+	"detector1Height",
+	"Height of the water volume for the ch1 detector (mm)",
+	1,
+	0.,
+	"detector1Material",
+	"Detector material (plastic, steel, ...)",
+	0,
+	"plastic",
+	"detector1Coating",
+	"Detector internal coating (tyvek, banner, ...)",
+	0,
+	"Tyvek",
+	"detector1PMT",
+	"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+	0,
+	"R5912",
+	"detector1PMTowner",
+	"PMT owner (use LAGO for AugerPMT, Institution instead)",
+	0,
+	"",
+	# Detector 2, 68-95 
+	"detector2Name",
+	"Name of the detector in ch2",
+	0,
+	"",
+	"detector2Diameter",
+	"Diameter of the water volume for the ch2 detector (mm)",
+	1,
+	0.,
+	"detector2Height",
+	"Height of the water volume for the ch2 detector (mm)",
+	1,
+	0.,
+	"detector2Material",
+	"Detector material (plastic, steel, ...)",
+	0,
+	"plastic",
+	"detector2Coating",
+	"Detector internal coating (tyvek, banner, ...)",
+	0,
+	"Tyvek",
+	"detector2PMT",
+	"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+	0,
+	"R5912",
+	"detector2PMTowner",
+	"PMT owner (use LAGO for AugerPMT, Institution instead)",
+	0,
+	"",
+	# Detector 3, 96-123 
+	"detector3Name",
+	"Name of the detector in ch3",
+	0,
+	"",
+	"detector3Diameter",
+	"Diameter of the water volume for the ch3 detector (mm)",
+	1,
+	0.,
+	"detector3Height",
+	"Height of the water volume for the ch3 detector (mm)",
+	1,
+	0.,
+	"detector3Material",
+	"Detector material (plastic, steel, ...)",
+	0,
+	"plastic",
+	"detector3Coating",
+	"Detector internal coating (tyvek, banner, ...)",
+	0,
+	"Tyvek",
+	"detector3PMT",
+	"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+	0,
+	"R5912",
+	"detector3PMTowner",
+	"PMT owner (use LAGO for AugerPMT, Institution instead)",
+	0,
+	"",
+	
+	# Calibración, 124-147
+	# Calib1 124-131
+	"detector1HV",
+	"Polarization voltage in ch1 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+	1,
+	0.,
+	"detector1Trigger",
+	"Trigger value in ADC counts for ch1",
+	1,
+	1000,
+	
+	# Calib2 132-139
+	"detector2HV",
+	"Polarization voltage in ch2 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+	1,
+	0.,
+	"detector2Trigger",
+	"Trigger value in ADC counts for ch2",
+	1,
+	1000,
+	
+	# Calib2 140-147
+	"detector3HV",
+	"Polarization voltage in ch3 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+	1,
+	0.,
+	"detector3Trigger",
+	"Trigger value in ADC counts for ch3",
+	1,
+	1000,
+	
+	# DAQ 148-155 
+	"usb",
+	"Where the compressed data and processed files will be located (complete path)",
+	0,
+	"",
+	"fpgaGates",
+	"Number of gates of Nexys2 fpga (500/1200)",
+	1,
+	500,
+	
+	# SENSORS 156-183
+	"hasGPS",
+	"Is GPS module installed (y/n)",
+	2,
+	"y",
+	"GPSmodel",
+	"GPS model (specify all features in a single line)",
+	0,
+	"",
+	"internalGPS",
+	"Is GPS connected directly to the FPGA",
+	2,
+	"y",
+	"hasPT",
+	"Is PT module installed (y/n)",
+	2,
+	"y",
+	"PTmodel",
+	"PT sensor model (specify all features in a single line)",
+	0,
+	"",
+	"internalPT",
+	"Is GPS connected directly to the FPGA",
+	2,
+	"y",
+	"racimo",
+	"Is this a RACIMO station",
+	2,
+	"n";
 
 sub get {
 	my $question = $_[0];
@@ -277,6 +307,11 @@ sub read_configs {
 		next if /^$/;
 		s/"//g;
 		($p,$v) = split('=',$_);
+		if ($v eq 'true') {
+			$v = 'y';
+		} elsif ($v eq 'false') {
+			$v = 'n';
+		}
 		$configs{"$p"}=$v;
 	}
 	print "# SUCCESS\tPrevious configuration file read\n";
@@ -304,8 +339,14 @@ sub ask {
 		} else {
 			$answer=get("$qnum. $question", $default, "$parameter");
 		}
-		if ($type) {
+		if ($type == 1) {
 			$configs{"$parameter"}=1. * $answer;
+		} elsif ($type == 2) {
+			if ($answer eq 'y') {
+				$configs{"$parameter"}="true";
+			} else {
+				$configs{"$parameter"}="false";
+			}
 		} else {
 			$configs{"$parameter"}="\"" . $answer . "\"";
 		}
@@ -318,21 +359,21 @@ $iHelp = 0;
 $iCalib = 0;
 
 while ($_ = $ARGV[0]) {
-  last unless /^-/;
-  shift;
-  # options
-#  if (/-l$/i) {
-#    $cluster++;
-#    $clsname = $ARGV[0];
-#    shift;
-#  }
-  # modifiers 
-  if (/-\?$/i) {
-    $iHelp++;
-  }
-  if (/-c$/i) {
-    $iCalib++;
-  }
+	last unless /^-/;
+	shift;
+	# options
+	# if (/-l$/i) {
+	#	$cluster++;
+	#	$clsname = $ARGV[0];
+	#	shift;
+	# }
+  # modifiers
+	if (/-\?$/i) {
+		$iHelp++;
+	}
+	if (/-c$/i) {
+		$iCalib++;
+	}
 }
 
 $usage="
@@ -469,6 +510,10 @@ if ($configs{"siteDetectors"} > 2) {
 $blockN=3; # DAQ
 $block="# BLOCK\t\tACQUISITION SYSTEM";
 ask(148,155,$block,$blockN);
+
+$blockN=4; # SENSORS
+$block="# BLOCK\t\tSENSORS";
+ask(156,183,$block,$blockN);
 
 # not asking values (backward compatibility)
 $now=time;
