@@ -246,15 +246,15 @@ push @parameters,
 500;
 
 sub get {
-  my $question = $_[0];
-  my $default = (defined($_[1]) ? $_[1] : 0);
-  my $param = $_[2];
-  print "$question?\n<$param $default>: ";
-  chomp (my $tmp = <>);
-  if ($tmp eq "") {
-    $tmp=$default;
-  }
-  return $tmp;
+	my $question = $_[0];
+	my $default = (defined($_[1]) ? $_[1] : 0);
+	my $param = $_[2];
+	print "$question?\n<$param $default>: ";
+	chomp (my $tmp = <>);
+	if ($tmp eq "") {
+	  $tmp=$default;
+	}
+	return $tmp;
 }
 
 sub cmd {
@@ -286,6 +286,8 @@ sub ask {
 	my $start = $_[0];
 	my $end = $_[1];
 	my $block = $_[2];
+	my $blockN = $_[3];
+	my $answer;
 	print "\n$block\n";
 	print $fh "\n$block\n";
 	for ($i=$start; $i <= $end; $i+=4) {
@@ -297,7 +299,11 @@ sub ask {
 			$default=$configs{"$parameter"};
 		}
 		my $qnum=$i/4;
-		my $answer=get("$qnum. $question", $default, "$parameter");
+		if ($iCalib && $blockN != 2) {
+			$answer=$default;
+		} else {
+			$answer=get("$qnum. $question", $default, "$parameter");
+		}
 		if ($type) {
 			$configs{"$parameter"}=1. * $answer;
 		} else {
@@ -308,7 +314,8 @@ sub ask {
 }
 
 # Default options
-$help = 0;
+$iHelp = 0;
+$iCalib = 0;
 
 while ($_ = $ARGV[0]) {
   last unless /^-/;
@@ -321,7 +328,10 @@ while ($_ = $ARGV[0]) {
 #  }
   # modifiers 
   if (/-\?$/i) {
-    $help++;
+    $iHelp++;
+  }
+  if (/-c$/i) {
+    $iCalib++;
   }
 }
 
@@ -335,6 +345,7 @@ $usage="
 	If you enjoy it, please send us an email\n
 	Usage: $0 [OPTION] ... \n
 	Asks questions, produce the current configuration 'lago-configs' file\n
+		-c		Ask only for detector calibration parameters
 		-?		Shows this help and ends
 	\n
 	Examples:
@@ -342,10 +353,13 @@ $usage="
 	
 	LAGO ACQUA, http://wiki.lagoproject.org/index.php?title=ACQUA";
 
-if ($help) {
-  die "$usage\n";
+if ($iHelp) {
+	die "$usage\n";
 }
 
+if ($iCalib) {
+	print "# WARNING\t\tOnly calibration parameters will be asked.\n";
+}
 # Let's start
 
 # Check if LAGO environment is defined
@@ -355,6 +369,7 @@ $pwd=$ENV{'PWD'};
 unless (defined($ENV{"$parameters[0]"})) {
 	print "# WARNING\t$parameters[0] environment variable is not defined.\n\t\tProbably this is a first installation of LAGO ACQUA in this\n\t\tsystem. I will include a line into your .bashrc (assuming\n\t\tyou are using bash. If not just add the contents of .bashrc\n\t\tinto your environments file). The original .bashrc will be\n\t\trenamed to .bashrc-lago.bak.\n";
 	$tmp=get("Please confirm (y/n)",'y',"$parameters[0]");
+	$iCalib=0;
 	die "# STATUS\tConfiguration not changed. Bye\n" unless ($tmp eq 'y');
 	$ENV{"$parameters[0]"}=$pwd;
 	$configs{"$parameters[0]"}=$pwd;
@@ -379,6 +394,7 @@ unless (defined($ENV{"$parameters[0]"})) {
 			cmd("cp $home/.bashrc $home/.bashrc-lago.bak");
 			cmd("cat tmp >> $home/.bashrc")	;
 			cmd("rm tmp");
+			$iCalib=0;
 			print "# SUCCESS\tLAGO environment variable is set and .bashrc was changed\n\n";
 		} else {
 			print "# STATUS\tNothing change, but I don't understand what do you want to do then.\n";
@@ -394,6 +410,7 @@ if (-e "lago-configs") {
 } else {
 	$tmp=get("# WARNING\tI can't find a previous 'lago-configs' file.\n\t\tThis could mean that this is the first time you will run\n\t\tthe LAGO ACQUA BRC DAQ in this system, or that you are not\n\t\tin the correct directory. If you continue, a new lago-configs\n\t\tfile will be created here and the current path will be assumed\n\t\tas the LAGO DAQ main directory.\nDo you want to continue (y/n)",'n',"NEWCONFIG");
 	die "\n# STATUS\tCheck if you are in the correct directory. Conf not changed.\nBye\n" unless ($tmp eq 'y');
+	$iCalib=0;
 }
 
 # new lago-configs
@@ -421,34 +438,37 @@ print $fh "$parameters[0]=\"$configs{$parameters[0]}\"\n";
 
 # Ask the questions....
 # blocks
+$blockN=0; # SITE
 $block="# BLOCK\t\tSITE PARAMETERS";
-ask(4,39,$block);
 
-
+$blockN=1; # DETECTORS
+ask(4,39,$block,$blockN);
 $block="# BLOCK\t\tDETECTOR PARAMETERS: 1";
-ask(40,67,$block);
+ask(40,67,$block,$blockN);
 if ($configs{"siteDetectors"} > 1) {
 	$block="# BLOCK\t\tDETECTOR PARAMETERS: 2";
-	ask(68,95,$block);
+	ask(68,95,$block,$blockN);
 }
 if ($configs{"siteDetectors"} > 2) {
 	$block="# BLOCK\t\tDETECTOR PARAMETERS: 3";
-	ask(96,123,$block);
+	ask(96,123,$block,$blockN);
 }
 
+$blockN=2; # CALIBRATION
 $block="# BLOCK\t\tCALIBRATION PARAMETERS: 1";
-ask(124,131,$block);
+ask(124,131,$block,$blockN);
 if ($configs{"siteDetectors"} > 1) {
 	$block="# BLOCK\t\tCALIBRATION PARAMETERS: 2";
-	ask(132,139,$block);
+	ask(132,139,$block,$blockN);
 }
 if ($configs{"siteDetectors"} > 2) {
 	$block="# BLOCK\t\tCALIBRATION PARAMETERS: 3";
-	ask(140,147,$block);
+	ask(140,147,$block,$blockN);
 }
 
+$blockN=3; # DAQ
 $block="# BLOCK\t\tACQUISITION SYSTEM";
-ask(148,155,$block);
+ask(148,155,$block,$blockN);
 
 # not asking values (backward compatibility)
 $now=time;
