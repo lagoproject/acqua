@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /root/lago/configs
+source ${LAGO_DAQ}/lago-configs
 cd ${work}
 daq=$(ps aux | grep lago | grep SCREEN | awk '{print $2}')
 if [ "X${daq}" == "X" ]; then 

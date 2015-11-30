@@ -1,5 +1,5 @@
 #!/bin/bash
-source /root/lago/configs
+source ${LAGO_DAQ}/lago-configs
 cd ${work}
 files=$(find ${work} -iname "*.dat" -type f -mmin +30)
 for i in ${files}; do

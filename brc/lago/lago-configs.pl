@@ -51,12 +51,215 @@
 # */
 # /************************************************************************/
 
-use Switch;
+# verify LAGO DAQ is compiled 
+unless (-e "lago") {
+	print "\n# ERROR\t\tBefore to start, you have to compile the suite. Please read INSTALL.md\n";
+	exit 1;
+}
+$daq_version=`./lago -v`;
+chomp($daq_version);
 
 # Metadata containers
 %configs=();
 @parameters=();
-@parameter_questions=();
+
+# Parameters
+# If you need to add more question, just add them in four rows:
+# 1) Parameter Id
+# 2) Question you need to ask to user
+# 3) Number(1) or string(0) parameter?
+# 4) Default value, when possible
+
+push @parameters, 
+# System, 0-3
+"LAGO_DAQ", 
+"LAGO_DAQ environment variable", 
+0,
+"",
+
+# Site, 4-39
+"siteName", 
+"Site Name (don't use white spaces or weird characters)", 
+0,
+"",
+"siteLat", 
+"Site Latitude (+/- dec deg, <0 = South)", 
+1,
+0.,
+"siteLong", 
+"Site Longitude (+/- dec deg, <0 = West)", 
+1,
+0.,
+"siteAlt",
+"Site Altitude (m a.s.l.)",
+1,
+0.,
+"siteRespName",
+"Site Responsible Name (please don't use weird characters)",
+0,
+"",
+"siteRespId",
+"Site Responsible OrcId (typical format: 0000-0000-0000-0000)",
+0,
+"0000-0000-0000-0000",
+"siteRespEmail",
+"Site Responsible email (please use a valid and frequently used email)",
+0,
+"",
+"siteInst",
+"Site Institution (as it appears in the institutions data base)",
+0,
+"",
+"siteDetectors",
+"Number of Detectors in this site (1-3 for this electronics)",
+1,
+1,
+
+# Detectors, 40-123
+# Detector 1, 40-67 
+"detector1Name",
+"Name of the detector in ch1",
+0,
+"",
+"detector1Diameter",
+"Diameter of the water volume for the ch1 detector (mm)",
+1,
+0.,
+"detector1Height",
+"Height of the water volume for the ch1 detector (mm)",
+1,
+0.,
+"detector1Material",
+"Detector material (plastic, steel, ...)",
+0,
+"plastic",
+"detector1Coating",
+"Detector internal coating (tyvek, banner, ...)",
+0,
+"Tyvek",
+"detector1PMT",
+"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+0,
+"R5912",
+"detector1PMTowner",
+"PMT owner (use LAGO for AugerPMT, Institution instead)",
+0,
+"",
+# Detector 2, 68-95 
+"detector2Name",
+"Name of the detector in ch2",
+0,
+"",
+"detector2Diameter",
+"Diameter of the water volume for the ch2 detector (mm)",
+1,
+0.,
+"detector2Height",
+"Height of the water volume for the ch2 detector (mm)",
+1,
+0.,
+"detector2Material",
+"Detector material (plastic, steel, ...)",
+0,
+"plastic",
+"detector2Coating",
+"Detector internal coating (tyvek, banner, ...)",
+0,
+"Tyvek",
+"detector2PMT",
+"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+0,
+"R5912",
+"detector2PMTowner",
+"PMT owner (use LAGO for AugerPMT, Institution instead)",
+0,
+"",
+# Detector 3, 96-123 
+"detector3Name",
+"Name of the detector in ch3",
+0,
+"",
+"detector3Diameter",
+"Diameter of the water volume for the ch3 detector (mm)",
+1,
+0.,
+"detector3Height",
+"Height of the water volume for the ch3 detector (mm)",
+1,
+0.,
+"detector3Material",
+"Detector material (plastic, steel, ...)",
+0,
+"plastic",
+"detector3Coating",
+"Detector internal coating (tyvek, banner, ...)",
+0,
+"Tyvek",
+"detector3PMT",
+"Detector PMT model (Photonis XP1805, Hamamatsu R5912, ...)",
+0,
+"R5912",
+"detector3PMTowner",
+"PMT owner (use LAGO for AugerPMT, Institution instead)",
+0,
+"",
+
+# Calibración, 124-147
+# Calib1 124-131
+"detector1HV",
+"Polarization voltage in ch1 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+1,
+0.,
+"detector1Trigger",
+"Trigger value in ADC counts for ch1",
+1,
+1000,
+
+# Calib2 132-139
+"detector2HV",
+"Polarization voltage in ch2 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+1,
+0.,
+"detector2Trigger",
+"Trigger value in ADC counts for ch2",
+1,
+1000,
+
+# Calib2 140-147
+"detector3HV",
+"Polarization voltage in ch3 (WARNING: the number you put here is not in V, you have to calibrate the DAQ)",
+1,
+0.,
+"detector3Trigger",
+"Trigger value in ADC counts for ch3",
+1,
+1000,
+
+# DAQ 148-163 (152-167 will not be asked)
+"usb",
+"Where the compressed data and processed files will be located",
+0,
+"",
+"fpgaGates",
+"Number of gates of Nexys2 fpga (500/1200)",
+1,
+500,
+"work",
+"Working directory (should be the same as LAGO_DAQ)",
+0,
+"$ENV{$parameters[0]}",
+"user",
+"User operating the system",
+0,
+"$ENV{'USER'}",
+"version",
+"Version of the DAQ (./lago -v)",
+0,
+"$daq_version",
+"currentConfig",
+"Unix time of the current config",
+1,
+time;
 
 sub get {
   my $question = $_[0];
@@ -88,11 +291,38 @@ sub read_configs {
 		chomp;
 		next if /^#/;
 		next if /^$/;
+		s/"//g;
 		($p,$v) = split('=',$_);
 		$configs{"$p"}=$v;
 	}
 	print "# SUCCESS\tPrevious configuration file read\n";
 }
+
+sub ask {
+	my $start = $_[0];
+	my $end = $_[1];
+	my $block = $_[2];
+	print "\n$block\n";
+	print $fh "\n$block\n";
+	for ($i=$start; $i <= $end; $i+=4) {
+		my $parameter=$parameters[$i];
+		my $question=$parameters[$i+1];
+		my $type=$parameters[$i+2];
+		my $default=$parameters[$i+3];
+		if (defined($configs{"$parameter"})) {
+			$default=$configs{"$parameter"};
+		}
+		my $qnum=$i/4;
+		my $answer=get("$qnum. $question", $default, "$parameter");
+		if ($type) {
+			$configs{"$parameter"}=1. * $answer;
+		} else {
+			$configs{"$parameter"}="\"" . $answer . "\"";
+		}
+		print $fh "$parameter=$configs{$parameter}\n";
+	}
+}
+
 # Default options
 $help = 0;
 
@@ -133,8 +363,6 @@ if ($help) {
 }
 
 # Let's start
-push @parameters, "LAGO_DAQ"; 
-push @parameter_questions, "LAGO_DAQ environment variable";
 
 # Check if LAGO environment is defined
 $now = gmtime();
@@ -180,75 +408,101 @@ if (-e "lago-configs") {
 	read_configs();
 	die "# ERROR\tSomething was wrong creating new 'lago-configs' file. Nothing change.\nBye\n" unless not (cmd('mkdir -p lago-old-configs; mv lago-configs lago-old-configs/lago-configs_$(date -u +%Y%m%d_%H%M%S)'));
 } else {
-	$tmp=get("# WARNING\tI can't find a previous 'lago-configs' file.\nThis could mean that this is the first time you will run the LAGO ACQUA BRC DAQ\nin this system, or that you are not in the correct directory. If you continue, a new lago-configs file will be created here and the current path will be assumed as the LAGO DAQ main directory.\n\nDo you want to continue (y/n)",'n',"NEWCONFIG");
-	die "\n# STATUS\tCheck if you are in the correct directory. Configuration not changed.\nBye\n" unless ($tmp eq 'y');
+	$tmp=get("# WARNING\tI can't find a previous 'lago-configs' file.\n\t\tThis could mean that this is the first time you will run\n\t\tthe LAGO ACQUA BRC DAQ in this system, or that you are not\n\t\tin the correct directory. If you continue, a new lago-configs\n\t\tfile will be created here and the current path will be assumed\n\t\tas the LAGO DAQ main directory.\nDo you want to continue (y/n)",'n',"NEWCONFIG");
+	die "\n# STATUS\tCheck if you are in the correct directory. Conf not changed.\nBye\n" unless ($tmp eq 'y');
 }
 
-# Parameters
-print "\n# BLOCK\t\tSITE PARAMETERS\n";
-push @parameters, 
-"siteName", 
-"siteLat", 
-"siteLong", 
-"siteAlt",
-"siteRespName",
-"siteRespId",
-"siteRespEmail",
-"siteInst",
-"siteDetectors",
-"detector1Name",
-"detector1Diameter",
-"detector1Height",
-"detector1HV",
-"detector1Trigger";
-
-push @parameter_questions, 
-"Site Name", 
-"Site Latitude (+/- dec deg, <0 = South)", 
-"Site Longitude (+/- dec deg, <0 = West)", 
-"Site Altitude (m a.s.l.)",
-"Site Responsible Name",
-"Site Responsible OrcId",
-"Site Responsible email",
-"Site Institution",
-"Number of Detectors in this site";
-
-
-
-# Ask the questions....
-
-foreach $i (1 .. @parameters-1) {
-	$parameter=$parameters[$i];
-	$parameter_question=$parameter_questions[$i];
-	$configs{"$parameter"}=get("$i. $parameter_question",$configs{"$parameter"},"$parameter");
-}
-cmd();
-
-# ... and write the answers...
-
-print "# SUCCESS\tDone. Writing the new lago-configs file\n";
-open ($fh, "> lago-configs") or die "# ERROR\tCan't open lago-configs file for writing: $!\n";
+# new lago-configs
+open ($fh, "> lago-configs-tmp") or die "# ERROR\tCan't open lago-configs file for writing: $!\n";
 $now = gmtime();
 print $fh "#########################################################
-# LAGO AQCUA DAQ CONFIGURATION FILE						#
-# (c) The LAGO Project - lago\@lagoproject.org			#
-# 2015 - Today											#
-#														#
-# PLEASE DON'T MODIFY THIS FILE BY HAND.				#
-# IF YOU NEED TO CHANGE SOME CONFIGURATION PARAMETERS	#
-# PLEASE USE											#
-#														#
-# ./lago-config.pl										#
-#														#
+# LAGO AQCUA DAQ CONFIGURATION FILE                     #
+# (c) The LAGO Project - lago\@lagoproject.org           #
+# 2015 - Today                                          #
+#                                                       #
+# PLEASE DON'T MODIFY THIS FILE BY HAND.                #
+# IF YOU NEED TO CHANGE SOME CONFIGURATION PARAMETERS   #
+# PLEASE USE                                            #
+#                                                       #
+# ./lago-config.pl                                      #
+#                                                       #
 #########################################################
 
 # This file was created on $now UTC
 ";
+# system
+$configs{"$parameters[0]"}=$ENV{"$parameters[0]"};
+print $fh "\n# BLOCK\t\tSYSTEM\n";
+print $fh "$parameters[0]=\"$configs{$parameters[0]}\"\n";
 
-foreach $key (sort keys %configs) {
-	print $fh "$key=$configs{$key}\n";
+# Ask the questions....
+# blocks
+$block="# BLOCK\t\tSITE PARAMETERS";
+ask(4,39,$block);
+
+
+$block="# BLOCK\t\tDETECTOR PARAMETERS: 1";
+ask(40,67,$block);
+if ($configs{"siteDetectors"} > 1) {
+	$block="# BLOCK\t\tDETECTOR PARAMETERS: 2";
+	ask(68,95,$block);
 }
-print "# SUCCESS\tAll done. Configuring and launching acquisition...\n";
-# do something here
-print "# SUCCESS\tDone. Acquisition is running on screen:\n";
+if ($configs{"siteDetectors"} > 2) {
+	$block="# BLOCK\t\tDETECTOR PARAMETERS: 3";
+	ask(96,123,$block);
+}
+
+$block="# BLOCK\t\tCALIBRATION PARAMETERS: 1";
+ask(124,131,$block);
+if ($configs{"siteDetectors"} > 1) {
+	$block="# BLOCK\t\tCALIBRATION PARAMETERS: 2";
+	ask(132,139,$block);
+}
+if ($configs{"siteDetectors"} > 2) {
+	$block="# BLOCK\t\tCALIBRATION PARAMETERS: 3";
+	ask(140,147,$block);
+}
+
+$block="# BLOCK\t\tACQUISITION SYSTEM";
+ask(148,155,$block);
+print $fh "$parameters[156]=\"$configs{$parameters[0]}\"\n";
+print $fh "$parameters[160]=\"$ENV{'USER'}\"\n";
+print $fh "$parameters[164]=\"$daq_version\"\n";
+$now=time;
+print $fh "$parameters[168]=$now\n";
+print "# SUCCESS\tDone. Writing the new lago-configs file\n";
+cmd("mv lago-configs-tmp lago-configs");
+# now, modify crontab.run
+open($fh, "> crontab.run") or die "# ERROR:\t\tCan't open crontab.run: $!\n";
+print $fh "# Edit this file to introduce tasks to be run by cron.
+# # 
+# # Each task to run has to be defined through a single line
+# # indicating with different fields when the task will be run
+# # and what command to run for the task
+# # 
+# # To define the time you can provide concrete values for
+# # minute (m), hour (h), day of month (dom), month (mon),
+# # and day of week (dow) or use '*' in these fields (for 'any').# 
+# # Notice that tasks will be started based on the cron's system
+# # daemon's notion of time and timezones.
+# # 
+# # Output of the crontab jobs (including errors) is sent through
+# # email to the user the crontab file belongs to (unless redirected).
+# # 
+# # For example, you can run a backup of all your user accounts
+# # at 5 a.m every week with:
+# # 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# # 
+# # For more information see the manual pages of crontab(5) and cron(8)
+# # 
+# # m h  dom mon dow   command
+* * * * * $configs{$parameters[0]}/lago-start.sh
+10 * * * * $configs{$parameters[0]}/lago-proc.sh
+";
+close($fh);
+print "# SUCCESS\tNew crontab.run created.\n";
 print "# SUCCESS\tEverything was fine. Enjoy.\n";
+print "######################################################################\n";
+print "# Now, open a new terminal and run ./lago-start.sh                   #\n";
+print "# DO NOT USE THIS TERMINAL, JUST IN CASE ENVIROMENTS ARE NOT DEFINED #\n";
+print "######################################################################\n";

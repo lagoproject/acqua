@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source configs
+source ${LAGO_DAQ}/lago-configs
 cd ${work}
 
 crontab crontab.stop

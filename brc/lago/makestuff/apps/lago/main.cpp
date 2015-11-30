@@ -109,6 +109,7 @@ int			fFirstTime=true;
 int			fScanJTAG;
 int			fUsbPower=true;
 int			fXsvfFile;
+int			fShowVersion;
 
 char		szAction[cMaxChrLen];
 char		szRegister[cMaxChrLen];
@@ -347,7 +348,6 @@ int main(int cszArg, char * rgszArg[]) {
   else if (fGetGPS) {
     DoGetGPSnFifoSync();			/* Save file with contents of register */
   }
-
   else if (fToFile || fToStdout) {
     for(i=0; i<7; i++) {
       status=flReadChannel(handle, 100, AddrGPSDate[i], 1, &gpsDate[i], &error);
@@ -1093,6 +1093,7 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
   fCountRepFifos	= false;
   fXsvfFile		= false;
   fScanJTAG		= false;
+  fShowVersion	= false;
 
   /* Ensure sufficient paramaters. Need at least program name and
       ** action flag
@@ -1131,6 +1132,10 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
   } else if( strcmp(szAction, "-j") == 0) {
     fScanJTAG = true;
     return true;
+  } else if( strcmp(szAction, "-v") == 0) {
+	fShowVersion = true;
+	printf("LAGO ACQUA BRC v%dr%d data v%d\n",VERSION,REVISION,DATAVERSION);
+	return false;
   } else { // unrecognized action
     return false;
   }
@@ -1286,41 +1291,42 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 */
 
 void ShowUsageSync(char * szProgName) {
-
-  printf("\n\tThe LAGO ACQUA suite\n");
-  printf("\tData acquisition system for the LAGO BRC electronic\n");
-  printf("\t(c) 2012-Today, The LAGO Project, http://lagoproject.org\n");
-  printf("\t(c) 2012, LabDPR, http://labdpr.cab.cnea.gov.ar\n");
-  printf("\n\tThe LAGO Project, lago@lagoproject.org\n");
-  printf("\tH. Arnaldi, lharnaldi@gmail.com - H. Asorey, asoreyh@gmail.com\n");
-  printf("\n\t%s v%dr%d comms soft for data version v%dr0\n\n",EXP,VERSION,REVISION,DATAVERSION);
-  printf("Usage: %s <action> <register> <value> [options]\n", szProgName);
-
-  printf("\n\tActions:\n");
-  printf("\t-x\t\t\t\tSpecify .xsvf file to load into FPGA\n");
-//  printf("\t-r\t\t\t\tGet a single register value\n");
-//  printf("\t-p\t\t\t\tPut a value into a single register\n");
-  printf("\t-a\t\t\t\tGet all registers status\n");
-  printf("\t-s\t\t\t\tSet registers\n");
-  printf("\t-f\t\t\t\tStart DAQ and save data to file\n");
-  printf("\t-o\t\t\t\tStart DAQ and send data to stdout\n");
-  printf("\t-g\t\t\t\tGet GPS data\n");
-  printf("\t-t\t\t\t\tGet Pressure and Temperature data\n");
-
-  printf("\n\tRegisters:\n");
-  printf("\tt1, t2, t3\t\t\tSpecify triggers 1, 2 and 3\n");
-  printf("\tst1, st2, st3\t\t\tSpecify subtriggers 1, 2 and 3\n");
-  printf("\thv1, hv2, hv3\t\t\tSpecify high voltages ...\n");
-  printf("\ttm\t\t\t\tSpecify Time Mode for GPS Receiver (0 - UTC, 1 - GPS)\n");
-
-  printf("\n\tOptions:\n");
-  printf("\t-f <filename>\t\t\tSpecify file name\n");
-  printf("\t-c <# bytes>\t\t\tNumber of bytes to read/write\n");
-  printf("\t-b <byte>\t\t\tValue to load into register\n");
-
-  printf("\n\n");
+  if (!fShowVersion) {
+    printf("\n\tThe LAGO ACQUA suite\n");
+    printf("\tData acquisition system for the LAGO BRC electronic\n");
+    printf("\t(c) 2012-Today, The LAGO Project, http://lagoproject.org\n");
+    printf("\t(c) 2012, LabDPR, http://labdpr.cab.cnea.gov.ar\n");
+    printf("\n\tThe LAGO Project, lago@lagoproject.org\n");
+    printf("\tH. Arnaldi, lharnaldi@gmail.com - H. Asorey, asoreyh@gmail.com\n");
+    printf("\n\t%s v%dr%d comms soft for data version v%dr0\n\n",EXP,VERSION,REVISION,DATAVERSION);
+    printf("Usage: %s <action> <register> <value> [options]\n", szProgName);
+  
+    printf("\n\tActions:\n");
+    printf("\t-x\t\t\t\tSpecify .xsvf file to load into FPGA\n");
+  //  printf("\t-r\t\t\t\tGet a single register value\n");
+  //  printf("\t-p\t\t\t\tPut a value into a single register\n");
+    printf("\t-a\t\t\t\tGet all registers status\n");
+    printf("\t-s\t\t\t\tSet registers\n");
+    printf("\t-f\t\t\t\tStart DAQ and save data to file\n");
+    printf("\t-o\t\t\t\tStart DAQ and send data to stdout\n");
+    printf("\t-g\t\t\t\tGet GPS data\n");
+    printf("\t-t\t\t\t\tGet Pressure and Temperature data\n");
+    printf("\t-v\t\t\t\tShow DAQ version\n");
+  
+    printf("\n\tRegisters:\n");
+    printf("\tt1, t2, t3\t\t\tSpecify triggers 1, 2 and 3\n");
+    printf("\tst1, st2, st3\t\t\tSpecify subtriggers 1, 2 and 3\n");
+    printf("\thv1, hv2, hv3\t\t\tSpecify high voltages ...\n");
+    printf("\ttm\t\t\t\tSpecify Time Mode for GPS Receiver (0 - UTC, 1 - GPS)\n");
+  
+    printf("\n\tOptions:\n");
+    printf("\t-f <filename>\t\t\tSpecify file name\n");
+    printf("\t-c <# bytes>\t\t\tNumber of bytes to read/write\n");
+    printf("\t-b <byte>\t\t\tValue to load into register\n");
+  
+    printf("\n\n");
+  }
 }
-
 
 /* ------------------------------------------------------------ */
 /***	ErrorExitSync
