@@ -2,8 +2,7 @@
 
 source ${LAGO_DAQ}/lago-configs
 cd ${work}
-
-crontab crontab.stop
+crontab ${LAGO_DAQ}/crontab.stop
 
 daq=$(ps aux | grep lago | grep SCREEN | awk '{print $2}')
 kill ${daq}

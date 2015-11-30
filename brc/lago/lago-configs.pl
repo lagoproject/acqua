@@ -235,7 +235,15 @@ push @parameters,
 	1,
 	1000,
 	
-	# DAQ 148-155 
+	# DAQ 148-167
+	"hasUSB",
+	"If yes, files will be placed into a usb stick. Otherwise it will be locate in the run directory (y/n)",
+	2,
+	'y',
+	"devUSB",
+	"Device for the usb, usually sdXN, but please check to avoid data loss",
+	0,
+	"sdb1",
 	"usb",
 	"Where the compressed data and processed files will be located (complete path)",
 	0,
@@ -244,8 +252,12 @@ push @parameters,
 	"Number of gates of Nexys2 fpga (500/1200)",
 	1,
 	500,
+	"analyzeRaw",
+	"Do analyze raw data using L1 raw.cc from ANNA module (y/n)?",
+	2,
+	"n",
 	
-	# SENSORS 156-183
+	# SENSORS 168-193
 	"hasGPS",
 	"Is GPS module installed (y/n)",
 	2,
@@ -416,7 +428,8 @@ unless (defined($ENV{"$parameters[0]"})) {
 	$configs{"$parameters[0]"}=$pwd;
 	open ($fh, "> tmp") or die "# ERROR\tCan't write files here!: $!\n";
 	print $fh "\n#\n# Changes added by the LAGO ACQUA suite on $now UTC\n#\n";
-	print $fh "export $parameters[0]='$pwd'\n\n";
+	print $fh "export $parameters[0]='$configs{$parameters[0]}'\n\n";
+	print $fh "export PATH=\"$configs{$parameters[0]}:\$PATH\"\n\n";
 	close($fh);
 	cmd("cp $home/.bashrc $home/.bashrc-lago.bak");
 	cmd("cat tmp >> $home/.bashrc")	;
@@ -509,11 +522,11 @@ if ($configs{"siteDetectors"} > 2) {
 
 $blockN=3; # DAQ
 $block="# BLOCK\t\tACQUISITION SYSTEM";
-ask(148,155,$block,$blockN);
+ask(148,167,$block,$blockN);
 
 $blockN=4; # SENSORS
 $block="# BLOCK\t\tSENSORS";
-ask(156,183,$block,$blockN);
+ask(168,193,$block,$blockN);
 
 # not asking values (backward compatibility)
 $now=time;
@@ -523,7 +536,10 @@ print $fh "version=\"$daq_version\"\n";
 print $fh "configTime=$now\n";
 print "# SUCCESS\tDone. Writing the new lago-configs file\n";
 cmd("mv lago-configs-tmp lago-configs");
+
 # now, modify crontab.run
+$bash=`which bash`;
+chomp($bash);
 open($fh, "> crontab.run") or die "# ERROR:\t\tCan't open crontab.run: $!\n";
 print $fh "# Edit this file to introduce tasks to be run by cron.
 # # 
@@ -547,13 +563,44 @@ print $fh "# Edit this file to introduce tasks to be run by cron.
 # # For more information see the manual pages of crontab(5) and cron(8)
 # # 
 # # m h  dom mon dow   command
-* * * * * $configs{$parameters[0]}/lago-start.sh
-10 * * * * $configs{$parameters[0]}/lago-proc.sh
+* * * * * $bash -lic $configs{$parameters[0]}/lago-start.sh
+10 * * * * $bash -lic $configs{$parameters[0]}/lago-proc.sh
+# eventually some rsync.sh to transfer files to the repository
 ";
 close($fh);
+
+# and crontab.stop
+open($fh, "> crontab.stop") or die "# ERROR:\t\tCan't open crontab.stop: $!\n";
+print $fh "# Edit this file to introduce tasks to be run by cron.
+# # 
+# # Each task to run has to be defined through a single line
+# # indicating with different fields when the task will be run
+# # and what command to run for the task
+# # 
+# # To define the time you can provide concrete values for
+# # minute (m), hour (h), day of month (dom), month (mon),
+# # and day of week (dow) or use '*' in these fields (for 'any').# 
+# # Notice that tasks will be started based on the cron's system
+# # daemon's notion of time and timezones.
+# # 
+# # Output of the crontab jobs (including errors) is sent through
+# # email to the user the crontab file belongs to (unless redirected).
+# # 
+# # For example, you can run a backup of all your user accounts
+# # at 5 a.m every week with:
+# # 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# # 
+# # For more information see the manual pages of crontab(5) and cron(8)
+# # 
+# # m h  dom mon dow   command
+";
+close($fh);
+
 print "# SUCCESS\tNew crontab.run created.\n";
 print "# SUCCESS\tEverything was fine. Enjoy.\n";
 print "######################################################################\n";
 print "# Now, open a new terminal and run ./lago-start.sh                   #\n";
+print "# Please verify lago-configs content to be sure everything is right  #\n";
+print "# cat lago-configs                                                   #\n";
 print "# DO NOT USE THIS TERMINAL, JUST IN CASE ENVIROMENTS ARE NOT DEFINED #\n";
 print "######################################################################\n";
