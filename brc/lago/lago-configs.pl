@@ -563,8 +563,8 @@ print $fh "# Edit this file to introduce tasks to be run by cron.
 # # For more information see the manual pages of crontab(5) and cron(8)
 # # 
 # # m h  dom mon dow   command
-*/5 * * * * $bash -ic $configs{$parameters[0]}/lago-start.sh
-10 * * * * $bash -ic $configs{$parameters[0]}/lago-proc.sh
+*/5 * * * * $bash -ic $configs{$parameters[0]}/lago-start.sh > $configs{$parameters[0]}/lago-daq.log 2>&1
+10 * * * * $bash -ic $configs{$parameters[0]}/lago-proc.sh 
 # eventually some rsync.sh to transfer files to the repository
 ";
 close($fh);
@@ -602,6 +602,6 @@ print "######################################################################\n"
 print "# Now, we are ready to start the acquisition                         #\n";
 print "# Please verify lago-configs content to be sure everything is right  #\n";
 print "# cat lago-configs                                                   #\n";
-print "# BEFORE TO CONTINUE, PLEASE:  source $home/.basrc                   #\n";
+print "# BEFORE TO CONTINUE, PLEASE:  source $home/.bashrc             #\n";
 print "# and then:                    lago-start.sh                         #\n";
 print "######################################################################\n";

@@ -9,12 +9,20 @@ detector3Trigger=1000
 source ${LAGO_DAQ}/lago-configs
 cd ${work}
 
-#check for 1443:0020 is not needed anymore in the new DAQ version
-#flash=$(lsusb -d 1443:0020)
-#if [ "X$flash" == "X" ]; then
-./lago -x lago_fpga_vhdl_ram_${fpgaGates}k.xsvf
-sleep 10
-#fi
+maxchecks=5
+for i in $(seq 1 $maxchecks); do
+  echo "Try $i"; echo
+  ./lago -x lago_fpga_vhdl_ram_500k.xsvf && break
+  echo
+done
+
+if [ "$i" -eq "$maxchecks" ]; then
+    echo
+    echo "# ERROR: Something was wrong with DAQ setup. I tried five times with no success. Please check"
+    exit
+fi
+sleep 5
+
 # Loop to wait for GPS to start working and configue true date
 gps=${hasGPS} 
 # this is highly experimental and should not be used.
