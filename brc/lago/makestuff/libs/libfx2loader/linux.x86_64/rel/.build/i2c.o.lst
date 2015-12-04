@@ -777,18 +777,18 @@
  645              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 i2c.c
-     /tmp/ccsGOeHd.s:11     .text:0000000000000000 dumpChunk.part.0
-     /tmp/ccsGOeHd.s:174    .text:0000000000000160 i2cInitialise
-     /tmp/ccsGOeHd.s:216    .text:00000000000001b0 i2cWritePromRecords
-     /tmp/ccsGOeHd.s:422    .text:0000000000000360 i2cReadPromRecords
-     /tmp/ccsGOeHd.s:580    .text:00000000000004e0 i2cFinalise
-     /tmp/ccsGOeHd.s:3      .rodata.str1.1:0000000000000000 .LC0
-     /tmp/ccsGOeHd.s:207    .rodata.str1.8:0000000000000000 .LC3
-     /tmp/ccsGOeHd.s:407    .rodata.str1.8:0000000000000038 .LC5
-     /tmp/ccsGOeHd.s:413    .rodata.str1.1:000000000000000c .LC7
-     /tmp/ccsGOeHd.s:410    .rodata.str1.8:0000000000000078 .LC6
-     /tmp/ccsGOeHd.s:568    .rodata.str1.8:00000000000000b8 .LC9
-     /tmp/ccsGOeHd.s:571    .rodata.str1.1:0000000000000021 .LC10
+     /tmp/cc9Il6fl.s:11     .text:0000000000000000 dumpChunk.part.0
+     /tmp/cc9Il6fl.s:174    .text:0000000000000160 i2cInitialise
+     /tmp/cc9Il6fl.s:216    .text:00000000000001b0 i2cWritePromRecords
+     /tmp/cc9Il6fl.s:422    .text:0000000000000360 i2cReadPromRecords
+     /tmp/cc9Il6fl.s:580    .text:00000000000004e0 i2cFinalise
+     /tmp/cc9Il6fl.s:3      .rodata.str1.1:0000000000000000 .LC0
+     /tmp/cc9Il6fl.s:207    .rodata.str1.8:0000000000000000 .LC3
+     /tmp/cc9Il6fl.s:407    .rodata.str1.8:0000000000000038 .LC5
+     /tmp/cc9Il6fl.s:413    .rodata.str1.1:000000000000000c .LC7
+     /tmp/cc9Il6fl.s:410    .rodata.str1.8:0000000000000078 .LC6
+     /tmp/cc9Il6fl.s:568    .rodata.str1.8:00000000000000b8 .LC9
+     /tmp/cc9Il6fl.s:571    .rodata.str1.1:0000000000000021 .LC10
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

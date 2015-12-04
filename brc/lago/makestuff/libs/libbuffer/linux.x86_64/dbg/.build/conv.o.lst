@@ -296,10 +296,10 @@
  222              		.file 2 "/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/common/makestu
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 conv.c
-     /tmp/cc9L4lqW.s:6      .text:0000000000000000 getHexNibble
-     /tmp/cc9L4lqW.s:76     .text:0000000000000074 getHexByte
-     /tmp/cc9L4lqW.s:147    .text:0000000000000111 getHexUpperNibble
-     /tmp/cc9L4lqW.s:185    .text:000000000000013f getHexLowerNibble
+     /tmp/ccwPWOVJ.s:6      .text:0000000000000000 getHexNibble
+     /tmp/ccwPWOVJ.s:76     .text:0000000000000074 getHexByte
+     /tmp/ccwPWOVJ.s:147    .text:0000000000000111 getHexUpperNibble
+     /tmp/ccwPWOVJ.s:185    .text:000000000000013f getHexLowerNibble
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

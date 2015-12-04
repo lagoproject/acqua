@@ -709,8 +709,8 @@
  369              		.file 3 "libsync.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libsync.c
-     /tmp/ccTjx73K.s:11     .text:0000000000000000 syncBulkEndpoints
-     /tmp/ccTjx73K.s:155    .text:000000000000015b trySync
+     /tmp/cc3I9YE4.s:11     .text:0000000000000000 syncBulkEndpoints
+     /tmp/cc3I9YE4.s:155    .text:000000000000015b trySync
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

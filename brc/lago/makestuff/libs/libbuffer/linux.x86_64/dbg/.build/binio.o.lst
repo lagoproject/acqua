@@ -368,8 +368,8 @@
  246              		.file 7 "libbuffer.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 binio.c
-     /tmp/ccSkfVh9.s:13     .text:0000000000000000 bufAppendFromBinaryFile
-     /tmp/ccSkfVh9.s:166    .text:0000000000000184 bufWriteBinaryFile
+     /tmp/cc8QXdAV.s:13     .text:0000000000000000 bufAppendFromBinaryFile
+     /tmp/cc8QXdAV.s:166    .text:0000000000000184 bufWriteBinaryFile
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

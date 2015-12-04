@@ -439,10 +439,10 @@
  380              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 liberror.c
-     /tmp/ccIdE1ru.s:9      .text:0000000000000000 errRender
-     /tmp/ccIdE1ru.s:142    .text:0000000000000160 errRenderStd
-     /tmp/ccIdE1ru.s:273    .text:0000000000000220 errFree
-     /tmp/ccIdE1ru.s:291    .text:0000000000000230 errPrefix
+     /tmp/ccaUQKuQ.s:9      .text:0000000000000000 errRender
+     /tmp/ccaUQKuQ.s:142    .text:0000000000000160 errRenderStd
+     /tmp/ccaUQKuQ.s:273    .text:0000000000000220 errFree
+     /tmp/ccaUQKuQ.s:291    .text:0000000000000230 errPrefix
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

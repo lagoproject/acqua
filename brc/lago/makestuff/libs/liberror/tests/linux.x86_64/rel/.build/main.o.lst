@@ -20,7 +20,7 @@
   21              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.cpp
-     /tmp/ccC1Nat9.s:9      .text.startup:0000000000000000 main
+     /tmp/ccVcv6p4.s:9      .text.startup:0000000000000000 main
 
 UNDEFINED SYMBOLS
 _ZN8UnitTest11RunAllTestsEv
