@@ -281,10 +281,10 @@
  213              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 ram.c
-     /tmp/ccIoXGFm.s:19     .text:0000000000000000 fx2WriteRAM
-     /tmp/ccIoXGFm.s:7      .rodata.str1.8:0000000000000060 .LC1
-     /tmp/ccIoXGFm.s:4      .rodata.str1.8:0000000000000000 .LC0
-     /tmp/ccIoXGFm.s:10     .rodata.str1.8:00000000000000d0 .LC2
+     /tmp/ccYWCm84.s:19     .text:0000000000000000 fx2WriteRAM
+     /tmp/ccYWCm84.s:7      .rodata.str1.8:0000000000000060 .LC1
+     /tmp/ccYWCm84.s:4      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/ccYWCm84.s:10     .rodata.str1.8:00000000000000d0 .LC2
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

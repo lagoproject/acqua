@@ -761,8 +761,8 @@
  376              		.file 9 "libusbwrap.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 printConfig.c
-     /tmp/ccx9urGz.s:5      .text:0000000000000000 littleEndian16
-     /tmp/ccx9urGz.s:48     .text:0000000000000010 usbPrintConfiguration
+     /tmp/ccnPXFQC.s:5      .text:0000000000000000 littleEndian16
+     /tmp/ccnPXFQC.s:48     .text:0000000000000010 usbPrintConfiguration
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

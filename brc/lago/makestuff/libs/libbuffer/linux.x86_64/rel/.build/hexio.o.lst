@@ -1684,33 +1684,33 @@
  1217              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hexio.c
-     /tmp/ccr4NFL7.s:52     .text:0000000000000000 bufProcessLine
-     /tmp/ccr4NFL7.s:498    .text:00000000000005b0 bufReadFromIntelHexFile
-     /tmp/ccr4NFL7.s:665    .text:0000000000000760 bufDeriveMask
-     /tmp/ccr4NFL7.s:800    .text:0000000000000850 bufWriteToIntelHexFile
-     /tmp/ccr4NFL7.s:3      .rodata.str1.1:0000000000000000 .LC0
-     /tmp/ccr4NFL7.s:5      .rodata.str1.1:000000000000001c .LC1
-     /tmp/ccr4NFL7.s:7      .rodata.str1.1:0000000000000038 .LC2
-     /tmp/ccr4NFL7.s:9      .rodata.str1.1:0000000000000055 .LC3
-     /tmp/ccr4NFL7.s:13     .rodata.str1.1:000000000000008f .LC5
-     /tmp/ccr4NFL7.s:11     .rodata.str1.1:0000000000000072 .LC4
-     /tmp/ccr4NFL7.s:19     .rodata.str1.8:0000000000000000 .LC7
-     /tmp/ccr4NFL7.s:15     .rodata.str1.1:00000000000000ad .LC6
-     /tmp/ccr4NFL7.s:22     .rodata.str1.1:00000000000000c7 .LC8
-     /tmp/ccr4NFL7.s:24     .rodata.str1.1:00000000000000d5 .LC9
-     /tmp/ccr4NFL7.s:43     .rodata.str1.8:00000000000001b0 .LC15
-     /tmp/ccr4NFL7.s:28     .rodata.str1.8:0000000000000050 .LC10
-     /tmp/ccr4NFL7.s:40     .rodata.str1.8:0000000000000178 .LC14
-     /tmp/ccr4NFL7.s:37     .rodata.str1.8:0000000000000140 .LC13
-     /tmp/ccr4NFL7.s:34     .rodata.str1.8:0000000000000108 .LC12
-     /tmp/ccr4NFL7.s:31     .rodata.str1.8:00000000000000a8 .LC11
-     /tmp/ccr4NFL7.s:483    .rodata.str1.1:00000000000000da .LC17
-     /tmp/ccr4NFL7.s:489    .rodata.str1.8:00000000000001e0 .LC19
-     /tmp/ccr4NFL7.s:485    .rodata.str1.1:00000000000000dd .LC18
-     /tmp/ccr4NFL7.s:782    .rodata.str1.1:00000000000000e9 .LC22
-     /tmp/ccr4NFL7.s:784    .rodata.str1.1:00000000000000ec .LC23
-     /tmp/ccr4NFL7.s:791    .rodata.str1.1:00000000000000f9 .LC25
-     /tmp/ccr4NFL7.s:788    .rodata.str1.8:0000000000000210 .LC24
+     /tmp/ccQ5Fysd.s:52     .text:0000000000000000 bufProcessLine
+     /tmp/ccQ5Fysd.s:498    .text:00000000000005b0 bufReadFromIntelHexFile
+     /tmp/ccQ5Fysd.s:665    .text:0000000000000760 bufDeriveMask
+     /tmp/ccQ5Fysd.s:800    .text:0000000000000850 bufWriteToIntelHexFile
+     /tmp/ccQ5Fysd.s:3      .rodata.str1.1:0000000000000000 .LC0
+     /tmp/ccQ5Fysd.s:5      .rodata.str1.1:000000000000001c .LC1
+     /tmp/ccQ5Fysd.s:7      .rodata.str1.1:0000000000000038 .LC2
+     /tmp/ccQ5Fysd.s:9      .rodata.str1.1:0000000000000055 .LC3
+     /tmp/ccQ5Fysd.s:13     .rodata.str1.1:000000000000008f .LC5
+     /tmp/ccQ5Fysd.s:11     .rodata.str1.1:0000000000000072 .LC4
+     /tmp/ccQ5Fysd.s:19     .rodata.str1.8:0000000000000000 .LC7
+     /tmp/ccQ5Fysd.s:15     .rodata.str1.1:00000000000000ad .LC6
+     /tmp/ccQ5Fysd.s:22     .rodata.str1.1:00000000000000c7 .LC8
+     /tmp/ccQ5Fysd.s:24     .rodata.str1.1:00000000000000d5 .LC9
+     /tmp/ccQ5Fysd.s:43     .rodata.str1.8:00000000000001b0 .LC15
+     /tmp/ccQ5Fysd.s:28     .rodata.str1.8:0000000000000050 .LC10
+     /tmp/ccQ5Fysd.s:40     .rodata.str1.8:0000000000000178 .LC14
+     /tmp/ccQ5Fysd.s:37     .rodata.str1.8:0000000000000140 .LC13
+     /tmp/ccQ5Fysd.s:34     .rodata.str1.8:0000000000000108 .LC12
+     /tmp/ccQ5Fysd.s:31     .rodata.str1.8:00000000000000a8 .LC11
+     /tmp/ccQ5Fysd.s:483    .rodata.str1.1:00000000000000da .LC17
+     /tmp/ccQ5Fysd.s:489    .rodata.str1.8:00000000000001e0 .LC19
+     /tmp/ccQ5Fysd.s:485    .rodata.str1.1:00000000000000dd .LC18
+     /tmp/ccQ5Fysd.s:782    .rodata.str1.1:00000000000000e9 .LC22
+     /tmp/ccQ5Fysd.s:784    .rodata.str1.1:00000000000000ec .LC23
+     /tmp/ccQ5Fysd.s:791    .rodata.str1.1:00000000000000f9 .LC25
+     /tmp/ccQ5Fysd.s:788    .rodata.str1.8:0000000000000210 .LC24
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

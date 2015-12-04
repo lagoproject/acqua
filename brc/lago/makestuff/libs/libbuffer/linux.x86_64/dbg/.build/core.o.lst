@@ -2327,27 +2327,27 @@
  1748              		.file 3 "libbuffer.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 core.c
-     /tmp/ccUbrKZR.s:11     .text:0000000000000000 bufInitialise
-     /tmp/ccUbrKZR.s:96     .text:00000000000000ba bufDestroy
-     /tmp/ccUbrKZR.s:133    .text:0000000000000100 bufDeepCopy
-     /tmp/ccUbrKZR.s:261    .text:0000000000000237 bufSwap
-     /tmp/ccUbrKZR.s:333    .text:00000000000002d2 bufZeroLength
-     /tmp/ccUbrKZR.s:379    .text:0000000000000317 reallocate
-     /tmp/ccUbrKZR.s:468    .text:00000000000003d7 bufAppendByte
-     /tmp/ccUbrKZR.s:536    .text:000000000000045e bufAppendWordLE
-     /tmp/ccUbrKZR.s:627    .text:000000000000052e bufAppendWordBE
-     /tmp/ccUbrKZR.s:718    .text:00000000000005fe bufAppendLongLE
-     /tmp/ccUbrKZR.s:828    .text:0000000000000706 bufAppendLongBE
-     /tmp/ccUbrKZR.s:938    .text:000000000000080e bufAppendConst
-     /tmp/ccUbrKZR.s:1009   .text:000000000000089e bufAppendBlock
-     /tmp/ccUbrKZR.s:1078   .text:000000000000092e maybeReallocate
-     /tmp/ccUbrKZR.s:1214   .text:0000000000000a49 bufWriteByte
-     /tmp/ccUbrKZR.s:1275   .text:0000000000000abf bufWriteWordLE
-     /tmp/ccUbrKZR.s:1356   .text:0000000000000b78 bufWriteWordBE
-     /tmp/ccUbrKZR.s:1437   .text:0000000000000c31 bufWriteLongLE
-     /tmp/ccUbrKZR.s:1533   .text:0000000000000d13 bufWriteLongBE
-     /tmp/ccUbrKZR.s:1629   .text:0000000000000df5 bufWriteConst
-     /tmp/ccUbrKZR.s:1689   .text:0000000000000e74 bufWriteBlock
+     /tmp/ccir3Qz1.s:11     .text:0000000000000000 bufInitialise
+     /tmp/ccir3Qz1.s:96     .text:00000000000000ba bufDestroy
+     /tmp/ccir3Qz1.s:133    .text:0000000000000100 bufDeepCopy
+     /tmp/ccir3Qz1.s:261    .text:0000000000000237 bufSwap
+     /tmp/ccir3Qz1.s:333    .text:00000000000002d2 bufZeroLength
+     /tmp/ccir3Qz1.s:379    .text:0000000000000317 reallocate
+     /tmp/ccir3Qz1.s:468    .text:00000000000003d7 bufAppendByte
+     /tmp/ccir3Qz1.s:536    .text:000000000000045e bufAppendWordLE
+     /tmp/ccir3Qz1.s:627    .text:000000000000052e bufAppendWordBE
+     /tmp/ccir3Qz1.s:718    .text:00000000000005fe bufAppendLongLE
+     /tmp/ccir3Qz1.s:828    .text:0000000000000706 bufAppendLongBE
+     /tmp/ccir3Qz1.s:938    .text:000000000000080e bufAppendConst
+     /tmp/ccir3Qz1.s:1009   .text:000000000000089e bufAppendBlock
+     /tmp/ccir3Qz1.s:1078   .text:000000000000092e maybeReallocate
+     /tmp/ccir3Qz1.s:1214   .text:0000000000000a49 bufWriteByte
+     /tmp/ccir3Qz1.s:1275   .text:0000000000000abf bufWriteWordLE
+     /tmp/ccir3Qz1.s:1356   .text:0000000000000b78 bufWriteWordBE
+     /tmp/ccir3Qz1.s:1437   .text:0000000000000c31 bufWriteLongLE
+     /tmp/ccir3Qz1.s:1533   .text:0000000000000d13 bufWriteLongBE
+     /tmp/ccir3Qz1.s:1629   .text:0000000000000df5 bufWriteConst
+     /tmp/ccir3Qz1.s:1689   .text:0000000000000e74 bufWriteBlock
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

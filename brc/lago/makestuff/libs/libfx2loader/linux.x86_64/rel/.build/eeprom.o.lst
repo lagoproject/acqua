@@ -428,11 +428,11 @@
  362              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 eeprom.c
-     /tmp/ccms389q.s:13     .text:0000000000000000 fx2WriteEEPROM
-     /tmp/ccms389q.s:179    .text:0000000000000130 fx2ReadEEPROM
-     /tmp/ccms389q.s:4      .rodata.str1.8:0000000000000000 .LC0
-     /tmp/ccms389q.s:170    .rodata.str1.8:00000000000000d0 .LC3
-     /tmp/ccms389q.s:166    .rodata.str1.1:0000000000000000 .LC2
+     /tmp/ccZIu1Ra.s:13     .text:0000000000000000 fx2WriteEEPROM
+     /tmp/ccZIu1Ra.s:179    .text:0000000000000130 fx2ReadEEPROM
+     /tmp/ccZIu1Ra.s:4      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/ccZIu1Ra.s:170    .rodata.str1.8:00000000000000d0 .LC3
+     /tmp/ccZIu1Ra.s:166    .rodata.str1.1:0000000000000000 .LC2
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

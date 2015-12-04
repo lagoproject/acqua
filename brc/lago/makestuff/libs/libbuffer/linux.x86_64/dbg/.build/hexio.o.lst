@@ -2296,12 +2296,12 @@
  1392              		.file 7 "libbuffer.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hexio.c
-     /tmp/ccpjiPwQ.s:47     .text:0000000000000000 bufProcessLine
-     /tmp/ccpjiPwQ.s:572    .text:0000000000000755 bufReadFromIntelHexFile
-     /tmp/ccpjiPwQ.s:732    .text:0000000000000970 writeHexByte
-     /tmp/ccpjiPwQ.s:771    .text:00000000000009bb writeHexWordBE
-     /tmp/ccpjiPwQ.s:835    .text:0000000000000a53 bufDeriveMask
-     /tmp/ccpjiPwQ.s:991    .text:0000000000000b7d bufWriteToIntelHexFile
+     /tmp/ccskFYA0.s:47     .text:0000000000000000 bufProcessLine
+     /tmp/ccskFYA0.s:572    .text:0000000000000755 bufReadFromIntelHexFile
+     /tmp/ccskFYA0.s:732    .text:0000000000000970 writeHexByte
+     /tmp/ccskFYA0.s:771    .text:00000000000009bb writeHexWordBE
+     /tmp/ccskFYA0.s:835    .text:0000000000000a53 bufDeriveMask
+     /tmp/ccskFYA0.s:991    .text:0000000000000b7d bufWriteToIntelHexFile
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

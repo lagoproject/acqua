@@ -9913,33 +9913,33 @@
  8376              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 core.c
-     /tmp/ccMVvSj7.s:13     .text:0000000000000000 bufInitialise
-     /tmp/ccMVvSj7.s:90     .text:0000000000000080 bufDestroy
-     /tmp/ccMVvSj7.s:120    .text:00000000000000b0 bufDeepCopy
-     /tmp/ccMVvSj7.s:420    .text:0000000000000460 bufSwap
-     /tmp/ccMVvSj7.s:454    .text:00000000000004a0 bufZeroLength
-     /tmp/ccMVvSj7.s:492    .text:00000000000004d0 bufAppendByte
-     /tmp/ccMVvSj7.s:794    .text:0000000000000880 bufAppendWordLE
-     /tmp/ccMVvSj7.s:1109   .text:0000000000000c50 bufAppendWordBE
-     /tmp/ccMVvSj7.s:1424   .text:0000000000001020 bufAppendLongLE
-     /tmp/ccMVvSj7.s:1749   .text:0000000000001410 bufAppendLongBE
-     /tmp/ccMVvSj7.s:2074   .text:0000000000001800 bufAppendConst
-     /tmp/ccMVvSj7.s:2384   .text:0000000000001bc0 bufAppendBlock
-     /tmp/ccMVvSj7.s:2702   .text:0000000000001f70 bufWriteByte
-     /tmp/ccMVvSj7.s:3503   .text:0000000000002a80 bufWriteWordLE
-     /tmp/ccMVvSj7.s:4314   .text:00000000000035b0 bufWriteWordBE
-     /tmp/ccMVvSj7.s:5125   .text:00000000000040e0 bufWriteLongLE
-     /tmp/ccMVvSj7.s:5947   .text:0000000000004c20 bufWriteLongBE
-     /tmp/ccMVvSj7.s:6770   .text:0000000000005760 bufWriteConst
-     /tmp/ccMVvSj7.s:7576   .text:0000000000006270 bufWriteBlock
-     /tmp/ccMVvSj7.s:4      .rodata.str1.8:0000000000000000 .LC0
-     /tmp/ccMVvSj7.s:483    .rodata.str1.8:0000000000000028 .LC6
-     /tmp/ccMVvSj7.s:2693   .rodata.str1.1:0000000000000000 .LC14
-     /tmp/ccMVvSj7.s:3494   .rodata.str1.1:000000000000000f .LC16
-     /tmp/ccMVvSj7.s:4305   .rodata.str1.1:0000000000000020 .LC18
-     /tmp/ccMVvSj7.s:5116   .rodata.str1.1:0000000000000031 .LC20
-     /tmp/ccMVvSj7.s:5938   .rodata.str1.1:0000000000000042 .LC22
-     /tmp/ccMVvSj7.s:6761   .rodata.str1.1:0000000000000053 .LC24
+     /tmp/ccTKs0rp.s:13     .text:0000000000000000 bufInitialise
+     /tmp/ccTKs0rp.s:90     .text:0000000000000080 bufDestroy
+     /tmp/ccTKs0rp.s:120    .text:00000000000000b0 bufDeepCopy
+     /tmp/ccTKs0rp.s:420    .text:0000000000000460 bufSwap
+     /tmp/ccTKs0rp.s:454    .text:00000000000004a0 bufZeroLength
+     /tmp/ccTKs0rp.s:492    .text:00000000000004d0 bufAppendByte
+     /tmp/ccTKs0rp.s:794    .text:0000000000000880 bufAppendWordLE
+     /tmp/ccTKs0rp.s:1109   .text:0000000000000c50 bufAppendWordBE
+     /tmp/ccTKs0rp.s:1424   .text:0000000000001020 bufAppendLongLE
+     /tmp/ccTKs0rp.s:1749   .text:0000000000001410 bufAppendLongBE
+     /tmp/ccTKs0rp.s:2074   .text:0000000000001800 bufAppendConst
+     /tmp/ccTKs0rp.s:2384   .text:0000000000001bc0 bufAppendBlock
+     /tmp/ccTKs0rp.s:2702   .text:0000000000001f70 bufWriteByte
+     /tmp/ccTKs0rp.s:3503   .text:0000000000002a80 bufWriteWordLE
+     /tmp/ccTKs0rp.s:4314   .text:00000000000035b0 bufWriteWordBE
+     /tmp/ccTKs0rp.s:5125   .text:00000000000040e0 bufWriteLongLE
+     /tmp/ccTKs0rp.s:5947   .text:0000000000004c20 bufWriteLongBE
+     /tmp/ccTKs0rp.s:6770   .text:0000000000005760 bufWriteConst
+     /tmp/ccTKs0rp.s:7576   .text:0000000000006270 bufWriteBlock
+     /tmp/ccTKs0rp.s:4      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/ccTKs0rp.s:483    .rodata.str1.8:0000000000000028 .LC6
+     /tmp/ccTKs0rp.s:2693   .rodata.str1.1:0000000000000000 .LC14
+     /tmp/ccTKs0rp.s:3494   .rodata.str1.1:000000000000000f .LC16
+     /tmp/ccTKs0rp.s:4305   .rodata.str1.1:0000000000000020 .LC18
+     /tmp/ccTKs0rp.s:5116   .rodata.str1.1:0000000000000031 .LC20
+     /tmp/ccTKs0rp.s:5938   .rodata.str1.1:0000000000000042 .LC22
+     /tmp/ccTKs0rp.s:6761   .rodata.str1.1:0000000000000053 .LC24
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

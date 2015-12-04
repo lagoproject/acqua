@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lago.h"
+#include "extras.h"
 
 void suggest(const char *prog) {
 	fprintf(stderr, "Try '%s -h' for more information.\n", prog);

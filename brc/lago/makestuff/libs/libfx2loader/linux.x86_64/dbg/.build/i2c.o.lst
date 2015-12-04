@@ -1169,11 +1169,11 @@
  822              		.file 5 "libfx2loader.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 i2c.c
-     /tmp/ccSR7Nut.s:6      .text:0000000000000000 i2cInitialise
-     /tmp/ccSR7Nut.s:87     .text:00000000000000b6 dumpChunk
-     /tmp/ccSR7Nut.s:261    .text:0000000000000278 i2cWritePromRecords
-     /tmp/ccSR7Nut.s:558    .text:0000000000000528 i2cReadPromRecords
-     /tmp/ccSR7Nut.s:738    .text:00000000000006ee i2cFinalise
+     /tmp/cc8ilYdJ.s:6      .text:0000000000000000 i2cInitialise
+     /tmp/cc8ilYdJ.s:87     .text:00000000000000b6 dumpChunk
+     /tmp/cc8ilYdJ.s:261    .text:0000000000000278 i2cWritePromRecords
+     /tmp/cc8ilYdJ.s:558    .text:0000000000000528 i2cReadPromRecords
+     /tmp/cc8ilYdJ.s:738    .text:00000000000006ee i2cFinalise
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

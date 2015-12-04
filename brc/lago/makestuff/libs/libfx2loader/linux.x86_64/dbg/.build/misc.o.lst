@@ -49,7 +49,7 @@
   29              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 misc.c
-     /tmp/ccK6klBn.s:6      .text:0000000000000000 fx2FreeError
+     /tmp/ccPEI5eA.s:6      .text:0000000000000000 fx2FreeError
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

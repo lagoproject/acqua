@@ -1,12 +1,18 @@
-all:
+all: check-lago
 	@sdcc -h > /dev/null 2> /dev/null || echo "\nREAD THE README!!!!\n"
 	@sdcc -h > /dev/null 2> /dev/null
-	cd makestuff/libs/libfpgalink && make deps
-	cd makestuff/apps/lago && make
-	cp -f makestuff/apps/lago/*/rel/* .
+	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make depclean && make deps
+	cd $(LAGO_DAQ)/makestuff/apps/lago && make
+	cp -f $(LAGO_DAQ)/makestuff/apps/lago/lago .
 
-clean:
-	cd makestuff/libs/libfpgalink && make clean deps
-	cd makestuff/libs/libfpgalink && make clean
-	cd makestuff/apps/lago && make clean
+clean: check-lago
+	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make clean deps
+	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make clean
+	cd $(LAGO_DAQ)/makestuff/apps/lago && make clean
 	rm lago lib*
+check-lago:
+ifndef LAGO_DAQ
+$(warning LAGO_DAQ is not set. Using $(PWD))
+LAGO_DAQ=$(PWD)
+$(warning LAGO_DAQ was set to $(LAGO_DAQ))
+endif

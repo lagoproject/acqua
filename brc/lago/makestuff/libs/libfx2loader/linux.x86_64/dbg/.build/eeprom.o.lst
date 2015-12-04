@@ -467,8 +467,8 @@
  280              		.file 4 "libfx2loader.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 eeprom.c
-     /tmp/ccPLDf7q.s:11     .text:0000000000000000 fx2WriteEEPROM
-     /tmp/ccPLDf7q.s:139    .text:0000000000000151 fx2ReadEEPROM
+     /tmp/ccprc2GG.s:11     .text:0000000000000000 fx2WriteEEPROM
+     /tmp/ccprc2GG.s:139    .text:0000000000000151 fx2ReadEEPROM
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

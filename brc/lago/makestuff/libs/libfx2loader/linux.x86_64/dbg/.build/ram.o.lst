@@ -346,7 +346,7 @@
  190              		.file 3 "libfx2loader.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 ram.c
-     /tmp/ccbIW4no.s:17     .text:0000000000000000 fx2WriteRAM
+     /tmp/ccT1Tf8v.s:17     .text:0000000000000000 fx2WriteRAM
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_
