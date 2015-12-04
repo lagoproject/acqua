@@ -303,13 +303,13 @@
  225              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 printConfig.c
-     /tmp/ccYyjPRB.s:32     .text:0000000000000000 usbPrintConfiguration
-     /tmp/ccYyjPRB.s:7      .rodata.str1.8:0000000000000000 .LC1
-     /tmp/ccYyjPRB.s:14     .rodata.str1.8:00000000000000f0 .LC3
-     /tmp/ccYyjPRB.s:19     .rodata.str1.8:0000000000000230 .LC4
-     /tmp/ccYyjPRB.s:23     .rodata.str1.1:0000000000000021 .LC5
-     /tmp/ccYyjPRB.s:10     .rodata.str1.1:000000000000001e .LC2
-     /tmp/ccYyjPRB.s:3      .rodata.str1.1:0000000000000000 .LC0
+     /tmp/cc0U8in6.s:32     .text:0000000000000000 usbPrintConfiguration
+     /tmp/cc0U8in6.s:7      .rodata.str1.8:0000000000000000 .LC1
+     /tmp/cc0U8in6.s:14     .rodata.str1.8:00000000000000f0 .LC3
+     /tmp/cc0U8in6.s:19     .rodata.str1.8:0000000000000230 .LC4
+     /tmp/cc0U8in6.s:23     .rodata.str1.1:0000000000000021 .LC5
+     /tmp/cc0U8in6.s:10     .rodata.str1.1:000000000000001e .LC2
+     /tmp/cc0U8in6.s:3      .rodata.str1.1:0000000000000000 .LC0
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

@@ -1797,18 +1797,18 @@
  1067              		.file 5 "libnero.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libnero.c
-     /tmp/ccQivX0Q.s:5      .text:0000000000000000 littleEndian16
-     /tmp/ccQivX0Q.s:27     .text:0000000000000010 littleEndian32
-     /tmp/ccQivX0Q.s:52     .text:000000000000001c neroInitialise
-     /tmp/ccQivX0Q.s:776    .text:0000000000000634 setEndpointSize
-     /tmp/ccQivX0Q.s:984    .text:00000000000008ed setJtagMode
-     /tmp/ccQivX0Q.s:132    .text:00000000000000ce neroClose
-     /tmp/ccQivX0Q.s:191    .text:0000000000000145 neroShift
-     /tmp/ccQivX0Q.s:532    .text:000000000000043f beginShift
-     /tmp/ccQivX0Q.s:638    .text:0000000000000532 doSend
-     /tmp/ccQivX0Q.s:702    .text:00000000000005b3 doReceive
-     /tmp/ccQivX0Q.s:374    .text:00000000000002e6 neroClockFSM
-     /tmp/ccQivX0Q.s:460    .text:00000000000003aa neroClocks
+     /tmp/ccK6hxQC.s:5      .text:0000000000000000 littleEndian16
+     /tmp/ccK6hxQC.s:27     .text:0000000000000010 littleEndian32
+     /tmp/ccK6hxQC.s:52     .text:000000000000001c neroInitialise
+     /tmp/ccK6hxQC.s:776    .text:0000000000000634 setEndpointSize
+     /tmp/ccK6hxQC.s:984    .text:00000000000008ed setJtagMode
+     /tmp/ccK6hxQC.s:132    .text:00000000000000ce neroClose
+     /tmp/ccK6hxQC.s:191    .text:0000000000000145 neroShift
+     /tmp/ccK6hxQC.s:532    .text:000000000000043f beginShift
+     /tmp/ccK6hxQC.s:638    .text:0000000000000532 doSend
+     /tmp/ccK6hxQC.s:702    .text:00000000000005b3 doReceive
+     /tmp/ccK6hxQC.s:374    .text:00000000000002e6 neroClockFSM
+     /tmp/ccK6hxQC.s:460    .text:00000000000003aa neroClocks
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

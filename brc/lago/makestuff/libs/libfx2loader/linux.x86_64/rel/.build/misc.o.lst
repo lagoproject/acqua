@@ -20,7 +20,7 @@
   21              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 misc.c
-     /tmp/cc9UppVc.s:9      .text:0000000000000000 fx2FreeError
+     /tmp/ccE2lcJ5.s:9      .text:0000000000000000 fx2FreeError
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

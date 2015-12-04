@@ -750,18 +750,18 @@
  637              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libusbwrap.c
-     /tmp/ccT1co9x.s:9      .text:0000000000000000 usbValidateVidPid
-     /tmp/ccT1co9x.s:159    .text:0000000000000170 usbInitialise
-     /tmp/ccT1co9x.s:181    .text:0000000000000180 usbIsDeviceAvailable
-     /tmp/ccT1co9x.s:293    .text:0000000000000220 usbOpenDevice
-     /tmp/ccT1co9x.s:533    .text:0000000000000430 usbOpenDeviceVP
-     /tmp/ccT1co9x.s:172    .rodata.str1.8:0000000000000000 .LC2
-     /tmp/ccT1co9x.s:276    .rodata.str1.1:0000000000000000 .LC4
-     /tmp/ccT1co9x.s:280    .rodata.str1.1:000000000000002a .LC6
-     /tmp/ccT1co9x.s:284    .rodata.str1.1:0000000000000060 .LC8
-     /tmp/ccT1co9x.s:278    .rodata.str1.1:000000000000001b .LC5
-     /tmp/ccT1co9x.s:282    .rodata.str1.1:0000000000000046 .LC7
-     /tmp/ccT1co9x.s:524    .rodata.str1.8:0000000000000040 .LC10
+     /tmp/ccCjnE80.s:9      .text:0000000000000000 usbValidateVidPid
+     /tmp/ccCjnE80.s:159    .text:0000000000000170 usbInitialise
+     /tmp/ccCjnE80.s:181    .text:0000000000000180 usbIsDeviceAvailable
+     /tmp/ccCjnE80.s:293    .text:0000000000000220 usbOpenDevice
+     /tmp/ccCjnE80.s:533    .text:0000000000000430 usbOpenDeviceVP
+     /tmp/ccCjnE80.s:172    .rodata.str1.8:0000000000000000 .LC2
+     /tmp/ccCjnE80.s:276    .rodata.str1.1:0000000000000000 .LC4
+     /tmp/ccCjnE80.s:280    .rodata.str1.1:000000000000002a .LC6
+     /tmp/ccCjnE80.s:284    .rodata.str1.1:0000000000000060 .LC8
+     /tmp/ccCjnE80.s:278    .rodata.str1.1:000000000000001b .LC5
+     /tmp/ccCjnE80.s:282    .rodata.str1.1:0000000000000046 .LC7
+     /tmp/ccCjnE80.s:524    .rodata.str1.8:0000000000000040 .LC10
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

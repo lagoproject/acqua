@@ -606,10 +606,10 @@
  381              		.file 4 "/usr/include/stdio.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 liberror.c
-     /tmp/ccFbrqvI.s:6      .text:0000000000000000 errRender
-     /tmp/ccFbrqvI.s:143    .text:00000000000001d1 errPrefix
-     /tmp/ccFbrqvI.s:356    .text:00000000000003b3 errFree
-     /tmp/ccFbrqvI.s:246    .text:00000000000002ca errRenderStd
+     /tmp/cco3aK5K.s:6      .text:0000000000000000 errRender
+     /tmp/cco3aK5K.s:143    .text:00000000000001d1 errPrefix
+     /tmp/cco3aK5K.s:356    .text:00000000000003b3 errFree
+     /tmp/cco3aK5K.s:246    .text:00000000000002ca errRenderStd
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

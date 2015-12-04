@@ -62,7 +62,7 @@
   42              		.file 18 "/usr/include/wctype.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.cpp
-     /tmp/ccJJ3ICb.s:6      .text:0000000000000000 main
+     /tmp/ccsKJPhZ.s:6      .text:0000000000000000 main
 
 UNDEFINED SYMBOLS
 _ZN8UnitTest11RunAllTestsEv

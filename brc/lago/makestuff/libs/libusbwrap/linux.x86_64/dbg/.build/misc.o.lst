@@ -49,7 +49,7 @@
   29              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 misc.c
-     /tmp/cc0fVkts.s:6      .text:0000000000000000 usbFreeError
+     /tmp/ccRc656V.s:6      .text:0000000000000000 usbFreeError
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

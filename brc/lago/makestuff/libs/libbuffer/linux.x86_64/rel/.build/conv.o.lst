@@ -173,10 +173,10 @@
  161              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 conv.c
-     /tmp/ccboEQvV.s:9      .text:0000000000000000 getHexNibble
-     /tmp/ccboEQvV.s:54     .text:0000000000000040 getHexByte
-     /tmp/ccboEQvV.s:119    .text:00000000000000c0 getHexUpperNibble
-     /tmp/ccboEQvV.s:143    .text:00000000000000e0 getHexLowerNibble
+     /tmp/ccXrpVat.s:9      .text:0000000000000000 getHexNibble
+     /tmp/ccXrpVat.s:54     .text:0000000000000040 getHexByte
+     /tmp/ccXrpVat.s:119    .text:00000000000000c0 getHexUpperNibble
+     /tmp/ccXrpVat.s:143    .text:00000000000000e0 getHexLowerNibble
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

@@ -460,12 +460,12 @@
  357              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libsync.c
-     /tmp/ccp9Posa.s:18     .text:0000000000000000 trySync
-     /tmp/ccp9Posa.s:210    .text:0000000000000220 syncBulkEndpoints
-     /tmp/ccp9Posa.s:4      .rodata.str1.8:0000000000000000 .LC0
-     /tmp/ccp9Posa.s:10     .rodata.str1.8:00000000000000a0 .LC2
-     /tmp/ccp9Posa.s:7      .rodata.str1.8:0000000000000050 .LC1
-     /tmp/ccp9Posa.s:201    .rodata.str1.8:0000000000000100 .LC4
+     /tmp/cc255KsV.s:18     .text:0000000000000000 trySync
+     /tmp/cc255KsV.s:210    .text:0000000000000220 syncBulkEndpoints
+     /tmp/cc255KsV.s:4      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/cc255KsV.s:10     .rodata.str1.8:00000000000000a0 .LC2
+     /tmp/cc255KsV.s:7      .rodata.str1.8:0000000000000050 .LC1
+     /tmp/cc255KsV.s:201    .rodata.str1.8:0000000000000100 .LC4
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

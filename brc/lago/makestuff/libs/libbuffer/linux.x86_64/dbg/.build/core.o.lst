@@ -2327,27 +2327,27 @@
  1748              		.file 3 "libbuffer.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 core.c
-     /tmp/ccYLXwBR.s:11     .text:0000000000000000 bufInitialise
-     /tmp/ccYLXwBR.s:96     .text:00000000000000ba bufDestroy
-     /tmp/ccYLXwBR.s:133    .text:0000000000000100 bufDeepCopy
-     /tmp/ccYLXwBR.s:261    .text:0000000000000237 bufSwap
-     /tmp/ccYLXwBR.s:333    .text:00000000000002d2 bufZeroLength
-     /tmp/ccYLXwBR.s:379    .text:0000000000000317 reallocate
-     /tmp/ccYLXwBR.s:468    .text:00000000000003d7 bufAppendByte
-     /tmp/ccYLXwBR.s:536    .text:000000000000045e bufAppendWordLE
-     /tmp/ccYLXwBR.s:627    .text:000000000000052e bufAppendWordBE
-     /tmp/ccYLXwBR.s:718    .text:00000000000005fe bufAppendLongLE
-     /tmp/ccYLXwBR.s:828    .text:0000000000000706 bufAppendLongBE
-     /tmp/ccYLXwBR.s:938    .text:000000000000080e bufAppendConst
-     /tmp/ccYLXwBR.s:1009   .text:000000000000089e bufAppendBlock
-     /tmp/ccYLXwBR.s:1078   .text:000000000000092e maybeReallocate
-     /tmp/ccYLXwBR.s:1214   .text:0000000000000a49 bufWriteByte
-     /tmp/ccYLXwBR.s:1275   .text:0000000000000abf bufWriteWordLE
-     /tmp/ccYLXwBR.s:1356   .text:0000000000000b78 bufWriteWordBE
-     /tmp/ccYLXwBR.s:1437   .text:0000000000000c31 bufWriteLongLE
-     /tmp/ccYLXwBR.s:1533   .text:0000000000000d13 bufWriteLongBE
-     /tmp/ccYLXwBR.s:1629   .text:0000000000000df5 bufWriteConst
-     /tmp/ccYLXwBR.s:1689   .text:0000000000000e74 bufWriteBlock
+     /tmp/cccMP22i.s:11     .text:0000000000000000 bufInitialise
+     /tmp/cccMP22i.s:96     .text:00000000000000ba bufDestroy
+     /tmp/cccMP22i.s:133    .text:0000000000000100 bufDeepCopy
+     /tmp/cccMP22i.s:261    .text:0000000000000237 bufSwap
+     /tmp/cccMP22i.s:333    .text:00000000000002d2 bufZeroLength
+     /tmp/cccMP22i.s:379    .text:0000000000000317 reallocate
+     /tmp/cccMP22i.s:468    .text:00000000000003d7 bufAppendByte
+     /tmp/cccMP22i.s:536    .text:000000000000045e bufAppendWordLE
+     /tmp/cccMP22i.s:627    .text:000000000000052e bufAppendWordBE
+     /tmp/cccMP22i.s:718    .text:00000000000005fe bufAppendLongLE
+     /tmp/cccMP22i.s:828    .text:0000000000000706 bufAppendLongBE
+     /tmp/cccMP22i.s:938    .text:000000000000080e bufAppendConst
+     /tmp/cccMP22i.s:1009   .text:000000000000089e bufAppendBlock
+     /tmp/cccMP22i.s:1078   .text:000000000000092e maybeReallocate
+     /tmp/cccMP22i.s:1214   .text:0000000000000a49 bufWriteByte
+     /tmp/cccMP22i.s:1275   .text:0000000000000abf bufWriteWordLE
+     /tmp/cccMP22i.s:1356   .text:0000000000000b78 bufWriteWordBE
+     /tmp/cccMP22i.s:1437   .text:0000000000000c31 bufWriteLongLE
+     /tmp/cccMP22i.s:1533   .text:0000000000000d13 bufWriteLongBE
+     /tmp/cccMP22i.s:1629   .text:0000000000000df5 bufWriteConst
+     /tmp/cccMP22i.s:1689   .text:0000000000000e74 bufWriteBlock
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

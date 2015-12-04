@@ -861,11 +861,11 @@
  555              		.file 5 "libusbwrap.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libusbwrap.c
-     /tmp/ccpyCavm.s:6      .text:0000000000000000 usbValidateVidPid
-     /tmp/ccpyCavm.s:141    .text:00000000000000fb usbInitialise
-     /tmp/ccpyCavm.s:166    .text:0000000000000106 usbIsDeviceAvailable
-     /tmp/ccpyCavm.s:272    .text:00000000000001d5 usbOpenDevice
-     /tmp/ccpyCavm.s:480    .text:0000000000000402 usbOpenDeviceVP
+     /tmp/ccdnYo1T.s:6      .text:0000000000000000 usbValidateVidPid
+     /tmp/ccdnYo1T.s:141    .text:00000000000000fb usbInitialise
+     /tmp/ccdnYo1T.s:166    .text:0000000000000106 usbIsDeviceAvailable
+     /tmp/ccdnYo1T.s:272    .text:00000000000001d5 usbOpenDevice
+     /tmp/ccdnYo1T.s:480    .text:0000000000000402 usbOpenDeviceVP
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

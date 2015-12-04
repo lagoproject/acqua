@@ -318,11 +318,11 @@
  274              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 binio.c
-     /tmp/ccEvehPL.s:16     .text:0000000000000000 bufAppendFromBinaryFile
-     /tmp/ccEvehPL.s:177    .text:0000000000000150 bufWriteBinaryFile
-     /tmp/ccEvehPL.s:3      .rodata.str1.1:0000000000000000 .LC0
-     /tmp/ccEvehPL.s:7      .rodata.str1.8:0000000000000000 .LC1
-     /tmp/ccEvehPL.s:168    .rodata.str1.1:0000000000000003 .LC3
+     /tmp/ccjKNr99.s:16     .text:0000000000000000 bufAppendFromBinaryFile
+     /tmp/ccjKNr99.s:177    .text:0000000000000150 bufWriteBinaryFile
+     /tmp/ccjKNr99.s:3      .rodata.str1.1:0000000000000000 .LC0
+     /tmp/ccjKNr99.s:7      .rodata.str1.8:0000000000000000 .LC1
+     /tmp/ccjKNr99.s:168    .rodata.str1.1:0000000000000003 .LC3
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_

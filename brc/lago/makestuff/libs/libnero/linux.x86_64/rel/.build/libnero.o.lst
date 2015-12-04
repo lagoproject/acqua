@@ -1039,27 +1039,27 @@
  811              		.section	.note.GNU-stack,"",@progbits
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 libnero.c
-     /tmp/cccC1VUW.s:21     .text:0000000000000000 setEndpointSize
-     /tmp/cccC1VUW.s:195    .text:00000000000001a0 neroInitialise
-     /tmp/cccC1VUW.s:287    .text:0000000000000260 neroClose
-     /tmp/cccC1VUW.s:375    .text:00000000000002f0 neroShift
-     /tmp/cccC1VUW.s:665    .text:0000000000000630 neroClockFSM
-     /tmp/cccC1VUW.s:744    .text:00000000000006c0 neroClocks
-     /tmp/cccC1VUW.s:13     .rodata.str1.8:00000000000000e0 .LC3
-     /tmp/cccC1VUW.s:7      .rodata.str1.8:0000000000000040 .LC1
-     /tmp/cccC1VUW.s:4      .rodata.str1.8:0000000000000000 .LC0
-     /tmp/cccC1VUW.s:10     .rodata.str1.8:0000000000000090 .LC2
-     /tmp/cccC1VUW.s:180    .rodata.str1.1:0000000000000000 .LC5
-     /tmp/cccC1VUW.s:182    .rodata.str1.1:0000000000000011 .LC6
-     /tmp/cccC1VUW.s:186    .rodata.str1.8:0000000000000128 .LC7
-     /tmp/cccC1VUW.s:276    .rodata.str1.1:0000000000000018 .LC9
-     /tmp/cccC1VUW.s:278    .rodata.str1.1:0000000000000020 .LC10
-     /tmp/cccC1VUW.s:364    .rodata.str1.1:000000000000004e .LC14
-     /tmp/cccC1VUW.s:362    .rodata.str1.1:0000000000000042 .LC13
-     /tmp/cccC1VUW.s:360    .rodata.str1.1:000000000000002c .LC12
-     /tmp/cccC1VUW.s:366    .rodata.str1.1:0000000000000060 .LC15
-     /tmp/cccC1VUW.s:656    .rodata.str1.1:0000000000000075 .LC17
-     /tmp/cccC1VUW.s:735    .rodata.str1.1:000000000000008d .LC19
+     /tmp/ccoeAhlK.s:21     .text:0000000000000000 setEndpointSize
+     /tmp/ccoeAhlK.s:195    .text:00000000000001a0 neroInitialise
+     /tmp/ccoeAhlK.s:287    .text:0000000000000260 neroClose
+     /tmp/ccoeAhlK.s:375    .text:00000000000002f0 neroShift
+     /tmp/ccoeAhlK.s:665    .text:0000000000000630 neroClockFSM
+     /tmp/ccoeAhlK.s:744    .text:00000000000006c0 neroClocks
+     /tmp/ccoeAhlK.s:13     .rodata.str1.8:00000000000000e0 .LC3
+     /tmp/ccoeAhlK.s:7      .rodata.str1.8:0000000000000040 .LC1
+     /tmp/ccoeAhlK.s:4      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/ccoeAhlK.s:10     .rodata.str1.8:0000000000000090 .LC2
+     /tmp/ccoeAhlK.s:180    .rodata.str1.1:0000000000000000 .LC5
+     /tmp/ccoeAhlK.s:182    .rodata.str1.1:0000000000000011 .LC6
+     /tmp/ccoeAhlK.s:186    .rodata.str1.8:0000000000000128 .LC7
+     /tmp/ccoeAhlK.s:276    .rodata.str1.1:0000000000000018 .LC9
+     /tmp/ccoeAhlK.s:278    .rodata.str1.1:0000000000000020 .LC10
+     /tmp/ccoeAhlK.s:364    .rodata.str1.1:000000000000004e .LC14
+     /tmp/ccoeAhlK.s:362    .rodata.str1.1:0000000000000042 .LC13
+     /tmp/ccoeAhlK.s:360    .rodata.str1.1:000000000000002c .LC12
+     /tmp/ccoeAhlK.s:366    .rodata.str1.1:0000000000000060 .LC15
+     /tmp/ccoeAhlK.s:656    .rodata.str1.1:0000000000000075 .LC17
+     /tmp/ccoeAhlK.s:735    .rodata.str1.1:000000000000008d .LC19
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_
