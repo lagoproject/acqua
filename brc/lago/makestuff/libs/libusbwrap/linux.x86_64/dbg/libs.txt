@@ -1,3 +1,0 @@
--L/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/libs/libusbwrap/linux.x86_64/dbg -lusbwrap
--L/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/libs/liberror/linux.x86_64/dbg -lerror
--lusb

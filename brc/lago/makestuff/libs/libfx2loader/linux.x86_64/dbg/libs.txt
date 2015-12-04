@@ -1,1 +1,0 @@
--L/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago/makestuff/libs/libfx2loader/linux.x86_64/dbg -lfx2loader
