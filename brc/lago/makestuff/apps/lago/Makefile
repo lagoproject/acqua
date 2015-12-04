@@ -6,7 +6,7 @@ MACHINE := $(shell uname -m)
 MAKESTUFFFLAGS=-I $(LAGO_DAQ)/makestuff/libs/libfpgalink/ -I $(LAGO_DAQ)/makestuff/common/ -L $(LAGO_DAQ)/makestuff/libs/libfpgalink/$(PLATFORM).$(MACHINE)/rel/ -lbuffer -lerror -lfpgalink -lfx2loader -Wl,-rpath $(LAGO_DAQ)/makestuff/libs/libfpgalink/$(PLATFORM).$(MACHINE)/rel/
 LIBFPGA=$(LAGO_DAQ)/makestuff/libs/libfpgalink/$(PLATFORM).$(MACHINE)/rel/libfpgalink.so
 CC=g++
-FLAGS=-Wall -O3
+FLAGS=-Wall -O3 -std=c++11
 
 ####
 PROG=lago

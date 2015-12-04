@@ -1,0 +1,61 @@
+#########################################################
+# LAGO AQCUA DAQ CONFIGURATION FILE                     #
+# (c) The LAGO Project - lago@lagoproject.org           #
+# 2015 - Today                                          #
+#                                                       #
+# PLEASE DON'T MODIFY THIS FILE BY HAND.                #
+# IF YOU NEED TO CHANGE SOME CONFIGURATION PARAMETERS   #
+# PLEASE USE                                            #
+#                                                       #
+# ./lago-config.pl                                      #
+#                                                       #
+#########################################################
+
+# This file was created on Thu Dec  3 01:07:06 2015 UTC
+
+# BLOCK		SYSTEM
+LAGO_DAQ="/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago"
+
+# BLOCK		SITE PARAMETERS
+siteName="brc"
+siteLat=-12.23
+siteLong=-98.21
+siteAlt=1231
+siteRespName="afa"
+siteRespId="0000-0000-0000-0000"
+siteRespEmail="asoda"
+siteInst="cab"
+siteDetectors=1
+
+# BLOCK		DETECTOR PARAMETERS: 1
+detector1Name="asf"
+detector1Diameter=1231
+detector1Height=12313
+detector1Material="plastic"
+detector1Coating="Tyvek"
+detector1PMT="R5912"
+detector1PMTowner=""
+
+# BLOCK		CALIBRATION PARAMETERS: 1
+detector1HV=1231
+detector1Trigger=12
+
+# BLOCK		ACQUISITION SYSTEM
+hasUSB=false
+devUSB="sdb1"
+usb=""
+fpgaGates=500
+analyzeRaw=false
+
+# BLOCK		SENSORS
+hasGPS=false
+GPSmodel=""
+internalGPS=true
+hasPT=false
+PTmodel=""
+internalPT=true
+racimo=false
+work="/home/asoreyh/Dropbox/projects/lago/lago-software/acqua/brc/lago"
+user="asoreyh"
+version="LAGO ACQUA BRC v2r0 data v5"
+configTime=1449104881

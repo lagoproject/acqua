@@ -5,11 +5,17 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <unordered_map>
+#include <fstream>
+#include <iostream>
+
 
 #include <libfpgalink.h>
 #include "makestuff.h"
 #include "defs.h"
 #include "extras.h"
+
+using namespace std;
 
 #define CHECK(x)                   	\
 	if ( status != FL_SUCCESS ) {    	\
@@ -47,6 +53,8 @@ FILE         *fhout = NULL;
 struct FLContext  *handle = NULL;
 
 extern long Tab_BasicAltitude[80];
+
+unordered_map<string, string> hConfigs;
 //*****************************************************
 // Pressure, temperature and other constants
 //****************************************************
@@ -103,7 +111,25 @@ int main(int cszArg, char * rgszArg[]) {
 		ShowUsageSync(rgszArg[0]);
 		return 1;
 	}
-
+/* Reading lago-configs file */
+	fprintf(stderr,"Reading configs... ");
+    ifstream filecfg;
+    filecfg.open("lago-configs");
+    string line, key, value;
+    string delimiter="=";
+    while (getline(filecfg, line)) {
+        if (line.empty())
+            continue;
+        if (line[0] == '#')
+            continue;
+        key = line.substr(0,line.find(delimiter));
+        value = line.substr(line.find(delimiter)+1);
+        hConfigs.insert(make_pair(key,value));
+    }
+	fprintf(stderr,"done. \n");
+/* end reading congigs... now hConfigs is a hash containing 
+ * configuration variables 
+ * */
 	flInitialise();
 
 	printf("Attempting to open connection to Nexys2 %s...\n", vp);
@@ -233,7 +259,8 @@ int main(int cszArg, char * rgszArg[]) {
 					printf("WrDataCountB = %d\n", DCountR[3]);
 
 					}
-					*/   // End of probes
+		*/   // End of probe
+
 		fprintf(stderr,"Cleaning buffers\n");
 		DoReadBufferSync(0,27);
 		//DoReadBufferSync(0,28);
