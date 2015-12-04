@@ -7,9 +7,9 @@ all: check-lago
 
 clean: check-lago
 	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make clean deps
-	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make clean
+	cd $(LAGO_DAQ)/makestuff/libs/libfpgalink && make depclean && make clean
 	cd $(LAGO_DAQ)/makestuff/apps/lago && make clean
-	rm lago lib*
+	rm lago
 check-lago:
 ifndef LAGO_DAQ
 $(warning LAGO_DAQ is not set. Using $(PWD))
