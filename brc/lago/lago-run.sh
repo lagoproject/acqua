@@ -12,7 +12,7 @@ cd ${work}
 maxchecks=5
 for i in $(seq 1 $maxchecks); do
   echo "Try $i"; echo
-  ./lago -x lago_fpga_vhdl_ram_500k.xsvf && break
+  ./lago -x lago_fpga_vhdl_ram_${fpgaGates}k.xsvf && break
   echo
 done
 

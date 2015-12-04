@@ -22,9 +22,11 @@ for i in ${files}; do
 			u=$(basename $i)
 			./raw -c -t -n $u
 			echo
-			bzip2 -v ${work}/lp_v0r1_*
+			bzip2 -v ${work}/lp_*
 		fi
 	fi
 	bzip2 -1v $i
-	# mv -v ${work}/*.bz2 ${usb}/
+	if ($hasUSB); then
+		mv -v ${work}/*.bz2 ${usb}/
+	fi
 done

@@ -57,7 +57,6 @@ official policies, either expressed or implied, of Lab DPR.
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-
 #include <libfpgalink.h>
 #include "makestuff.h"
 #include "lago.h"
