@@ -467,16 +467,16 @@ int NewFile() {
 				mtd_cdpf = mtd_cdp / mtd_cbl;
 			}
 			for (int i=1; i<MTD_BL; i++)
-				fprintf(fhmtd, "baselineAvg%02d=%lf", i, mtd_bl_avg[i]); 
+				fprintf(fhmtd, "baselineAvg%02d=%lf", i+1, mtd_bl_avg[i]); 
 			for (int i=1; i<MTD_BL; i++)
-				fprintf(fhmtd, "baselineDev%02d=%lf", i, mtd_bl_dev[i]);
+				fprintf(fhmtd, "baselineDev%02d=%lf", i+1, mtd_bl_dev[i]);
 			for (int i=0; i<MTD_BL; i++)
 				mtd_bl[i] = mtd_bl2[i] = 0;
 			// daq time, pulses and dead time
 			fprintf(fhmtd, "daqTime=%d", mtd_seconds); 
 			fprintf(fhmtd, "totalPulses=%ld", mtd_cbl); 
 			fprintf(fhmtd, "totalPulsesLost=%ld", mtd_cdp);
-			fprintf(fhmtd, "fractionPulsesLost=%lf", mtd_cdpf);
+			fprintf(fhmtd, "fractionPulsesLost=%le", mtd_cdpf);
 			//and now, let's close the file
 			mtd_seconds = 0;
 			mtd_cbl = mtd_cdp = 0;
@@ -543,17 +543,17 @@ int NewFile() {
 	time_t currt=time(NULL);
 	gethostname(buf, 256);
 	fprintf(fhout,"# # This file was started on %s\n",buf);
-	fprintf(fhmtd, "daqStart=%s",buf);
+	fprintf(fhmtd, "daqHost=\"%s\"",buf);
 	ctime_r(&currt,buf);
 	fprintf(fhout,"# # Machine local time was %s",buf);
-	fprintf(fhmtd, "machineTime=%s",buf);
+	fprintf(fhmtd, "machineTime=\"%s\"",buf);
 	if (falseGPS) fprintf(fhout,"# # WARNING, there is no GPS, using PC time\n");
 	fprintf(fhout,"# #\n");
-	fprintf(fhmtd, "dataFile=%s",scCurrentFile);
-	fprintf(fhmtd, "metadataFile=%s",scCurrentMetaData);
-	fprintf(fhmtd, "dataVersion=%d",DATAVERSION);
+	fprintf(fhmtd, "dataFile=\"%s\"",scCurrentFile);
+	fprintf(fhmtd, "metadataFile=\"%s\"",scCurrentMetaData);
 	fprintf(fhmtd, "daqVersion=%d",VERSION);
 	fprintf(fhmtd, "daqUseGPS=%s", (!falseGPS)?"true":"false");
+	fprintf(fhmtd, "dataVersion=%d",DATAVERSION);
 	for (unsigned int i=0; i<configs_lines.size(); i++)
 		fprintf(fhmtd, "%s\n", configs_lines[i].c_str());
 	return 0;
