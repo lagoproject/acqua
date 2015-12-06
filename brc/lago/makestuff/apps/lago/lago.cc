@@ -4,11 +4,15 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
 #include <sys/time.h>
-#include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
+#ifdef FUTURE
+#include <unordered_map>
+#endif
 
 #include <libfpgalink.h>
 #include "makestuff.h"
@@ -35,7 +39,7 @@ int fGetReg, fGetRegSet, fGetPT, fGetGPS, fPutReg, fPutRegSet,
 
 char scAction[MAXCHRLEN], scRegister[MAXCHRLEN], scReg[MAXCHRLEN],
 		 scDvc[MAXCHRLEN] = "Nexys2", scFile[MAXCHRLEN], scCurrentFile[MAXCHRLEN],
-		 scCount[MAXCHRLEN], scByte[MAXCHRLEN], scData[MAXCHRLEN];
+		 scCount[MAXCHRLEN], scByte[MAXCHRLEN], scData[MAXCHRLEN], scCurrentMetaData[MAXCHRLEN];
 
 uint32      hif = 0;
 FLStatus     status;
@@ -50,11 +54,15 @@ const char  *error = NULL;
 
 FILE        *fhin = NULL;
 FILE         *fhout = NULL;
+FILE         *fhmtd = NULL;
 struct FLContext  *handle = NULL;
 
 extern long Tab_BasicAltitude[80];
 
+#ifdef FUTURE
 unordered_map<string, string> hConfigs;
+#endif
+
 //*****************************************************
 // Pressure, temperature and other constants
 //****************************************************
@@ -74,6 +82,32 @@ time_t    fileTime;
 struct tm  *fileDate;
 int        falseGPS=false;
 
+//****************************************************
+// Metadata
+//****************************************************
+// Metadata calculations, dataversion v5 need them
+// average rates and deviation per trigger condition
+// average baseline and deviation per channel
+// using long int as max_rate ~ 50 kHz * 3600 s = 1.8x10^7 ~ 2^(20.5)
+// and is even worst for baseline
+#define MTD_TRG		8
+#define MTD_BL		3
+#define MTD_BLBIN	1
+//daq time
+int mtd_seconds=0;
+// trigger rates
+long int mtd_rates[MTD_TRG], mtd_rates2[MTD_TRG];
+//base lines
+long int mtd_bl[MTD_BL], mtd_bl2[MTD_BL];
+int mtd_iBin=0;
+long int mtd_cbl=0;
+// deat time defined as the number of missing pulses over the total number
+// of triggers. We can determine missing pulses as the sum of the differences 
+// between consecutive pulses
+long int mtd_dp = 0, mtd_cdp = 0, mtd_pulse_cnt = 0, mtd_pulse_pnt = 0; 
+// and finally, a vector of strings to handle configs file. I'm also including a hash table
+// for future implementations. For now, we just dump the lago-configs file
+vector <string> configs_lines;
 
 void handler(int signo);
 
@@ -115,23 +149,37 @@ int main(int cszArg, char * rgszArg[]) {
 	fprintf(stderr,"Reading configs... ");
     ifstream filecfg;
     filecfg.open("lago-configs");
-    string line, key, value;
+	if (!filecfg) {
+		fprintf(stderr,"\n\n\tFailed to open lago-configs.\n\tPlease run ./lago-configs.pl before to continue\n\n");
+		exit(1);
+	}
+    string line;
+#ifdef FUTURE
+    string key, value;
     string delimiter="=";
+#endif
     while (getline(filecfg, line)) {
         if (line.empty())
             continue;
         if (line[0] == '#')
             continue;
+		configs_lines.push_back(line);
+#ifdef FUTURE
+		//this block defines an unordered map (hash table) containing the configs pair as defined 
+		//in the lago-configs file. 
         key = line.substr(0,line.find(delimiter));
         value = line.substr(line.find(delimiter)+1);
         hConfigs.insert(make_pair(key,value));
+#endif
     }
 	fprintf(stderr,"done. \n");
-/* end reading congigs... now hConfigs is a hash containing 
- * configuration variables 
- * */
+	// initializing mtd variables
+	for (int i=0; i<MTD_TRG;i++) 
+		mtd_rates[i]=mtd_rates2[i]=0;
+	for (int i=0; i<MTD_BL; i++)
+		mtd_bl[i]=mtd_bl2[i]=0;
+	
 	flInitialise();
-
 	printf("Attempting to open connection to Nexys2 %s...\n", vp);
 	status = flOpen(vp, &handle, NULL);
 	if ( status ) {
@@ -385,15 +433,67 @@ int NewFile() {
 		if (fhout) {
 			fclose(fhout);
 		}
+		if (fhmtd) {
+			//before to close the file we have to fill DAQ status metadata
+			// Average and deviation trigger rates
+			double mtd_avg[MTD_TRG], mtd_dev[MTD_TRG];
+			if (!mtd_seconds) {
+				for (int i=0; i<MTD_TRG; i++)
+					mtd_avg[i] = mtd_dev[i] = -1.;
+			} else {
+				for (int i=0; i<MTD_TRG; i++) {
+					mtd_avg[i] = 1. * mtd_rates[i] / mtd_seconds;
+					mtd_dev[i] = sqrt(1. * mtd_rates2[i] / mtd_seconds - mtd_avg[i] * mtd_avg[i]);
+				}
+			}
+			for (int i=1; i<MTD_TRG; i++)
+				fprintf(fhmtd, "triggerRateAvg%02d=%lf", i, mtd_avg[i]); 
+			for (int i=1; i<MTD_TRG; i++)
+				fprintf(fhmtd, "trigggerRateDev%02d=%lf", i, mtd_dev[i]);
+			for (int i=0; i<MTD_TRG; i++)
+				mtd_rates[i] = mtd_rates2[i] = 0;
+			//baselines
+			double mtd_bl_avg[MTD_BL], mtd_bl_dev[MTD_BL];
+			double mtd_cdpf;
+			if (!mtd_cbl) {
+				for (int i=0; i<MTD_BL; i++)
+					mtd_bl_avg[i] = mtd_bl_dev[i] = -1.;
+				mtd_cdpf = -1;
+			} else {
+				for (int i=0; i<MTD_BL; i++) {
+					mtd_bl_avg[i] = 1. * mtd_bl[i] / mtd_cbl;
+					mtd_bl_dev[i] = sqrt(1. * mtd_bl2[i] / mtd_cbl - mtd_bl_avg[i] * mtd_bl_avg[i]);
+				}
+				mtd_cdpf = mtd_cdp / mtd_cbl;
+			}
+			for (int i=1; i<MTD_BL; i++)
+				fprintf(fhmtd, "baselineAvg%02d=%lf", i, mtd_bl_avg[i]); 
+			for (int i=1; i<MTD_BL; i++)
+				fprintf(fhmtd, "baselineDev%02d=%lf", i, mtd_bl_dev[i]);
+			for (int i=0; i<MTD_BL; i++)
+				mtd_bl[i] = mtd_bl2[i] = 0;
+			// daq time, pulses and dead time
+			fprintf(fhmtd, "daqTime=%d", mtd_seconds); 
+			fprintf(fhmtd, "totalPulses=%ld", mtd_cbl); 
+			fprintf(fhmtd, "totalPulsesLost=%ld", mtd_cdp);
+			fprintf(fhmtd, "fractionPulsesLost=%lf", mtd_cdpf);
+			//and now, let's close the file
+			mtd_seconds = 0;
+			mtd_cbl = mtd_cdp = 0;
+			fclose(fhmtd);
+		}
 		fileTime=timegm(fileDate);
 		fileDate=gmtime(&fileTime); // filling all fields with properly computed values (for new month/year)
 		if (falseGPS) {
 			snprintf(scCurrentFile,MAXCHRLEN,"%s_nogps_%04d_%02d_%02d_%02dh00.dat",scFile,fileDate->tm_year+1900, fileDate->tm_mon+1,fileDate->tm_mday,fileDate->tm_hour);
+			snprintf(scCurrentMetaData,MAXCHRLEN,"%s_nogps_%04d_%02d_%02d_%02dh00.mtd",scFile,fileDate->tm_year+1900, fileDate->tm_mon+1,fileDate->tm_mday,fileDate->tm_hour);
 		} else {
 			snprintf(scCurrentFile,MAXCHRLEN,"%s_%04d_%02d_%02d_%02dh00.dat",scFile,fileDate->tm_year+1900, fileDate->tm_mon+1,fileDate->tm_mday,fileDate->tm_hour);
+			snprintf(scCurrentMetaData,MAXCHRLEN,"%s_%04d_%02d_%02d_%02dh00.mtd",scFile,fileDate->tm_year+1900, fileDate->tm_mon+1,fileDate->tm_mday,fileDate->tm_hour);
 		}
 		fhout = fopen(scCurrentFile, "ab");
-		fprintf(stderr,"Opening file %s for data taking\n",scCurrentFile);
+		fhout = fopen(scCurrentMetaData, "w");
+		fprintf(stderr,"Opening files %s and %s for data taking\n",scCurrentFile, scCurrentMetaData);
 	}
 	fprintf(fhout,"# v %d\n", DATAVERSION);
 	fprintf(fhout,"# #\n");
@@ -425,9 +525,11 @@ int NewFile() {
 	fprintf(fhout,"# x c T1 %d\n",gfT1);
 	fprintf(fhout,"# x c T2 %d\n",gfT2);
 	fprintf(fhout,"# x c T3 %d\n",gfT3);
+	/* not used anymore...
 	fprintf(fhout,"# x c ST1 %d\n",gfST1);
 	fprintf(fhout,"# x c ST2 %d\n",gfST2);
 	fprintf(fhout,"# x c ST3 %d\n",gfST3);
+	*/
 	fprintf(fhout,"# x c HV1 %d\n",gfHV1);
 	fprintf(fhout,"# x c HV2 %d\n",gfHV2);
 	fprintf(fhout,"# x c HV3 %d\n",gfHV3);
@@ -441,10 +543,19 @@ int NewFile() {
 	time_t currt=time(NULL);
 	gethostname(buf, 256);
 	fprintf(fhout,"# # This file was started on %s\n",buf);
+	fprintf(fhmtd, "daqStart=%s",buf);
 	ctime_r(&currt,buf);
 	fprintf(fhout,"# # Machine local time was %s",buf);
+	fprintf(fhmtd, "machineTime=%s",buf);
 	if (falseGPS) fprintf(fhout,"# # WARNING, there is no GPS, using PC time\n");
 	fprintf(fhout,"# #\n");
+	fprintf(fhmtd, "dataFile=%s",scCurrentFile);
+	fprintf(fhmtd, "metadataFile=%s",scCurrentMetaData);
+	fprintf(fhmtd, "dataVersion=%d",DATAVERSION);
+	fprintf(fhmtd, "daqVersion=%d",VERSION);
+	fprintf(fhmtd, "daqUseGPS=%s", (!falseGPS)?"true":"false");
+	for (unsigned int i=0; i<configs_lines.size(); i++)
+		fprintf(fhmtd, "%s\n", configs_lines[i].c_str());
 	return 0;
 }
 
@@ -454,7 +565,7 @@ uint8 circbuf[CIRCSIZE];
 uint32 bufwrite=0;
 uint32 bufread=0;
 int bufsync=0;
-int r[5];
+int r[MTD_TRG];
 
 int DoReadBufferSync(int wr, int clean) {
 
@@ -479,10 +590,12 @@ int DoReadBufferSync(int wr, int clean) {
 	} else {
 		idReg=clean;
 		cb = 32768;
-		r[0]=r[1]=r[2]=r[3]=r[4]=0;
+		for (int i=0; i<MTD_TRG; i++)
+			r[i] = 0;
 	}
 
-	if (fToStdout) fhout=stdout;
+	if (fToStdout) 
+		fhout=stdout;
 	if (fFirstTime) {
 		// if no GPS
 		if (((gpsDate[2] << 8) + gpsDate[3])==0) { // get time form PC
@@ -574,14 +687,30 @@ int DoReadBufferSync(int wr, int clean) {
 		if (wo>>30==0) {
 			//fprintf(fhout,"%d %d %d %d %d %d %d\n", ch1, ch2, ch3,bufread,bufwrite,idReg,idData);
 			fprintf(fhout,"%d %d %d\n", ch1, ch2, ch3);
+			mtd_iBin++;
+			if (mtd_iBin == MTD_BLBIN) {
+				mtd_bl[0] += ch1;
+				mtd_bl2[0] += ch1 * ch1;
+				mtd_bl[1] += ch2;
+				mtd_bl2[1] += ch2 * ch2;
+				mtd_bl[2] += ch3;
+				mtd_bl2[2] += ch3 * ch3;
+				mtd_cbl++;
+			}
 		} else {
 			if (wo>>30==1) {
 				fprintf(fhout,"# t %d %d\n", (wo>>27)&0x7, wo&0x7FFFFFF);
 				int trig=(wo>>27)&0x7;
-				if (trig==1 || trig==2 || trig==4) r[trig]++; else if (trig==7) r[0]++; else r[3]++;
+				r[trig]++;
+				mtd_iBin=0;
 			} else {
 				if (wo>>30==2) {
-					fprintf(fhout,"# c %d\n", wo&0x3FFFFFFF);
+					mtd_pulse_pnt =	mtd_pulse_cnt;
+					mtd_pulse_cnt = (wo&0x3FFFFFFF);
+					mtd_dp = (mtd_pulse_cnt - mtd_pulse_pnt - 1);
+					if (mtd_dp > 0)
+						mtd_cdp += mtd_dp;
+					fprintf(fhout,"# c %ld\n", mtd_pulse_cnt);
 				} else {
 					switch(wo>>27) {
 						case 0x18:
@@ -600,7 +729,8 @@ int DoReadBufferSync(int wr, int clean) {
 							if (falseGPS) {
 								fileDate->tm_sec++;
 								if (fileDate->tm_sec==60 && fileDate->tm_min==59) { // new hour
-									if (!fToStdout) NewFile();
+									if (!fToStdout) 
+										NewFile();
 								} else {
 									fileTime=timegm(fileDate);
 									fileDate=gmtime(&fileTime); // filling all fields with properly comupted values (for new month/year)
@@ -612,17 +742,33 @@ int DoReadBufferSync(int wr, int clean) {
 										fileDate->tm_mday++;
 									}
 									fileDate->tm_hour=(wo>>16)&0x000000FF;
-									if (!fToStdout) NewFile();
+									if (!fToStdout) 
+										NewFile();
 								}
 								fileDate->tm_hour=(wo>>16)&0x000000FF;
 								fileDate->tm_min=(wo>>8)&0x000000FF;
 								fileDate->tm_sec=wo&0x000000FF;
 							}
+							mtd_seconds++;
 							fileTime=timegm(fileDate);
 							fileDate=gmtime(&fileTime); // filling all fields with properly comupted values (for new month/year)
-							fprintf(fhout,"# x h   %02d:%02d:%02d %02d/%02d/%04d %d\n", fileDate->tm_hour,fileDate->tm_min,fileDate->tm_sec,fileDate->tm_mday,fileDate->tm_mon+1,fileDate->tm_year+1900,(int)fileTime);
-							fprintf(stderr,"# %02d:%02d:%02d %02d/%02d/%04d %d - rates: %d %d %d (%d - %d)\r", fileDate->tm_hour,fileDate->tm_min,fileDate->tm_sec,fileDate->tm_mday,fileDate->tm_mon+1,fileDate->tm_year+1900,(int)fileTime,r[1],r[2],r[4],r[3],r[0]);
-							r[0]=r[1]=r[2]=r[3]=r[4]=0;
+							fprintf(fhout,"# x h   %02d:%02d:%02d %02d/%02d/%04d %d\n", 
+									fileDate->tm_hour, fileDate->tm_min, fileDate->tm_sec, 
+									fileDate->tm_mday, fileDate->tm_mon+1,fileDate->tm_year+1900, 
+									(int)fileTime
+									);
+							fprintf(stderr,"# %02d:%02d:%02d %02d/%02d/%04d %d - second %d - rates: %d %d %d (%d - %d - %d) [%d]\r", 
+									fileDate->tm_hour, fileDate->tm_min, fileDate->tm_sec, 
+									fileDate->tm_mday, fileDate->tm_mon+1, fileDate->tm_year+1900, 
+									(int)fileTime,
+									mtd_seconds, 
+									r[1], r[2], r[4], r[3], r[5], r[6], r[7]
+									);
+							for (int i=0; i<MTD_TRG; i++) {
+								mtd_rates[i] += r[i];
+								mtd_rates2[i] += r[i] * r[i];
+								r[i] = 0;
+							}
 							break;
 						case 0x1C: // Longitude, latitude, defined by other bits
 							switch(((wo)>>24) & 0x7) {
@@ -680,18 +826,18 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 	/* Initialize default flag values */
 	fGetReg    = false;
 	fPutReg    = false;
-	fGetRegSet  = false;
-	fPutRegSet  = false;
+	fGetRegSet = false;
+	fPutRegSet = false;
 	fToFile    = false;
-	fToStdout    = false;
-	fGetPT    = false;
+	fToStdout  = false;
+	fGetPT     = false;
 	fGetGPS    = false;
 	fFile      = false;
-	fCount    = false;
+	fCount     = false;
 	fByte      = false;
 	fData      = false;
-	fXsvfFile    = false;
-	fScanJTAG    = false;
+	fXsvfFile  = false;
+	fScanJTAG  = false;
 
 	/* Ensure sufficient paramaters. Need at least program name and
 	 ** action flag
@@ -714,7 +860,6 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 		return true;
 	} else if( strcmp(scAction, "-v") == 0) {
 		fShowVersion = true;
-	    printf("LAGO ACQUA BRC v%dr%d data v%d\n",VERSION,REVISION,DATAVERSION);
 		return false;
 	} else if( strcmp(scAction, "-s") == 0) {
 		fPutRegSet = true;
@@ -870,7 +1015,9 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 
 
 void ShowUsageSync(char * szProgName) {
-	if (!fShowVersion) {
+	if (fShowVersion) {
+	    printf("LAGO ACQUA BRC v%dr%d data v%d\n",VERSION,REVISION,DATAVERSION);
+	} else {
 		printf("\n\tThe LAGO ACQUA suite\n");
 		printf("\tData acquisition system for the LAGO BRC electronic\n");
 		printf("\t(c) 2012-Today, The LAGO Project, http://lagoproject.org\n");
