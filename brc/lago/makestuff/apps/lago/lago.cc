@@ -556,6 +556,7 @@ int NewFile() {
 	fprintf(fhmtd, "dataVersion=%d\n",DATAVERSION);
 	for (unsigned int i=0; i<configs_lines.size(); i++)
 		fprintf(fhmtd, "%s\n", configs_lines[i].c_str());
+	fprintf(fhmtd, "version=\"LAGO ACQUA BRC v%dr%d data v%d\"\n",VERSION,REVISION,DATAVERSION);
 	fflush(fhout);
 	fflush(fhmtd);
 	return 0;

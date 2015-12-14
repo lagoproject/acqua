@@ -12,7 +12,13 @@ clean: check-lago
 	rm lago
 check-lago:
 ifndef LAGO_DAQ
-$(warning LAGO_DAQ is not set. Using $(PWD))
-LAGO_DAQ=$(PWD)
-$(warning LAGO_DAQ was set to $(LAGO_DAQ))
+$(info LAGO_DAQ is not set.)
+$(info Please run lago-configs.pl before to compile)
+$(error )
+endif
+ifneq ($(LAGO_DAQ), $(PWD))
+$(info LAGO_DAQ is defined, but you are not in the directory pointed by LAGO_DAQ.)
+$(info LAGO_DAQ=$(LAGO_DAQ))
+$(info current dir=$(PWD))
+$(error )
 endif

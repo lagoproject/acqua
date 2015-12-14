@@ -51,14 +51,6 @@
 # */
 # /************************************************************************/
 
-# verify LAGO DAQ is compiled 
-unless (-e "lago") {
-	print "\n# ERROR\t\tBefore to start, you have to compile the suite. Please read INSTALL.md\n";
-	exit 1;
-}
-$daq_version=`./lago -v`;
-chomp($daq_version);
-
 # Metadata containers
 %configs=();
 @parameters=();
@@ -532,7 +524,6 @@ ask(168,193,$block,$blockN);
 $now=time;
 print $fh "work=\"$configs{$parameters[0]}\"\n";
 print $fh "user=\"$ENV{'USER'}\"\n";
-print $fh "version=\"$daq_version\"\n";
 print $fh "configTime=$now\n";
 print "# SUCCESS\tDone. Writing the new lago-configs file\n";
 cmd("mv lago-configs-tmp lago-configs");
