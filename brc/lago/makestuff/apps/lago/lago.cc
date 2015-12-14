@@ -178,7 +178,6 @@ int main(int cszArg, char * rgszArg[]) {
 		mtd_rates[i]=mtd_rates2[i]=0;
 	for (int i=0; i<MTD_BL; i++)
 		mtd_bl[i]=mtd_bl2[i]=0;
-	
 	flInitialise();
 	printf("Attempting to open connection to Nexys2 %s...\n", vp);
 	status = flOpen(vp, &handle, NULL);
@@ -447,9 +446,9 @@ int NewFile() {
 				}
 			}
 			for (int i=1; i<MTD_TRG; i++)
-				fprintf(fhmtd, "triggerRateAvg%02d=%lf", i, mtd_avg[i]); 
+				fprintf(fhmtd, "triggerRateAvg%02d=%lf\n", i, mtd_avg[i]); 
 			for (int i=1; i<MTD_TRG; i++)
-				fprintf(fhmtd, "trigggerRateDev%02d=%lf", i, mtd_dev[i]);
+				fprintf(fhmtd, "trigggerRateDev%02d=%lf\n", i, mtd_dev[i]);
 			for (int i=0; i<MTD_TRG; i++)
 				mtd_rates[i] = mtd_rates2[i] = 0;
 			//baselines
@@ -464,19 +463,19 @@ int NewFile() {
 					mtd_bl_avg[i] = 1. * mtd_bl[i] / mtd_cbl;
 					mtd_bl_dev[i] = sqrt(1. * mtd_bl2[i] / mtd_cbl - mtd_bl_avg[i] * mtd_bl_avg[i]);
 				}
-				mtd_cdpf = mtd_cdp / mtd_cbl;
+				mtd_cdpf = 1. * mtd_cdp / mtd_cbl;
 			}
 			for (int i=1; i<MTD_BL; i++)
-				fprintf(fhmtd, "baselineAvg%02d=%lf", i+1, mtd_bl_avg[i]); 
+				fprintf(fhmtd, "baselineAvg%02d=%lf\n", i+1, mtd_bl_avg[i]); 
 			for (int i=1; i<MTD_BL; i++)
-				fprintf(fhmtd, "baselineDev%02d=%lf", i+1, mtd_bl_dev[i]);
+				fprintf(fhmtd, "baselineDev%02d=%lf\n", i+1, mtd_bl_dev[i]);
 			for (int i=0; i<MTD_BL; i++)
 				mtd_bl[i] = mtd_bl2[i] = 0;
 			// daq time, pulses and dead time
-			fprintf(fhmtd, "daqTime=%d", mtd_seconds); 
-			fprintf(fhmtd, "totalPulses=%ld", mtd_cbl); 
-			fprintf(fhmtd, "totalPulsesLost=%ld", mtd_cdp);
-			fprintf(fhmtd, "fractionPulsesLost=%le", mtd_cdpf);
+			fprintf(fhmtd, "daqTime=%d\n", mtd_seconds); 
+			fprintf(fhmtd, "totalPulses=%ld\n", mtd_cbl); 
+			fprintf(fhmtd, "totalPulsesLost=%ld\n", mtd_cdp);
+			fprintf(fhmtd, "fractionPulsesLost=%le\n", mtd_cdpf);
 			//and now, let's close the file
 			mtd_seconds = 0;
 			mtd_cbl = mtd_cdp = 0;
@@ -492,7 +491,7 @@ int NewFile() {
 			snprintf(scCurrentMetaData,MAXCHRLEN,"%s_%04d_%02d_%02d_%02dh00.mtd",scFile,fileDate->tm_year+1900, fileDate->tm_mon+1,fileDate->tm_mday,fileDate->tm_hour);
 		}
 		fhout = fopen(scCurrentFile, "ab");
-		fhout = fopen(scCurrentMetaData, "w");
+		fhmtd = fopen(scCurrentMetaData, "w");
 		fprintf(stderr,"Opening files %s and %s for data taking\n",scCurrentFile, scCurrentMetaData);
 	}
 	fprintf(fhout,"# v %d\n", DATAVERSION);
@@ -543,19 +542,22 @@ int NewFile() {
 	time_t currt=time(NULL);
 	gethostname(buf, 256);
 	fprintf(fhout,"# # This file was started on %s\n",buf);
-	fprintf(fhmtd, "daqHost=\"%s\"",buf);
+	fprintf(fhmtd, "daqHost=\"%s\"\n",buf);
 	ctime_r(&currt,buf);
 	fprintf(fhout,"# # Machine local time was %s",buf);
-	fprintf(fhmtd, "machineTime=\"%s\"",buf);
+	strtok(buf, "\n");
+	fprintf(fhmtd, "machineTime=\"%s\"\n",buf);
 	if (falseGPS) fprintf(fhout,"# # WARNING, there is no GPS, using PC time\n");
 	fprintf(fhout,"# #\n");
-	fprintf(fhmtd, "dataFile=\"%s\"",scCurrentFile);
-	fprintf(fhmtd, "metadataFile=\"%s\"",scCurrentMetaData);
-	fprintf(fhmtd, "daqVersion=%d",VERSION);
+	fprintf(fhmtd, "dataFile=\"%s\"\n",scCurrentFile);
+	fprintf(fhmtd, "metadataFile=\"%s\"\n",scCurrentMetaData);
+	fprintf(fhmtd, "daqVersion=%d\n",VERSION);
 	fprintf(fhmtd, "daqUseGPS=%s", (!falseGPS)?"true":"false");
-	fprintf(fhmtd, "dataVersion=%d",DATAVERSION);
+	fprintf(fhmtd, "dataVersion=%d\n",DATAVERSION);
 	for (unsigned int i=0; i<configs_lines.size(); i++)
 		fprintf(fhmtd, "%s\n", configs_lines[i].c_str());
+	fflush(fhout);
+	fflush(fhmtd);
 	return 0;
 }
 
@@ -708,7 +710,7 @@ int DoReadBufferSync(int wr, int clean) {
 					mtd_pulse_pnt =	mtd_pulse_cnt;
 					mtd_pulse_cnt = (wo&0x3FFFFFFF);
 					mtd_dp = (mtd_pulse_cnt - mtd_pulse_pnt - 1);
-					if (mtd_dp > 0)
+					if (mtd_dp > 0 && mtd_pulse_pnt)
 						mtd_cdp += mtd_dp;
 					fprintf(fhout,"# c %ld\n", mtd_pulse_cnt);
 				} else {
