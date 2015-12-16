@@ -75,11 +75,11 @@ push @parameters,
 	0,
 	"",
 	"siteLat", 
-	"Site Latitude (+/- dec deg, <0 = South)", 
+	"Site Geographic Latitude (+/- dec deg, <0 = South)", 
 	1,
 	0.,
 	"siteLong", 
-	"Site Longitude (+/- dec deg, <0 = West)", 
+	"Site Geographic Longitude (+/- dec deg, <0 = West)", 
 	1,
 	0.,
 	"siteAlt",
@@ -279,7 +279,7 @@ push @parameters,
 	2,
 	"n",
 	
-	# TRANSFER 196-211
+	# TRANSFER 196-215
 	"autoTransfer",
 	"Should I automatically transfer data to the central repository?",
 	2,
@@ -295,7 +295,11 @@ push @parameters,
 	"remoteIP",
 	"IP of the central repository (remote)",
 	0,
-	"200.16.117.76";
+	"200.16.117.76",
+	"eraseOldFiles",
+	"WARNING: If yes, it will erase local data and metadata files older than 30 days",
+	2,
+	"n";
 
 sub get {
 	my $question = $_[0];
@@ -541,7 +545,7 @@ ask(168,193,$block,$blockN);
 print "$parameters[196]";
 $blockN=5; # TRANSFER
 $block="# BLOCK\t\tDATA TRANSFER";
-ask(196,211,$block,$blockN);
+ask(196,215,$block,$blockN);
 
 
 # not asking values (backward compatibility)

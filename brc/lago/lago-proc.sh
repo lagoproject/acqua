@@ -26,7 +26,13 @@ for i in ${files}; do
 		fi
 	fi
 	bzip2 -1v $i
-	if ($hasUSB); then
-		mv -v ${work}/*.bz2 ${usb}/
-	fi
 done
+files=$(find ${work} -iname "*.mtd" -type f -mmin +30)
+for i in ${files}; do
+	echo $i
+	bzip2 -1v $i
+done
+
+if ($hasUSB); then
+	mv -v ${work}/*.bz2 ${usb}/
+fi
