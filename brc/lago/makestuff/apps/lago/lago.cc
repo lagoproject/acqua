@@ -39,7 +39,7 @@ int fGetReg, fGetRegSet, fGetPT, fGetGPS, fPutReg, fPutRegSet,
 
 char scAction[MAXCHRLEN], scRegister[MAXCHRLEN], scReg[MAXCHRLEN],
 		 scDvc[MAXCHRLEN] = "Nexys2", scFile[MAXCHRLEN], scCurrentFile[MAXCHRLEN],
-		 scCount[MAXCHRLEN], scByte[MAXCHRLEN], scData[MAXCHRLEN], scCurrentMetaData[MAXCHRLEN];
+		 scCount[MAXCHRLEN], scByte[MAXCHRLEN], scData[MAXCHRLEN], scCurrentMetaData[MAXCHRLEN], scDaqTime[MAXCHRLEN];
 
 uint32      hif = 0;
 FLStatus     status;
@@ -78,10 +78,15 @@ uint32  gfT1,gfT2,gfT3,gfST1,gfST2,gfST3,gfHV1,gfHV2,gfHV3,gGPSTM;
 //****************************************************
 // Time globals for filenames
 //****************************************************
-time_t    fileTime;
+time_t     fileTime;
 struct tm  *fileDate;
 int        falseGPS=false;
 
+//****************************************************
+// Globals for acquisition time
+//****************************************************
+int        iDaqTime=5, iDaqLL=5, iDaqUL=9999;
+bool       fDaqDone=false, fDaqTime=false;
 //****************************************************
 // Metadata
 //****************************************************
@@ -101,7 +106,7 @@ long int mtd_rates[MTD_TRG], mtd_rates2[MTD_TRG];
 long int mtd_bl[MTD_BL], mtd_bl2[MTD_BL];
 int mtd_iBin=0;
 long int mtd_cbl=0;
-// deat time defined as the number of missing pulses over the total number
+// dead time defined as the number of missing pulses over the total number
 // of triggers. We can determine missing pulses as the sum of the differences 
 // between consecutive pulses
 long int mtd_dp = 0, mtd_cdp = 0, mtd_pulse_cnt = 0, mtd_pulse_pnt = 0; 
@@ -146,6 +151,8 @@ int main(int cszArg, char * rgszArg[]) {
 		return 1;
 	}
 /* Reading lago-configs file */
+	if (fDaqTime) 
+		fprintf(stderr, "Aquisition time is set to %d s.\n",iDaqTime); 
 	fprintf(stderr,"Reading configs... ");
     ifstream filecfg;
     filecfg.open("lago-configs");
@@ -288,7 +295,6 @@ int main(int cszArg, char * rgszArg[]) {
 	else if (fGetGPS) {
 		DoGetGPSnFifoSync();      /* Save file with contents of register */
 	}
-
 	else if (fToFile || fToStdout) {
 		for(i=0; i<7; i++) {
 			status=flReadChannel(handle, 100, AddrGPSDate[i], 1, &gpsDate[i], &error);
@@ -448,7 +454,7 @@ int NewFile() {
 			for (int i=1; i<MTD_TRG; i++)
 				fprintf(fhmtd, "triggerRateAvg%02d=%lf\n", i, mtd_avg[i]); 
 			for (int i=1; i<MTD_TRG; i++)
-				fprintf(fhmtd, "trigggerRateDev%02d=%lf\n", i, mtd_dev[i]);
+				fprintf(fhmtd, "triggerRateDev%02d=%lf\n", i, mtd_dev[i]);
 			for (int i=0; i<MTD_TRG; i++)
 				mtd_rates[i] = mtd_rates2[i] = 0;
 			//baselines
@@ -481,6 +487,8 @@ int NewFile() {
 			mtd_cbl = mtd_cdp = 0;
 			fclose(fhmtd);
 		}
+		if (fDaqDone)
+			return 0;
 		fileTime=timegm(fileDate);
 		fileDate=gmtime(&fileTime); // filling all fields with properly computed values (for new month/year)
 		if (falseGPS) {
@@ -537,6 +545,8 @@ int NewFile() {
 	} else {
 		fprintf(fhout,"# x c GPSTM GPS\n");
 	}
+	if (fDaqTime)
+		fprintf(fhout, "# n %d\n", iDaqTime);
 	fprintf(fhout,"# #\n");
 	char buf[256];
 	time_t currt=time(NULL);
@@ -552,8 +562,10 @@ int NewFile() {
 	fprintf(fhmtd, "dataFile=\"%s\"\n",scCurrentFile);
 	fprintf(fhmtd, "metadataFile=\"%s\"\n",scCurrentMetaData);
 	fprintf(fhmtd, "daqVersion=%d\n",VERSION);
-	fprintf(fhmtd, "daqUseGPS=%s", (!falseGPS)?"true":"false");
+	fprintf(fhmtd, "daqUseGPS=%s\n", (!falseGPS)?"true":"false");
 	fprintf(fhmtd, "dataVersion=%d\n",DATAVERSION);
+	if (fDaqTime)
+		fprintf(fhmtd, "iDaqTime=%d\n", iDaqTime);
 	for (unsigned int i=0; i<configs_lines.size(); i++)
 		fprintf(fhmtd, "%s\n", configs_lines[i].c_str());
 	fprintf(fhmtd, "version=\"LAGO ACQUA BRC v%dr%d data v%d\"\n",VERSION,REVISION,DATAVERSION);
@@ -732,8 +744,9 @@ int DoReadBufferSync(int wr, int clean) {
 							if (falseGPS) {
 								fileDate->tm_sec++;
 								if (fileDate->tm_sec==60 && fileDate->tm_min==59) { // new hour
-									if (!fToStdout) 
-										NewFile();
+									// if (!fToStdout) 
+										// NewFile();
+									fprintf(stderr,"Open a new file is disabled\n");
 								} else {
 									fileTime=timegm(fileDate);
 									fileDate=gmtime(&fileTime); // filling all fields with properly comupted values (for new month/year)
@@ -745,8 +758,8 @@ int DoReadBufferSync(int wr, int clean) {
 										fileDate->tm_mday++;
 									}
 									fileDate->tm_hour=(wo>>16)&0x000000FF;
-									if (!fToStdout) 
-										NewFile();
+									// if (!fToStdout) 
+									//	NewFile();
 								}
 								fileDate->tm_hour=(wo>>16)&0x000000FF;
 								fileDate->tm_min=(wo>>8)&0x000000FF;
@@ -771,6 +784,14 @@ int DoReadBufferSync(int wr, int clean) {
 								mtd_rates[i] += r[i];
 								mtd_rates2[i] += r[i] * r[i];
 								r[i] = 0;
+							}
+							if (fDaqTime) {
+								if (mtd_seconds > iDaqTime) {
+									fDaqDone=true;
+									NewFile();
+									fprintf(stderr, "Elapsed aquisition time: %d s (expected: %d s). Files were correctly closed. Goodbye.", mtd_seconds - 1, iDaqTime);
+									exit(0);
+								}
 							}
 							break;
 						case 0x1C: // Longitude, latitude, defined by other bits
@@ -841,6 +862,8 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 	fData      = false;
 	fXsvfFile  = false;
 	fScanJTAG  = false;
+	fDaqTime   = false;
+	
 
 	/* Ensure sufficient paramaters. Need at least program name and
 	 ** action flag
@@ -939,7 +962,16 @@ int FParseParamSync(int cszArg, char * rgszArg[]) {
 	} else if(fToFile) {
 		if(rgszArg[2] != NULL) {
 			StrcpyS(scFile, MAXFILENAMELEN, rgszArg[2]);
-			fFile = true;
+			strncpy(scDaqTime, scFile, 4);
+			if (atoi(scDaqTime)) { 
+				iDaqTime = atoi(scDaqTime);
+				if (iDaqTime < iDaqLL || iDaqTime > iDaqUL) {
+					printf ("Error: adquisition time, in seconds, should be %d<=t<=%d)\n", iDaqLL, iDaqUL);
+					exit(1);
+				}
+				fDaqTime = true;
+				fFile = true;
+			}
 		} else {
 			return false;
 		}
@@ -1054,7 +1086,6 @@ void ShowUsageSync(char * szProgName) {
 		printf("\t-f <filename>\t\t\tSpecify file name\n");
 		printf("\t-c <# bytes>\t\t\tNumber of bytes to read/write\n");
 		printf("\t-b <byte>\t\t\tValue to load into register\n");
-		
 		printf("\n\n");
 	}
 }
