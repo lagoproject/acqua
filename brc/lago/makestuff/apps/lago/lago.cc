@@ -1083,7 +1083,10 @@ void ShowUsageSync(char * szProgName) {
 		printf("\ttm\t\t\t\tSpecify Time Mode for GPS Receiver (0 - UTC, 1 - GPS)\n");
 		
 		printf("\n\tOptions:\n");
-		printf("\t-f <filename>\t\t\tSpecify file name\n");
+		printf("\t-f <filename>\t\t\tSpecify file name.\n");
+		printf("\t             \t\t\tIf filename starts with four numbers it will be used to define the acquisition time\n");
+		printf("\t             \t\t\tCurrent limits to set acquisition time are: %d <= acquisition time <= %d.\n", iDaqLL, iDaqUL);
+		printf("\t             \t\t\tExample: -f 0300test will produce a file called 'test' of 5 minutes of duration\n");
 		printf("\t-c <# bytes>\t\t\tNumber of bytes to read/write\n");
 		printf("\t-b <byte>\t\t\tValue to load into register\n");
 		printf("\n\n");
