@@ -87,7 +87,7 @@ push @parameters,
 	1,
 	0.,
 	"siteRespName",
-	"Site Responsible Name (please don't use weird characters)",
+	"Site Responsible Name (please don't use accents, special or weird characters)",
 	0,
 	"",
 	"siteRespId",
@@ -103,7 +103,7 @@ push @parameters,
 	0,
 	"",
 	"siteDetectors",
-	"Number of Detectors in this site (1-3 for this electronics)",
+	"Number of Detectors in this site (1-3 for each electronic board)",
 	1,
 	1,
 	
@@ -293,9 +293,9 @@ push @parameters,
 	0,
 	"",
 	"remoteIP",
-	"IP of the central repository (remote)",
+	"IP of the central repository (remote, please don't change if your are not sure)",
 	0,
-	"200.16.117.76",
+	"200.16.117.110",
 	"eraseOldFiles",
 	"WARNING: If yes, it will erase local data and metadata files older than 30 days",
 	2,
@@ -615,9 +615,11 @@ close($fh);
 print "# SUCCESS\tNew crontab.run created.\n";
 print "# SUCCESS\tEverything was fine. Enjoy.\n";
 print "######################################################################\n";
-print "# Now, we are ready to start the acquisition                         #\n";
+print "# Now, you are almost ready to start the acquisition					#\n";
 print "# Please verify lago-configs content to be sure everything is right  #\n";
 print "# cat lago-configs                                                   #\n";
 print "# BEFORE TO CONTINUE, PLEASE:  source $home/.bashrc             #\n";
-print "# and then:                    lago-start.sh                         #\n";
+print "# BE SURE YOU TRANSFERED YOUR KEY TO LAGO CENTRAL DATA REPOSITORY    #\n";
+print "# TO DO THIS, PLEASE:   ssh-copy-id user@200.16.117.110              #\n";
+print "# ONCE EVERYTHING IS FINE, then:                  lago-start.sh      #\n";
 print "######################################################################\n";

@@ -20,6 +20,6 @@
 # # For more information see the manual pages of crontab(5) and cron(8)
 # # 
 # # m h  dom mon dow   command
-# 10 * * * * /bin/bash -ic /home/asoreyh/MEGA/projects/lago/lago-software/acqua/brc/lago/lago-proc.sh 
+10 * * * * /bin/bash -ic /home/asoreyh/MEGA/projects/lago/lago-software/acqua/brc/lago/lago-proc.sh 
 50 5 * * * /bin/bash -ic /home/asoreyh/MEGA/projects/lago/lago-software/acqua/brc/lago/lago-trfs.sh >> /home/asoreyh/MEGA/projects/lago/lago-software/acqua/brc/lago/lago-daq.log 2>&1
 # # END OF LAGO CRONTAB

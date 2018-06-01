@@ -57,10 +57,10 @@ internalPT=true
 racimo=false
 
 # BLOCK		DATA TRANSFER
-autoTransfer=false
+autoTransfer=true
 hourInterval=24
 remoteUser=""
-remoteIP="200.16.117.76"
+remoteIP="200.16.117.110"
 eraseOldFiles=false
 work="/home/asoreyh/MEGA/projects/lago/lago-software/acqua/brc/lago"
 user="asoreyh"
