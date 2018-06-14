@@ -620,6 +620,6 @@ print "# Please verify lago-configs content to be sure everything is right  #\n"
 print "# cat lago-configs                                                   #\n";
 print "# BEFORE TO CONTINUE, PLEASE:  source $home/.bashrc             #\n";
 print "# BE SURE YOU TRANSFERED YOUR KEY TO LAGO CENTRAL DATA REPOSITORY    #\n";
-print "# TO DO THIS, PLEASE:   ssh-copy-id user@200.16.117.110              #\n";
+print "# TO DO THIS, PLEASE:   ssh-copy-id your-user-at-repo\@200.16.117.110 #\n";
 print "# ONCE EVERYTHING IS FINE, then:                  lago-start.sh      #\n";
 print "######################################################################\n";

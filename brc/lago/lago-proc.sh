@@ -12,7 +12,7 @@ cd ${work}
 # 	fi
 # fi
 
-files=$(find ${work} -iname "*.dat" -type f -mmin +30)
+files=$(find . -iname "*.dat" -type f -mmin +30)
 for i in ${files}; do
 	echo $i
 	# You can add here as many as process you need to do. 

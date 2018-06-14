@@ -8,6 +8,7 @@ if ($hasUSB); then
 fi
 rsync -aPv $datadir/*.bz2 ${remoteUser}@${remoteIP}:${remoteDir}
 rsync -aPv $datadir/*.mtd ${remoteUser}@${remoteIP}:${remoteDir}
+rsync -aPv $datadir/lago-old-configs ${remoteUser}@${remoteIP}:${remoteDir}
 
 if (${eraseOldFiles}); then
 	files=$(find ${work} -iname "*.bz2" -type f -mtime +30)
