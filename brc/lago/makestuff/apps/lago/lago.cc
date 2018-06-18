@@ -744,8 +744,9 @@ int DoReadBufferSync(int wr, int clean) {
 							if (falseGPS) {
 								fileDate->tm_sec++;
 								if (fileDate->tm_sec==60 && fileDate->tm_min==59) { // new hour
-									if (!fToStdout) 
-										NewFile();
+									if (!fDaqTime) 
+										if (!fToStdout) 
+											NewFile();
 								} else {
 									fileTime=timegm(fileDate);
 									fileDate=gmtime(&fileTime); // filling all fields with properly comupted values (for new month/year)
