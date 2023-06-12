@@ -23,8 +23,8 @@
 </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
 <!-- 
+TABLE OF CONTENTS
 <details>
   <summary>Table of Contents</summary>
 <br />
@@ -42,11 +42,21 @@
 -->
 
 
-# ACQUA versioning 
+## ACQUA versioning 
 
 ACQUA is currently under continuous development. This version (ACQUA v1) is targeted for the old NEXYS-II-based DAQ. Its usage is now (2023) strongly deprecated and could not work on modern operating systems. 
 
 Please consider moving to the new ACQUA adquisition system based on the RedPitaya board (look for branches ACQUA v2 or later in this repository.
+
+## ACQUA main reference and citation
+
+When using ACQUA v1, please cite the reference reported below:
+
+Miguel Sofo-Haro and Horacio Arnaldi, _"The data acquisition system of the Latin American Giant Observatory (LAGO)"_. _Nuclear Instruments and Methods in Physics Research A_, **820**, 34--39 (2016), [doi:10.1016/j.nima.2016.02.101](https://doi.org/10.1016/j.nima.2016.02.101). [(bibtex)](docs/references/acqua.bib)
+
+## ACQUA main contributors
+
+ACQUA v1 main crontributors are Dr M. Sofo Haro, Dr H. Arnaldi, Dr X. Bertou and Dr H. Asorey, for the [LAGO Collaboration](https://lagoproject.net/collab.html). 
 
 <!-- ABOUT THE PROJECT -->
 <!--
