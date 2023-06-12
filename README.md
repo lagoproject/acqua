@@ -1,4 +1,4 @@
-<!-- [![DOI](https://zenodo.org/badge/28657065.svg)](https://zenodo.org/badge/latestdoi/28657065) -->
+[![DOI](https://zenodo.org/badge/37874778.svg)](https://zenodo.org/badge/latestdoi/37874778)
 
 <div id="top"></div>
 <br />
