@@ -1,1 +1,0 @@
--L/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libbuffer/linux.x86_64/dbg -lbuffer

@@ -1,2 +1,0 @@
-A small library for rendering error messages (passing storage deallocation
-responsibility to the caller).
