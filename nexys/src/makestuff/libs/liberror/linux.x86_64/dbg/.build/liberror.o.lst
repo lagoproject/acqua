@@ -1,0 +1,660 @@
+   1              		.file	"liberror.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/liberror" "liberror.c"
+   5              		.globl	errRender
+   7              	errRender:
+   8              	.LFB4:
+   9              		.file 1 "liberror.c"
+   1:liberror.c    **** /*
+   2:liberror.c    ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:liberror.c    ****  *
+   4:liberror.c    ****  * This program is free software: you can redistribute it and/or modify
+   5:liberror.c    ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:liberror.c    ****  * the Free Software Foundation, either version 3 of the License, or
+   7:liberror.c    ****  * (at your option) any later version.
+   8:liberror.c    ****  *
+   9:liberror.c    ****  * This program is distributed in the hope that it will be useful,
+  10:liberror.c    ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:liberror.c    ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:liberror.c    ****  * GNU Lesser General Public License for more details.
+  13:liberror.c    ****  *
+  14:liberror.c    ****  * You should have received a copy of the GNU Lesser General Public License
+  15:liberror.c    ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:liberror.c    ****  */
+  17:liberror.c    **** #ifdef WIN32
+  18:liberror.c    **** 	#define strerror_r(err, buf, size) strerror_s(buf, size, err)
+  19:liberror.c    **** #else
+  20:liberror.c    **** 	#undef _GNU_SOURCE
+  21:liberror.c    **** 	#define _XOPEN_SOURCE 600
+  22:liberror.c    **** #endif
+  23:liberror.c    **** #include <stdio.h>
+  24:liberror.c    **** #include <stdlib.h>
+  25:liberror.c    **** #include <stdarg.h>
+  26:liberror.c    **** #include <string.h>
+  27:liberror.c    **** #include <errno.h>
+  28:liberror.c    **** #include "liberror.h"
+  29:liberror.c    **** 
+  30:liberror.c    **** // Code inspired by http://linux.die.net/man/3/snprintf
+  31:liberror.c    **** //
+  32:liberror.c    **** DLLEXPORT(void) errRender(const char **error, const char *format, ...) {
+  10              		.loc 1 32 72
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4881EC00 		subq	$256, %rsp
+  18      010000
+  19 000f 4889BD08 		movq	%rdi, -248(%rbp)
+  19      FFFFFF
+  20 0016 4889B500 		movq	%rsi, -256(%rbp)
+  20      FFFFFF
+  21 001d 48899560 		movq	%rdx, -160(%rbp)
+  21      FFFFFF
+  22 0024 48898D68 		movq	%rcx, -152(%rbp)
+  22      FFFFFF
+  23 002b 4C898570 		movq	%r8, -144(%rbp)
+  23      FFFFFF
+  24 0032 4C898D78 		movq	%r9, -136(%rbp)
+  24      FFFFFF
+  25 0039 84C0     		testb	%al, %al
+  26 003b 7420     		je	.L2
+  27 003d 0F294580 		movaps	%xmm0, -128(%rbp)
+  28 0041 0F294D90 		movaps	%xmm1, -112(%rbp)
+  29 0045 0F2955A0 		movaps	%xmm2, -96(%rbp)
+  30 0049 0F295DB0 		movaps	%xmm3, -80(%rbp)
+  31 004d 0F2965C0 		movaps	%xmm4, -64(%rbp)
+  32 0051 0F296DD0 		movaps	%xmm5, -48(%rbp)
+  33 0055 0F2975E0 		movaps	%xmm6, -32(%rbp)
+  34 0059 0F297DF0 		movaps	%xmm7, -16(%rbp)
+  35              	.L2:
+  36              		.loc 1 32 72
+  37 005d 64488B04 		movq	%fs:40, %rax
+  37      25280000 
+  37      00
+  38 0066 48898548 		movq	%rax, -184(%rbp)
+  38      FFFFFF
+  39 006d 31C0     		xorl	%eax, %eax
+  33:liberror.c    **** 	if ( error ) {
+  40              		.loc 1 33 5
+  41 006f 4883BD08 		cmpq	$0, -248(%rbp)
+  41      FFFFFF00 
+  42 0077 0F843F01 		je	.L1
+  42      0000
+  43              	.LBB2:
+  34:liberror.c    **** 		// Guess we need no more than 512 bytes
+  35:liberror.c    **** 		int returnCode, size = 512;
+  44              		.loc 1 35 19
+  45 007d C78518FF 		movl	$512, -232(%rbp)
+  45      FFFF0002 
+  45      0000
+  36:liberror.c    **** 		char *bufPtr, *newBufPtr;
+  37:liberror.c    **** 		va_list argList;
+  38:liberror.c    **** 		bufPtr = (char*)malloc(size);
+  46              		.loc 1 38 19
+  47 0087 8B8518FF 		movl	-232(%rbp), %eax
+  47      FFFF
+  48 008d 4898     		cltq
+  49 008f 4889C7   		movq	%rax, %rdi
+  50 0092 E8000000 		call	malloc@PLT
+  50      00
+  51 0097 48898520 		movq	%rax, -224(%rbp)
+  51      FFFFFF
+  39:liberror.c    **** 		if ( bufPtr == NULL ) {
+  52              		.loc 1 39 6
+  53 009e 4883BD20 		cmpq	$0, -224(%rbp)
+  53      FFFFFF00 
+  54 00a6 7513     		jne	.L4
+  40:liberror.c    **** 			// Insufficient memory
+  41:liberror.c    **** 			*error = NULL;
+  55              		.loc 1 41 11
+  56 00a8 488B8508 		movq	-248(%rbp), %rax
+  56      FFFFFF
+  57 00af 48C70000 		movq	$0, (%rax)
+  57      000000
+  42:liberror.c    **** 			return;
+  58              		.loc 1 42 4
+  59 00b6 E9010100 		jmp	.L1
+  59      00
+  60              	.L4:
+  43:liberror.c    **** 		}
+  44:liberror.c    **** 		for ( ; ; ) {
+  45:liberror.c    **** 			// Try to print in the allocated space
+  46:liberror.c    **** 			va_start(argList, format);
+  61              		.loc 1 46 4
+  62 00bb C78530FF 		movl	$16, -208(%rbp)
+  62      FFFF1000 
+  62      0000
+  63 00c5 C78534FF 		movl	$48, -204(%rbp)
+  63      FFFF3000 
+  63      0000
+  64 00cf 488D4510 		leaq	16(%rbp), %rax
+  65 00d3 48898538 		movq	%rax, -200(%rbp)
+  65      FFFFFF
+  66 00da 488D8550 		leaq	-176(%rbp), %rax
+  66      FFFFFF
+  67 00e1 48898540 		movq	%rax, -192(%rbp)
+  67      FFFFFF
+  47:liberror.c    **** 			returnCode = vsnprintf(bufPtr, size, format, argList);
+  68              		.loc 1 47 17
+  69 00e8 8B8518FF 		movl	-232(%rbp), %eax
+  69      FFFF
+  70 00ee 4863F0   		movslq	%eax, %rsi
+  71 00f1 488D8D30 		leaq	-208(%rbp), %rcx
+  71      FFFFFF
+  72 00f8 488B9500 		movq	-256(%rbp), %rdx
+  72      FFFFFF
+  73 00ff 488B8520 		movq	-224(%rbp), %rax
+  73      FFFFFF
+  74 0106 4889C7   		movq	%rax, %rdi
+  75 0109 E8000000 		call	vsnprintf@PLT
+  75      00
+  76 010e 89851CFF 		movl	%eax, -228(%rbp)
+  76      FFFF
+  48:liberror.c    **** 			va_end(argList);
+  49:liberror.c    **** 			
+  50:liberror.c    **** 			// If that worked, return the string
+  51:liberror.c    **** 			if ( returnCode != -1 && returnCode < size ) {
+  77              		.loc 1 51 7
+  78 0114 83BD1CFF 		cmpl	$-1, -228(%rbp)
+  78      FFFFFF
+  79 011b 7421     		je	.L6
+  80              		.loc 1 51 26 discriminator 1
+  81 011d 8B851CFF 		movl	-228(%rbp), %eax
+  81      FFFF
+  82 0123 3B8518FF 		cmpl	-232(%rbp), %eax
+  82      FFFF
+  83 0129 7D13     		jge	.L6
+  52:liberror.c    **** 				*error = bufPtr;
+  84              		.loc 1 52 12
+  85 012b 488B8508 		movq	-248(%rbp), %rax
+  85      FFFFFF
+  86 0132 488B9520 		movq	-224(%rbp), %rdx
+  86      FFFFFF
+  87 0139 488910   		movq	%rdx, (%rax)
+  53:liberror.c    **** 				return;
+  88              		.loc 1 53 5
+  89 013c EB7E     		jmp	.L1
+  90              	.L6:
+  54:liberror.c    **** 			}
+  55:liberror.c    **** 			
+  56:liberror.c    **** 			// Else try again with more space
+  57:liberror.c    **** 			if ( returnCode == -1 ) {
+  91              		.loc 1 57 7
+  92 013e 83BD1CFF 		cmpl	$-1, -228(%rbp)
+  92      FFFFFF
+  93 0145 7508     		jne	.L7
+  58:liberror.c    **** 				// vsnprintf() in glibc 2.0 and MSVC not C99-compliant: returns -1 if buf too small
+  59:liberror.c    **** 				size *= 2;
+  94              		.loc 1 59 10
+  95 0147 D1A518FF 		sall	-232(%rbp)
+  95      FFFF
+  96 014d EB0F     		jmp	.L8
+  97              	.L7:
+  60:liberror.c    **** 			} else {
+  61:liberror.c    **** 				// vsnprintf() in glibc 2.1 is C99-compliant: returns the exact no. of bytes needed
+  62:liberror.c    **** 				size = returnCode + 1;
+  98              		.loc 1 62 10
+  99 014f 8B851CFF 		movl	-228(%rbp), %eax
+  99      FFFF
+ 100 0155 83C001   		addl	$1, %eax
+ 101 0158 898518FF 		movl	%eax, -232(%rbp)
+ 101      FFFF
+ 102              	.L8:
+  63:liberror.c    **** 			}
+  64:liberror.c    **** 			newBufPtr = (char*)realloc(bufPtr, size);
+ 103              		.loc 1 64 23
+ 104 015e 8B8518FF 		movl	-232(%rbp), %eax
+ 104      FFFF
+ 105 0164 4863D0   		movslq	%eax, %rdx
+ 106 0167 488B8520 		movq	-224(%rbp), %rax
+ 106      FFFFFF
+ 107 016e 4889D6   		movq	%rdx, %rsi
+ 108 0171 4889C7   		movq	%rax, %rdi
+ 109 0174 E8000000 		call	realloc@PLT
+ 109      00
+ 110 0179 48898528 		movq	%rax, -216(%rbp)
+ 110      FFFFFF
+  65:liberror.c    **** 			if ( newBufPtr == NULL ) {
+ 111              		.loc 1 65 7
+ 112 0180 4883BD28 		cmpq	$0, -216(%rbp)
+ 112      FFFFFF00 
+ 113 0188 751F     		jne	.L9
+  66:liberror.c    **** 				free(bufPtr);
+ 114              		.loc 1 66 5
+ 115 018a 488B8520 		movq	-224(%rbp), %rax
+ 115      FFFFFF
+ 116 0191 4889C7   		movq	%rax, %rdi
+ 117 0194 E8000000 		call	free@PLT
+ 117      00
+  67:liberror.c    **** 				*error = NULL;
+ 118              		.loc 1 67 12
+ 119 0199 488B8508 		movq	-248(%rbp), %rax
+ 119      FFFFFF
+ 120 01a0 48C70000 		movq	$0, (%rax)
+ 120      000000
+  68:liberror.c    **** 				return;
+ 121              		.loc 1 68 5
+ 122 01a7 EB13     		jmp	.L1
+ 123              	.L9:
+  69:liberror.c    **** 			} else {
+  70:liberror.c    **** 				bufPtr = newBufPtr;
+ 124              		.loc 1 70 12
+ 125 01a9 488B8528 		movq	-216(%rbp), %rax
+ 125      FFFFFF
+ 126 01b0 48898520 		movq	%rax, -224(%rbp)
+ 126      FFFFFF
+  46:liberror.c    **** 			returnCode = vsnprintf(bufPtr, size, format, argList);
+ 127              		.loc 1 46 4
+ 128 01b7 E9FFFEFF 		jmp	.L4
+ 128      FF
+ 129              	.L1:
+ 130              	.LBE2:
+  71:liberror.c    **** 			}
+  72:liberror.c    **** 		}
+  73:liberror.c    **** 	}
+  74:liberror.c    **** }
+ 131              		.loc 1 74 1
+ 132 01bc 488B8548 		movq	-184(%rbp), %rax
+ 132      FFFFFF
+ 133 01c3 64482B04 		subq	%fs:40, %rax
+ 133      25280000 
+ 133      00
+ 134 01cc 7405     		je	.L10
+ 135 01ce E8000000 		call	__stack_chk_fail@PLT
+ 135      00
+ 136              	.L10:
+ 137 01d3 C9       		leave
+ 138              		.cfi_def_cfa 7, 8
+ 139 01d4 C3       		ret
+ 140              		.cfi_endproc
+ 141              	.LFE4:
+ 143              		.globl	errPrefix
+ 145              	errPrefix:
+ 146              	.LFB5:
+  75:liberror.c    **** 
+  76:liberror.c    **** // Add a prefix to the front of the error by reallocating & copying
+  77:liberror.c    **** //
+  78:liberror.c    **** DLLEXPORT(void) errPrefix(const char **error, const char *prefix) {
+ 147              		.loc 1 78 67
+ 148              		.cfi_startproc
+ 149 01d5 F30F1EFA 		endbr64
+ 150 01d9 55       		pushq	%rbp
+ 151              		.cfi_def_cfa_offset 16
+ 152              		.cfi_offset 6, -16
+ 153 01da 4889E5   		movq	%rsp, %rbp
+ 154              		.cfi_def_cfa_register 6
+ 155 01dd 4883EC30 		subq	$48, %rsp
+ 156 01e1 48897DD8 		movq	%rdi, -40(%rbp)
+ 157 01e5 488975D0 		movq	%rsi, -48(%rbp)
+  79:liberror.c    **** 	if ( error && prefix ) {
+ 158              		.loc 1 79 5
+ 159 01e9 48837DD8 		cmpq	$0, -40(%rbp)
+ 159      00
+ 160 01ee 0F84DC00 		je	.L11
+ 160      0000
+ 161              		.loc 1 79 13 discriminator 1
+ 162 01f4 48837DD0 		cmpq	$0, -48(%rbp)
+ 162      00
+ 163 01f9 0F84D100 		je	.L11
+ 163      0000
+ 164              	.LBB3:
+  80:liberror.c    **** 		char *newError, *p;
+  81:liberror.c    **** 		const int pLen = strlen(prefix); // ": " and null terminator
+ 165              		.loc 1 81 20
+ 166 01ff 488B45D0 		movq	-48(%rbp), %rax
+ 167 0203 4889C7   		movq	%rax, %rdi
+ 168 0206 E8000000 		call	strlen@PLT
+ 168      00
+ 169              		.loc 1 81 13
+ 170 020b 8945E8   		movl	%eax, -24(%rbp)
+  82:liberror.c    **** 		const int len = pLen + strlen(*error) + 3; // ": " and null terminator
+ 171              		.loc 1 82 26
+ 172 020e 488B45D8 		movq	-40(%rbp), %rax
+ 173 0212 488B00   		movq	(%rax), %rax
+ 174 0215 4889C7   		movq	%rax, %rdi
+ 175 0218 E8000000 		call	strlen@PLT
+ 175      00
+ 176              		.loc 1 82 24
+ 177 021d 89C2     		movl	%eax, %edx
+ 178 021f 8B45E8   		movl	-24(%rbp), %eax
+ 179 0222 01D0     		addl	%edx, %eax
+ 180              		.loc 1 82 41
+ 181 0224 83C003   		addl	$3, %eax
+ 182              		.loc 1 82 13
+ 183 0227 8945EC   		movl	%eax, -20(%rbp)
+  83:liberror.c    **** 		p = newError = (char*)malloc(len);
+ 184              		.loc 1 83 25
+ 185 022a 8B45EC   		movl	-20(%rbp), %eax
+ 186 022d 4898     		cltq
+ 187 022f 4889C7   		movq	%rax, %rdi
+ 188 0232 E8000000 		call	malloc@PLT
+ 188      00
+ 189 0237 488945F0 		movq	%rax, -16(%rbp)
+ 190              		.loc 1 83 5
+ 191 023b 488B45F0 		movq	-16(%rbp), %rax
+ 192 023f 488945F8 		movq	%rax, -8(%rbp)
+  84:liberror.c    **** 		if ( newError == NULL ) {
+ 193              		.loc 1 84 6
+ 194 0243 48837DF0 		cmpq	$0, -16(%rbp)
+ 194      00
+ 195 0248 751C     		jne	.L13
+  85:liberror.c    **** 			errFree(*error);
+ 196              		.loc 1 85 4
+ 197 024a 488B45D8 		movq	-40(%rbp), %rax
+ 198 024e 488B00   		movq	(%rax), %rax
+ 199 0251 4889C7   		movq	%rax, %rdi
+ 200 0254 E8000000 		call	errFree@PLT
+ 200      00
+  86:liberror.c    **** 			*error = NULL;
+ 201              		.loc 1 86 11
+ 202 0259 488B45D8 		movq	-40(%rbp), %rax
+ 203 025d 48C70000 		movq	$0, (%rax)
+ 203      000000
+  87:liberror.c    **** 			return;
+ 204              		.loc 1 87 4
+ 205 0264 EB6A     		jmp	.L11
+ 206              	.L13:
+  88:liberror.c    **** 		}
+  89:liberror.c    **** 		strcpy(p, prefix);
+ 207              		.loc 1 89 3
+ 208 0266 488B55D0 		movq	-48(%rbp), %rdx
+ 209 026a 488B45F8 		movq	-8(%rbp), %rax
+ 210 026e 4889D6   		movq	%rdx, %rsi
+ 211 0271 4889C7   		movq	%rax, %rdi
+ 212 0274 E8000000 		call	strcpy@PLT
+ 212      00
+  90:liberror.c    **** 		p += pLen;
+ 213              		.loc 1 90 5
+ 214 0279 8B45E8   		movl	-24(%rbp), %eax
+ 215 027c 4898     		cltq
+ 216 027e 480145F8 		addq	%rax, -8(%rbp)
+  91:liberror.c    **** 		*p++ = ':';
+ 217              		.loc 1 91 5
+ 218 0282 488B45F8 		movq	-8(%rbp), %rax
+ 219 0286 488D5001 		leaq	1(%rax), %rdx
+ 220 028a 488955F8 		movq	%rdx, -8(%rbp)
+ 221              		.loc 1 91 8
+ 222 028e C6003A   		movb	$58, (%rax)
+  92:liberror.c    **** 		*p++ = ' ';
+ 223              		.loc 1 92 5
+ 224 0291 488B45F8 		movq	-8(%rbp), %rax
+ 225 0295 488D5001 		leaq	1(%rax), %rdx
+ 226 0299 488955F8 		movq	%rdx, -8(%rbp)
+ 227              		.loc 1 92 8
+ 228 029d C60020   		movb	$32, (%rax)
+  93:liberror.c    **** 		strcpy(p, *error);
+ 229              		.loc 1 93 3
+ 230 02a0 488B45D8 		movq	-40(%rbp), %rax
+ 231 02a4 488B10   		movq	(%rax), %rdx
+ 232 02a7 488B45F8 		movq	-8(%rbp), %rax
+ 233 02ab 4889D6   		movq	%rdx, %rsi
+ 234 02ae 4889C7   		movq	%rax, %rdi
+ 235 02b1 E8000000 		call	strcpy@PLT
+ 235      00
+  94:liberror.c    **** 		errFree(*error);
+ 236              		.loc 1 94 3
+ 237 02b6 488B45D8 		movq	-40(%rbp), %rax
+ 238 02ba 488B00   		movq	(%rax), %rax
+ 239 02bd 4889C7   		movq	%rax, %rdi
+ 240 02c0 E8000000 		call	errFree@PLT
+ 240      00
+  95:liberror.c    **** 		*error = newError;
+ 241              		.loc 1 95 10
+ 242 02c5 488B45D8 		movq	-40(%rbp), %rax
+ 243 02c9 488B55F0 		movq	-16(%rbp), %rdx
+ 244 02cd 488910   		movq	%rdx, (%rax)
+ 245              	.L11:
+ 246              	.LBE3:
+  96:liberror.c    **** 	}
+  97:liberror.c    **** }
+ 247              		.loc 1 97 1
+ 248 02d0 C9       		leave
+ 249              		.cfi_def_cfa 7, 8
+ 250 02d1 C3       		ret
+ 251              		.cfi_endproc
+ 252              	.LFE5:
+ 254              		.globl	errRenderStd
+ 256              	errRenderStd:
+ 257              	.LFB6:
+  98:liberror.c    **** 
+  99:liberror.c    **** // Render the last libC error in the same way that errRender() does
+ 100:liberror.c    **** //
+ 101:liberror.c    **** DLLEXPORT(void) errRenderStd(const char **error) {
+ 258              		.loc 1 101 50
+ 259              		.cfi_startproc
+ 260 02d2 F30F1EFA 		endbr64
+ 261 02d6 55       		pushq	%rbp
+ 262              		.cfi_def_cfa_offset 16
+ 263              		.cfi_offset 6, -16
+ 264 02d7 4889E5   		movq	%rsp, %rbp
+ 265              		.cfi_def_cfa_register 6
+ 266 02da 4883EC30 		subq	$48, %rsp
+ 267 02de 48897DD8 		movq	%rdi, -40(%rbp)
+ 102:liberror.c    **** 	if ( error ) {
+ 268              		.loc 1 102 5
+ 269 02e2 48837DD8 		cmpq	$0, -40(%rbp)
+ 269      00
+ 270 02e7 0F84D000 		je	.L14
+ 270      0000
+ 271              	.LBB4:
+ 103:liberror.c    **** 		// Guess we need no more than 512 bytes
+ 104:liberror.c    **** 		int returnCode, size = 512;
+ 272              		.loc 1 104 19
+ 273 02ed C745E400 		movl	$512, -28(%rbp)
+ 273      020000
+ 105:liberror.c    **** 		char *bufPtr, *newBufPtr;
+ 106:liberror.c    **** 		const int errSave = errno;
+ 274              		.loc 1 106 23
+ 275 02f4 E8000000 		call	__errno_location@PLT
+ 275      00
+ 276              		.loc 1 106 13
+ 277 02f9 8B00     		movl	(%rax), %eax
+ 278 02fb 8945E8   		movl	%eax, -24(%rbp)
+ 107:liberror.c    **** 		bufPtr = (char*)malloc(size);
+ 279              		.loc 1 107 19
+ 280 02fe 8B45E4   		movl	-28(%rbp), %eax
+ 281 0301 4898     		cltq
+ 282 0303 4889C7   		movq	%rax, %rdi
+ 283 0306 E8000000 		call	malloc@PLT
+ 283      00
+ 284 030b 488945F0 		movq	%rax, -16(%rbp)
+ 108:liberror.c    **** 		if ( bufPtr == NULL ) {
+ 285              		.loc 1 108 6
+ 286 030f 48837DF0 		cmpq	$0, -16(%rbp)
+ 286      00
+ 287 0314 7510     		jne	.L16
+ 109:liberror.c    **** 			// Insufficient memory
+ 110:liberror.c    **** 			*error = NULL;
+ 288              		.loc 1 110 11
+ 289 0316 488B45D8 		movq	-40(%rbp), %rax
+ 290 031a 48C70000 		movq	$0, (%rax)
+ 290      000000
+ 111:liberror.c    **** 			return;
+ 291              		.loc 1 111 4
+ 292 0321 E9970000 		jmp	.L14
+ 292      00
+ 293              	.L16:
+ 112:liberror.c    **** 		}
+ 113:liberror.c    **** 		for ( ; ; ) {
+ 114:liberror.c    **** 			// Try to print in the allocated space
+ 115:liberror.c    **** 			returnCode = strerror_r(errSave, bufPtr, size);
+ 294              		.loc 1 115 17
+ 295 0326 8B45E4   		movl	-28(%rbp), %eax
+ 296 0329 4863D0   		movslq	%eax, %rdx
+ 297 032c 488B4DF0 		movq	-16(%rbp), %rcx
+ 298 0330 8B45E8   		movl	-24(%rbp), %eax
+ 299 0333 4889CE   		movq	%rcx, %rsi
+ 300 0336 89C7     		movl	%eax, %edi
+ 301 0338 E8000000 		call	__xpg_strerror_r@PLT
+ 301      00
+ 302 033d 8945EC   		movl	%eax, -20(%rbp)
+ 116:liberror.c    **** 			if ( returnCode == 0 ) {
+ 303              		.loc 1 116 7
+ 304 0340 837DEC00 		cmpl	$0, -20(%rbp)
+ 305 0344 750D     		jne	.L17
+ 117:liberror.c    **** 				// Yay, it fits! (WIN32 comes through here even if the message was truncated...doh)
+ 118:liberror.c    **** 				*error = bufPtr;
+ 306              		.loc 1 118 12
+ 307 0346 488B45D8 		movq	-40(%rbp), %rax
+ 308 034a 488B55F0 		movq	-16(%rbp), %rdx
+ 309 034e 488910   		movq	%rdx, (%rax)
+ 119:liberror.c    **** 				return;
+ 310              		.loc 1 119 5
+ 311 0351 EB6A     		jmp	.L14
+ 312              	.L17:
+ 120:liberror.c    **** 			} else if ( returnCode == -1 && errno == ERANGE ) {
+ 313              		.loc 1 120 14
+ 314 0353 837DECFF 		cmpl	$-1, -20(%rbp)
+ 315 0357 7531     		jne	.L18
+ 316              		.loc 1 120 36 discriminator 1
+ 317 0359 E8000000 		call	__errno_location@PLT
+ 317      00
+ 318 035e 8B00     		movl	(%rax), %eax
+ 319              		.loc 1 120 33 discriminator 1
+ 320 0360 83F822   		cmpl	$34, %eax
+ 321 0363 7525     		jne	.L18
+ 121:liberror.c    **** 				// It doesn't fit...resize buffer and try again
+ 122:liberror.c    **** 				size *= 2;
+ 322              		.loc 1 122 10
+ 323 0365 D165E4   		sall	-28(%rbp)
+ 123:liberror.c    **** 			} else {
+ 124:liberror.c    **** 				// Some other problem...invalid errno perhaps?
+ 125:liberror.c    **** 				*error = NULL;
+ 126:liberror.c    **** 				return;
+ 127:liberror.c    **** 			}
+ 128:liberror.c    **** 			newBufPtr = (char*)realloc(bufPtr, size);
+ 324              		.loc 1 128 23
+ 325 0368 8B45E4   		movl	-28(%rbp), %eax
+ 326 036b 4863D0   		movslq	%eax, %rdx
+ 327 036e 488B45F0 		movq	-16(%rbp), %rax
+ 328 0372 4889D6   		movq	%rdx, %rsi
+ 329 0375 4889C7   		movq	%rax, %rdi
+ 330 0378 E8000000 		call	realloc@PLT
+ 330      00
+ 331 037d 488945F8 		movq	%rax, -8(%rbp)
+ 129:liberror.c    **** 			if ( newBufPtr == NULL ) {
+ 332              		.loc 1 129 7
+ 333 0381 48837DF8 		cmpq	$0, -8(%rbp)
+ 333      00
+ 334 0386 740F     		je	.L19
+ 335 0388 EB26     		jmp	.L21
+ 336              	.L18:
+ 125:liberror.c    **** 				return;
+ 337              		.loc 1 125 12
+ 338 038a 488B45D8 		movq	-40(%rbp), %rax
+ 339 038e 48C70000 		movq	$0, (%rax)
+ 339      000000
+ 126:liberror.c    **** 			}
+ 340              		.loc 1 126 5
+ 341 0395 EB26     		jmp	.L14
+ 342              	.L19:
+ 130:liberror.c    **** 				free(bufPtr);
+ 343              		.loc 1 130 5
+ 344 0397 488B45F0 		movq	-16(%rbp), %rax
+ 345 039b 4889C7   		movq	%rax, %rdi
+ 346 039e E8000000 		call	free@PLT
+ 346      00
+ 131:liberror.c    **** 				*error = NULL;
+ 347              		.loc 1 131 12
+ 348 03a3 488B45D8 		movq	-40(%rbp), %rax
+ 349 03a7 48C70000 		movq	$0, (%rax)
+ 349      000000
+ 132:liberror.c    **** 				return;
+ 350              		.loc 1 132 5
+ 351 03ae EB0D     		jmp	.L14
+ 352              	.L21:
+ 133:liberror.c    **** 			} else {
+ 134:liberror.c    **** 				bufPtr = newBufPtr;
+ 353              		.loc 1 134 12
+ 354 03b0 488B45F8 		movq	-8(%rbp), %rax
+ 355 03b4 488945F0 		movq	%rax, -16(%rbp)
+ 115:liberror.c    **** 			if ( returnCode == 0 ) {
+ 356              		.loc 1 115 15
+ 357 03b8 E969FFFF 		jmp	.L16
+ 357      FF
+ 358              	.L14:
+ 359              	.LBE4:
+ 135:liberror.c    **** 			}
+ 136:liberror.c    **** 		}
+ 137:liberror.c    **** 	}
+ 138:liberror.c    **** }
+ 360              		.loc 1 138 1
+ 361 03bd C9       		leave
+ 362              		.cfi_def_cfa 7, 8
+ 363 03be C3       		ret
+ 364              		.cfi_endproc
+ 365              	.LFE6:
+ 367              		.globl	errFree
+ 369              	errFree:
+ 370              	.LFB7:
+ 139:liberror.c    **** 
+ 140:liberror.c    **** DLLEXPORT(void) errFree(const char *error) {
+ 371              		.loc 1 140 44
+ 372              		.cfi_startproc
+ 373 03bf F30F1EFA 		endbr64
+ 374 03c3 55       		pushq	%rbp
+ 375              		.cfi_def_cfa_offset 16
+ 376              		.cfi_offset 6, -16
+ 377 03c4 4889E5   		movq	%rsp, %rbp
+ 378              		.cfi_def_cfa_register 6
+ 379 03c7 4883EC10 		subq	$16, %rsp
+ 380 03cb 48897DF8 		movq	%rdi, -8(%rbp)
+ 141:liberror.c    **** 	free((void*)error);
+ 381              		.loc 1 141 2
+ 382 03cf 488B45F8 		movq	-8(%rbp), %rax
+ 383 03d3 4889C7   		movq	%rax, %rdi
+ 384 03d6 E8000000 		call	free@PLT
+ 384      00
+ 142:liberror.c    **** }
+ 385              		.loc 1 142 1
+ 386 03db 90       		nop
+ 387 03dc C9       		leave
+ 388              		.cfi_def_cfa 7, 8
+ 389 03dd C3       		ret
+ 390              		.cfi_endproc
+ 391              	.LFE7:
+ 393              	.Letext0:
+ 394              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h"
+ 395              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h"
+ 396              		.file 4 "<built-in>"
+ 397              		.file 5 "/usr/include/stdio.h"
+ 398              		.file 6 "/usr/include/string.h"
+ 399              		.file 7 "/usr/include/stdlib.h"
+ 400              		.file 8 "/usr/include/errno.h"
+ 1322              		.section	.note.gnu.property,"a"
+ 1323              		.align 8
+ 1324 0000 04000000 		.long	1f - 0f
+ 1325 0004 10000000 		.long	4f - 1f
+ 1326 0008 05000000 		.long	5
+ 1327              	0:
+ 1328 000c 474E5500 		.string	"GNU"
+ 1329              	1:
+ 1330              		.align 8
+ 1331 0010 020000C0 		.long	0xc0000002
+ 1332 0014 04000000 		.long	3f - 2f
+ 1333              	2:
+ 1334 0018 03000000 		.long	0x3
+ 1335              	3:
+ 1336 001c 00000000 		.align 8
+ 1337              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 liberror.c
+     /tmp/ccIYmQrO.s:7      .text:0000000000000000 errRender
+     /tmp/ccIYmQrO.s:145    .text:00000000000001d5 errPrefix
+     /tmp/ccIYmQrO.s:369    .text:00000000000003bf errFree
+     /tmp/ccIYmQrO.s:256    .text:00000000000002d2 errRenderStd
+
+UNDEFINED SYMBOLS
+malloc
+vsnprintf
+realloc
+free
+__stack_chk_fail
+strlen
+strcpy
+__errno_location
+__xpg_strerror_r

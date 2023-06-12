@@ -1,0 +1,3 @@
+-L/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libusbwrap/linux.x86_64/dbg -lusbwrap
+-L/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/liberror/linux.x86_64/dbg -lerror
+-lusb

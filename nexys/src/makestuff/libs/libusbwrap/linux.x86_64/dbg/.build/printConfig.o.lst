@@ -1,0 +1,809 @@
+   1              		.file	"printConfig.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libusbwrap" "printConf
+   6              	littleEndian16:
+   7              	.LFB2:
+   8              		.file 1 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h"
+   1:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** /*
+   2:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * Copyright (C) 2009 Chris McClelland
+   3:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  *
+   4:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * This program is free software: you can redistribute it and/or modify
+   5:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * it under the terms of the GNU General Public License as published by
+   6:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * the Free Software Foundation, either version 3 of the License, or
+   7:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * (at your option) any later version.
+   8:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  *
+   9:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * This program is distributed in the hope that it will be useful,
+  10:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * GNU General Public License for more details.
+  13:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  *
+  14:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * You should have received a copy of the GNU General Public License
+  15:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h ****  */
+  17:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  18:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifndef MAKESTUFF_H
+  19:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #define MAKESTUFF_H
+  20:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  21:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  22:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#ifdef WIN32
+  23:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		typedef char bool;
+  24:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		enum {
+  25:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 			false = 0,
+  26:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 			true = 1
+  27:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		};
+  28:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#else
+  29:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		#include <stdbool.h>
+  30:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#endif
+  31:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  32:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  33:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifdef WIN32
+  34:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT
+  35:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) __declspec(dllexport) t __stdcall
+  36:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #else
+  37:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+  38:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) t
+  39:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  40:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  41:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifndef NULL
+  42:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define NULL ((void*)0)
+  43:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  44:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  45:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** typedef unsigned char      uint8;
+  46:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** typedef unsigned short     uint16;
+  47:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  48:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef unsigned long long uint64;
+  49:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  50:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  51:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** typedef signed char        int8;
+  52:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** typedef signed short       int16;
+  53:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  54:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #if (defined __AVR__ && defined __GNUC__) || defined SDCC
+  55:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	// The embedded platforms have sizeof(int) = 2, so use long
+  56:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef signed long    int32;
+  57:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef unsigned long  uint32;
+  58:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #else
+  59:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	// The i686 & x86_64 have sizeof(int) = 4
+  60:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef signed int     int32;
+  61:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef unsigned int   uint32;
+  62:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  63:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  64:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  65:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	typedef signed long long   int64;
+  66:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  67:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  68:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** typedef unsigned int       bitfield;
+  69:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  70:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #if defined __GNUC__
+  71:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define swap32(x) __builtin_bswap32(x)
+  72:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #elif defined WIN32
+  73:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#define swap32(x) _byteswap_ulong(x)
+  74:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #define inline __inline
+  75:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #endif
+  76:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #define swap16(x) ((((x) & 0x00FF) << 8) | (((x) >> 8) & 0x00FF))
+  77:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 
+  78:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** #ifdef BYTE_ORDER
+  79:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 	#if BYTE_ORDER == 1234
+  80:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		// Little-endian machines
+  81:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		static inline uint16 bigEndian16(uint16 x) {
+  82:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 			return swap16(x);
+  83:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		}
+  84:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		static inline uint32 bigEndian32(uint32 x) {
+  85:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 			return swap32(x);
+  86:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		}
+  87:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		static inline uint16 littleEndian16(uint16 x) {
+   9              		.loc 1 87 49
+  10              		.cfi_startproc
+  11 0000 55       		pushq	%rbp
+  12              		.cfi_def_cfa_offset 16
+  13              		.cfi_offset 6, -16
+  14 0001 4889E5   		movq	%rsp, %rbp
+  15              		.cfi_def_cfa_register 6
+  16 0004 89F8     		movl	%edi, %eax
+  17 0006 668945FC 		movw	%ax, -4(%rbp)
+  88:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 			return x;
+  18              		.loc 1 88 11
+  19 000a 0FB745FC 		movzwl	-4(%rbp), %eax
+  89:/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h **** 		}
+  20              		.loc 1 89 3
+  21 000e 5D       		popq	%rbp
+  22              		.cfi_def_cfa 7, 8
+  23 000f C3       		ret
+  24              		.cfi_endproc
+  25              	.LFE2:
+  27              		.section	.rodata
+  28              	.LC0:
+  29 0000 4661696C 		.string	"Failed to get descriptor: %s\n"
+  29      65642074 
+  29      6F206765 
+  29      74206465 
+  29      73637269 
+  30 001e 0000     		.align 8
+  31              	.LC1:
+  32 0020 636F6E66 		.string	"configDescriptor {\n    bLength = 0x%02X\n    bDescriptorType = 0x%02X\n    wTotalLength 
+  32      69674465 
+  32      73637269 
+  32      70746F72 
+  32      207B0A20 
+  33 0109 00000000 		.align 8
+  33      000000
+  34              	.LC2:
+  35 0110 20202020 		.ascii	"    interfaceDescriptor {\n        bLength = 0x%02X\n       "
+  35      696E7465 
+  35      72666163 
+  35      65446573 
+  35      63726970 
+  36 014a 206244   		.ascii	" bD"
+  37 014d 65736372 		.string	"escriptorType = 0x%02X\n        bInterfaceNumber = 0x%02X\n        bAlternateSetting = 0x
+  37      6970746F 
+  37      72547970 
+  37      65203D20 
+  37      30782530 
+  38 024e 0000     		.align 8
+  39              	.LC3:
+  40 0250 20202020 		.ascii	"        endpointDescriptor {\n            bLength = 0x"
+  40      20202020 
+  40      656E6470 
+  40      6F696E74 
+  40      44657363 
+  41 0285 25303258 		.string	"%02X\n            bDescriptorType = 0x%02X\n            bEndpointAddress = 0x%02X\n      
+  41      0A202020 
+  41      20202020 
+  41      20202020 
+  41      20624465 
+  42              	.LC4:
+  43 0386 20202020 		.string	"    }\n"
+  43      7D0A00
+  44              	.LC5:
+  45 038d 7D0A00   		.string	"}\n"
+  46              		.text
+  47              		.globl	usbPrintConfiguration
+  49              	usbPrintConfiguration:
+  50              	.LFB4:
+  51              		.file 2 "printConfig.c"
+   1:printConfig.c **** /*
+   2:printConfig.c ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:printConfig.c ****  *
+   4:printConfig.c ****  * This program is free software: you can redistribute it and/or modify
+   5:printConfig.c ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:printConfig.c ****  * the Free Software Foundation, either version 3 of the License, or
+   7:printConfig.c ****  * (at your option) any later version.
+   8:printConfig.c ****  *
+   9:printConfig.c ****  * This program is distributed in the hope that it will be useful,
+  10:printConfig.c ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:printConfig.c ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:printConfig.c ****  * GNU Lesser General Public License for more details.
+  13:printConfig.c ****  *
+  14:printConfig.c ****  * You should have received a copy of the GNU Lesser General Public License
+  15:printConfig.c ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:printConfig.c ****  */
+  17:printConfig.c **** #include <liberror.h>
+  18:printConfig.c **** #include <stdio.h>
+  19:printConfig.c **** #ifdef WIN32
+  20:printConfig.c **** 	#include <lusb0_usb.h>
+  21:printConfig.c **** #else
+  22:printConfig.c **** 	#include <usb.h>
+  23:printConfig.c **** #endif
+  24:printConfig.c **** #include "libusbwrap.h"
+  25:printConfig.c **** 
+  26:printConfig.c **** // Print out the configuration tree
+  27:printConfig.c **** //
+  28:printConfig.c **** USBStatus usbPrintConfiguration(struct usb_dev_handle *deviceHandle, FILE *stream, const char **err
+  52              		.loc 2 28 104
+  53              		.cfi_startproc
+  54 0010 F30F1EFA 		endbr64
+  55 0014 55       		pushq	%rbp
+  56              		.cfi_def_cfa_offset 16
+  57              		.cfi_offset 6, -16
+  58 0015 4889E5   		movq	%rsp, %rbp
+  59              		.cfi_def_cfa_register 6
+  60 0018 4157     		pushq	%r15
+  61 001a 4156     		pushq	%r14
+  62 001c 4155     		pushq	%r13
+  63 001e 4154     		pushq	%r12
+  64 0020 53       		pushq	%rbx
+  65 0021 4881EC68 		subq	$1128, %rsp
+  65      040000
+  66              		.cfi_offset 15, -24
+  67              		.cfi_offset 14, -32
+  68              		.cfi_offset 13, -40
+  69              		.cfi_offset 12, -48
+  70              		.cfi_offset 3, -56
+  71 0028 4889BD88 		movq	%rdi, -1144(%rbp)
+  71      FBFFFF
+  72 002f 4889B580 		movq	%rsi, -1152(%rbp)
+  72      FBFFFF
+  73 0036 48899578 		movq	%rdx, -1160(%rbp)
+  73      FBFFFF
+  74              		.loc 2 28 104
+  75 003d 64488B04 		movq	%fs:40, %rax
+  75      25280000 
+  75      00
+  76 0046 488945C8 		movq	%rax, -56(%rbp)
+  77 004a 31C0     		xorl	%eax, %eax
+  29:printConfig.c **** 	USBStatus returnCode;
+  30:printConfig.c **** 	char descriptorBuffer[1024];
+  31:printConfig.c **** 	char *ptr = descriptorBuffer;
+  78              		.loc 2 31 8
+  79 004c 488D85C0 		leaq	-1088(%rbp), %rax
+  79      FBFFFF
+  80 0053 488985A0 		movq	%rax, -1120(%rbp)
+  80      FBFFFF
+  32:printConfig.c **** 	uint8 endpointNum, interfaceNum;
+  33:printConfig.c **** 	struct usb_config_descriptor *configDesc;
+  34:printConfig.c **** 	struct usb_interface_descriptor *interfaceDesc;
+  35:printConfig.c **** 	struct usb_endpoint_descriptor *endpointDesc;
+  36:printConfig.c **** 	int uStatus = usb_control_msg(
+  81              		.loc 2 36 16
+  82 005a 488D95C0 		leaq	-1088(%rbp), %rdx
+  82      FBFFFF
+  83 0061 488B8588 		movq	-1144(%rbp), %rax
+  83      FBFFFF
+  84 0068 68881300 		pushq	$5000
+  84      00
+  85 006d 68000100 		pushq	$256
+  85      00
+  86 0072 4989D1   		movq	%rdx, %r9
+  87 0075 41B80000 		movl	$0, %r8d
+  87      0000
+  88 007b B9000200 		movl	$512, %ecx
+  88      00
+  89 0080 BA060000 		movl	$6, %edx
+  89      00
+  90 0085 BE800000 		movl	$128, %esi
+  90      00
+  91 008a 4889C7   		movq	%rax, %rdi
+  92 008d E8000000 		call	usb_control_msg@PLT
+  92      00
+  93 0092 4883C410 		addq	$16, %rsp
+  94 0096 898598FB 		movl	%eax, -1128(%rbp)
+  94      FFFF
+  37:printConfig.c **** 		deviceHandle,
+  38:printConfig.c **** 		USB_ENDPOINT_IN | USB_TYPE_STANDARD | USB_RECIP_DEVICE,
+  39:printConfig.c **** 		USB_REQ_GET_DESCRIPTOR,    // bRequest
+  40:printConfig.c **** 		0x0200,                    // wValue
+  41:printConfig.c **** 		0x0000,     // wIndex
+  42:printConfig.c **** 		descriptorBuffer,
+  43:printConfig.c **** 		256,                 // wLength
+  44:printConfig.c **** 		5000               // timeout (ms)
+  45:printConfig.c **** 	);
+  46:printConfig.c **** 	if ( uStatus <= 0 ) {
+  95              		.loc 2 46 5
+  96 009c 83BD98FB 		cmpl	$0, -1128(%rbp)
+  96      FFFF00
+  97 00a3 7F3B     		jg	.L4
+  47:printConfig.c **** 		errRender(error, "Failed to get descriptor: %s\n", usb_strerror());
+  98              		.loc 2 47 3
+  99 00a5 E8000000 		call	usb_strerror@PLT
+  99      00
+ 100 00aa 4889C2   		movq	%rax, %rdx
+ 101 00ad 488B8578 		movq	-1160(%rbp), %rax
+ 101      FBFFFF
+ 102 00b4 488D0D00 		leaq	.LC0(%rip), %rcx
+ 102      000000
+ 103 00bb 4889CE   		movq	%rcx, %rsi
+ 104 00be 4889C7   		movq	%rax, %rdi
+ 105 00c1 B8000000 		movl	$0, %eax
+ 105      00
+ 106 00c6 E8000000 		call	errRender@PLT
+ 106      00
+  48:printConfig.c **** 		FAIL(USB_GET_DESCRIPTOR);
+ 107              		.loc 2 48 3
+ 108 00cb C7859CFB 		movl	$8, -1124(%rbp)
+ 108      FFFF0800 
+ 108      0000
+ 109              	.L5:
+  49:printConfig.c **** 	}
+  50:printConfig.c **** 	configDesc = (struct usb_config_descriptor *)ptr;
+  51:printConfig.c **** 	fprintf(
+  52:printConfig.c **** 		stream,
+  53:printConfig.c **** 		"configDescriptor {\n    bLength = 0x%02X\n    bDescriptorType = 0x%02X\n    wTotalLength = 0x%04
+  54:printConfig.c **** 		configDesc->bLength,
+  55:printConfig.c **** 		configDesc->bDescriptorType,
+  56:printConfig.c **** 		littleEndian16(configDesc->wTotalLength),
+  57:printConfig.c **** 		configDesc->bNumInterfaces,
+  58:printConfig.c **** 		configDesc->bConfigurationValue,
+  59:printConfig.c **** 		configDesc->iConfiguration,
+  60:printConfig.c **** 		configDesc->bmAttributes,
+  61:printConfig.c **** 		configDesc->MaxPower
+  62:printConfig.c **** 	);
+  63:printConfig.c **** 	ptr += configDesc->bLength;
+  64:printConfig.c **** 	interfaceNum = configDesc->bNumInterfaces;
+  65:printConfig.c **** 	while ( interfaceNum-- ) {
+  66:printConfig.c **** 		interfaceDesc = (struct usb_interface_descriptor *)ptr;
+  67:printConfig.c **** 		fprintf(
+  68:printConfig.c **** 			stream,
+  69:printConfig.c **** 			"    interfaceDescriptor {\n        bLength = 0x%02X\n        bDescriptorType = 0x%02X\n        
+  70:printConfig.c **** 			interfaceDesc->bLength,
+  71:printConfig.c **** 			interfaceDesc->bDescriptorType,
+  72:printConfig.c **** 			interfaceDesc->bInterfaceNumber,
+  73:printConfig.c **** 			interfaceDesc->bAlternateSetting,
+  74:printConfig.c **** 			interfaceDesc->bNumEndpoints,
+  75:printConfig.c **** 			interfaceDesc->bInterfaceClass,
+  76:printConfig.c **** 			interfaceDesc->bInterfaceSubClass,
+  77:printConfig.c **** 			interfaceDesc->bInterfaceProtocol,
+  78:printConfig.c **** 			interfaceDesc->iInterface
+  79:printConfig.c **** 		);
+  80:printConfig.c **** 		ptr += interfaceDesc->bLength;			
+  81:printConfig.c **** 		endpointNum = interfaceDesc->bNumEndpoints;
+  82:printConfig.c **** 		while ( endpointNum-- ) {
+  83:printConfig.c **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+  84:printConfig.c **** 			fprintf(
+  85:printConfig.c **** 				stream,
+  86:printConfig.c **** 				"        endpointDescriptor {\n            bLength = 0x%02X\n            bDescriptorType = 0x%0
+  87:printConfig.c **** 				endpointDesc->bLength,
+  88:printConfig.c **** 				endpointDesc->bDescriptorType,
+  89:printConfig.c **** 				endpointDesc->bEndpointAddress,
+  90:printConfig.c **** 				endpointDesc->bmAttributes,
+  91:printConfig.c **** 				littleEndian16(endpointDesc->wMaxPacketSize),
+  92:printConfig.c **** 				endpointDesc->bInterval,
+  93:printConfig.c **** 				endpointDesc->bRefresh,
+  94:printConfig.c **** 				endpointDesc->bSynchAddress
+  95:printConfig.c **** 			);
+  96:printConfig.c **** 			ptr += endpointDesc->bLength;
+  97:printConfig.c **** 		}
+  98:printConfig.c **** 		fprintf(stream, "    }\n");
+  99:printConfig.c **** 	}
+ 100:printConfig.c **** 	fprintf(stream, "}\n");
+ 101:printConfig.c **** 	return USB_SUCCESS;
+ 102:printConfig.c **** cleanup:
+ 103:printConfig.c **** 	return returnCode;
+ 110              		.loc 2 103 9
+ 111 00d5 8B859CFB 		movl	-1124(%rbp), %eax
+ 111      FFFF
+ 112 00db E90F0300 		jmp	.L11
+ 112      00
+ 113              	.L4:
+  50:printConfig.c **** 	fprintf(
+ 114              		.loc 2 50 13
+ 115 00e0 488B85A0 		movq	-1120(%rbp), %rax
+ 115      FBFFFF
+ 116 00e7 488985A8 		movq	%rax, -1112(%rbp)
+ 116      FBFFFF
+  61:printConfig.c **** 	);
+ 117              		.loc 2 61 13
+ 118 00ee 488B85A8 		movq	-1112(%rbp), %rax
+ 118      FBFFFF
+ 119 00f5 0FB64008 		movzbl	8(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 120              		.loc 2 51 2
+ 121 00f9 440FB6F0 		movzbl	%al, %r14d
+  60:printConfig.c **** 		configDesc->MaxPower
+ 122              		.loc 2 60 13
+ 123 00fd 488B85A8 		movq	-1112(%rbp), %rax
+ 123      FBFFFF
+ 124 0104 0FB64007 		movzbl	7(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 125              		.loc 2 51 2
+ 126 0108 440FB6E8 		movzbl	%al, %r13d
+  59:printConfig.c **** 		configDesc->bmAttributes,
+ 127              		.loc 2 59 13
+ 128 010c 488B85A8 		movq	-1112(%rbp), %rax
+ 128      FBFFFF
+ 129 0113 0FB64006 		movzbl	6(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 130              		.loc 2 51 2
+ 131 0117 440FB6E0 		movzbl	%al, %r12d
+  58:printConfig.c **** 		configDesc->iConfiguration,
+ 132              		.loc 2 58 13
+ 133 011b 488B85A8 		movq	-1112(%rbp), %rax
+ 133      FBFFFF
+ 134 0122 0FB64005 		movzbl	5(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 135              		.loc 2 51 2
+ 136 0126 0FB6D8   		movzbl	%al, %ebx
+  57:printConfig.c **** 		configDesc->bConfigurationValue,
+ 137              		.loc 2 57 13
+ 138 0129 488B85A8 		movq	-1112(%rbp), %rax
+ 138      FBFFFF
+ 139 0130 0FB64004 		movzbl	4(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 140              		.loc 2 51 2
+ 141 0134 440FB6F8 		movzbl	%al, %r15d
+  56:printConfig.c **** 		configDesc->bNumInterfaces,
+ 142              		.loc 2 56 28
+ 143 0138 488B85A8 		movq	-1112(%rbp), %rax
+ 143      FBFFFF
+ 144 013f 0FB74002 		movzwl	2(%rax), %eax
+  56:printConfig.c **** 		configDesc->bNumInterfaces,
+ 145              		.loc 2 56 3
+ 146 0143 0FB7C0   		movzwl	%ax, %eax
+ 147 0146 89C7     		movl	%eax, %edi
+ 148 0148 E8B3FEFF 		call	littleEndian16
+ 148      FF
+  51:printConfig.c **** 		stream,
+ 149              		.loc 2 51 2
+ 150 014d 0FB7F0   		movzwl	%ax, %esi
+  55:printConfig.c **** 		littleEndian16(configDesc->wTotalLength),
+ 151              		.loc 2 55 13
+ 152 0150 488B85A8 		movq	-1112(%rbp), %rax
+ 152      FBFFFF
+ 153 0157 0FB64001 		movzbl	1(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 154              		.loc 2 51 2
+ 155 015b 0FB6C8   		movzbl	%al, %ecx
+  54:printConfig.c **** 		configDesc->bDescriptorType,
+ 156              		.loc 2 54 13
+ 157 015e 488B85A8 		movq	-1112(%rbp), %rax
+ 157      FBFFFF
+ 158 0165 0FB600   		movzbl	(%rax), %eax
+  51:printConfig.c **** 		stream,
+ 159              		.loc 2 51 2
+ 160 0168 0FB6D0   		movzbl	%al, %edx
+ 161 016b 488B8580 		movq	-1152(%rbp), %rax
+ 161      FBFFFF
+ 162 0172 4156     		pushq	%r14
+ 163 0174 4155     		pushq	%r13
+ 164 0176 4154     		pushq	%r12
+ 165 0178 53       		pushq	%rbx
+ 166 0179 4589F9   		movl	%r15d, %r9d
+ 167 017c 4189F0   		movl	%esi, %r8d
+ 168 017f 488D3500 		leaq	.LC1(%rip), %rsi
+ 168      000000
+ 169 0186 4889C7   		movq	%rax, %rdi
+ 170 0189 B8000000 		movl	$0, %eax
+ 170      00
+ 171 018e E8000000 		call	fprintf@PLT
+ 171      00
+ 172 0193 4883C420 		addq	$32, %rsp
+  63:printConfig.c **** 	interfaceNum = configDesc->bNumInterfaces;
+ 173              		.loc 2 63 19
+ 174 0197 488B85A8 		movq	-1112(%rbp), %rax
+ 174      FBFFFF
+ 175 019e 0FB600   		movzbl	(%rax), %eax
+ 176 01a1 0FB6C0   		movzbl	%al, %eax
+  63:printConfig.c **** 	interfaceNum = configDesc->bNumInterfaces;
+ 177              		.loc 2 63 6
+ 178 01a4 480185A0 		addq	%rax, -1120(%rbp)
+ 178      FBFFFF
+  64:printConfig.c **** 	while ( interfaceNum-- ) {
+ 179              		.loc 2 64 15
+ 180 01ab 488B85A8 		movq	-1112(%rbp), %rax
+ 180      FBFFFF
+ 181 01b2 0FB64004 		movzbl	4(%rax), %eax
+ 182 01b6 888597FB 		movb	%al, -1129(%rbp)
+ 182      FFFF
+  65:printConfig.c **** 		interfaceDesc = (struct usb_interface_descriptor *)ptr;
+ 183              		.loc 2 65 8
+ 184 01bc E9EE0100 		jmp	.L6
+ 184      00
+ 185              	.L9:
+  66:printConfig.c **** 		fprintf(
+ 186              		.loc 2 66 17
+ 187 01c1 488B85A0 		movq	-1120(%rbp), %rax
+ 187      FBFFFF
+ 188 01c8 488985B0 		movq	%rax, -1104(%rbp)
+ 188      FBFFFF
+  78:printConfig.c **** 		);
+ 189              		.loc 2 78 17
+ 190 01cf 488B85B0 		movq	-1104(%rbp), %rax
+ 190      FBFFFF
+ 191 01d6 0FB64008 		movzbl	8(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 192              		.loc 2 67 3
+ 193 01da 440FB6D0 		movzbl	%al, %r10d
+  77:printConfig.c **** 			interfaceDesc->iInterface
+ 194              		.loc 2 77 17
+ 195 01de 488B85B0 		movq	-1104(%rbp), %rax
+ 195      FBFFFF
+ 196 01e5 0FB64007 		movzbl	7(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 197              		.loc 2 67 3
+ 198 01e9 440FB6C8 		movzbl	%al, %r9d
+  76:printConfig.c **** 			interfaceDesc->bInterfaceProtocol,
+ 199              		.loc 2 76 17
+ 200 01ed 488B85B0 		movq	-1104(%rbp), %rax
+ 200      FBFFFF
+ 201 01f4 0FB64006 		movzbl	6(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 202              		.loc 2 67 3
+ 203 01f8 440FB6C0 		movzbl	%al, %r8d
+  75:printConfig.c **** 			interfaceDesc->bInterfaceSubClass,
+ 204              		.loc 2 75 17
+ 205 01fc 488B85B0 		movq	-1104(%rbp), %rax
+ 205      FBFFFF
+ 206 0203 0FB64005 		movzbl	5(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 207              		.loc 2 67 3
+ 208 0207 0FB6F8   		movzbl	%al, %edi
+  74:printConfig.c **** 			interfaceDesc->bInterfaceClass,
+ 209              		.loc 2 74 17
+ 210 020a 488B85B0 		movq	-1104(%rbp), %rax
+ 210      FBFFFF
+ 211 0211 0FB64004 		movzbl	4(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 212              		.loc 2 67 3
+ 213 0215 0FB6F0   		movzbl	%al, %esi
+  73:printConfig.c **** 			interfaceDesc->bNumEndpoints,
+ 214              		.loc 2 73 17
+ 215 0218 488B85B0 		movq	-1104(%rbp), %rax
+ 215      FBFFFF
+ 216 021f 0FB64003 		movzbl	3(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 217              		.loc 2 67 3
+ 218 0223 0FB6D8   		movzbl	%al, %ebx
+  72:printConfig.c **** 			interfaceDesc->bAlternateSetting,
+ 219              		.loc 2 72 17
+ 220 0226 488B85B0 		movq	-1104(%rbp), %rax
+ 220      FBFFFF
+ 221 022d 0FB64002 		movzbl	2(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 222              		.loc 2 67 3
+ 223 0231 440FB6D8 		movzbl	%al, %r11d
+  71:printConfig.c **** 			interfaceDesc->bInterfaceNumber,
+ 224              		.loc 2 71 17
+ 225 0235 488B85B0 		movq	-1104(%rbp), %rax
+ 225      FBFFFF
+ 226 023c 0FB64001 		movzbl	1(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 227              		.loc 2 67 3
+ 228 0240 0FB6C8   		movzbl	%al, %ecx
+  70:printConfig.c **** 			interfaceDesc->bDescriptorType,
+ 229              		.loc 2 70 17
+ 230 0243 488B85B0 		movq	-1104(%rbp), %rax
+ 230      FBFFFF
+ 231 024a 0FB600   		movzbl	(%rax), %eax
+  67:printConfig.c **** 			stream,
+ 232              		.loc 2 67 3
+ 233 024d 0FB6D0   		movzbl	%al, %edx
+ 234 0250 488B8580 		movq	-1152(%rbp), %rax
+ 234      FBFFFF
+ 235 0257 4883EC08 		subq	$8, %rsp
+ 236 025b 4152     		pushq	%r10
+ 237 025d 4151     		pushq	%r9
+ 238 025f 4150     		pushq	%r8
+ 239 0261 57       		pushq	%rdi
+ 240 0262 56       		pushq	%rsi
+ 241 0263 4189D9   		movl	%ebx, %r9d
+ 242 0266 4589D8   		movl	%r11d, %r8d
+ 243 0269 488D3500 		leaq	.LC2(%rip), %rsi
+ 243      000000
+ 244 0270 4889C7   		movq	%rax, %rdi
+ 245 0273 B8000000 		movl	$0, %eax
+ 245      00
+ 246 0278 E8000000 		call	fprintf@PLT
+ 246      00
+ 247 027d 4883C430 		addq	$48, %rsp
+  80:printConfig.c **** 		endpointNum = interfaceDesc->bNumEndpoints;
+ 248              		.loc 2 80 23
+ 249 0281 488B85B0 		movq	-1104(%rbp), %rax
+ 249      FBFFFF
+ 250 0288 0FB600   		movzbl	(%rax), %eax
+ 251 028b 0FB6C0   		movzbl	%al, %eax
+  80:printConfig.c **** 		endpointNum = interfaceDesc->bNumEndpoints;
+ 252              		.loc 2 80 7
+ 253 028e 480185A0 		addq	%rax, -1120(%rbp)
+ 253      FBFFFF
+  81:printConfig.c **** 		while ( endpointNum-- ) {
+ 254              		.loc 2 81 15
+ 255 0295 488B85B0 		movq	-1104(%rbp), %rax
+ 255      FBFFFF
+ 256 029c 0FB64004 		movzbl	4(%rax), %eax
+ 257 02a0 888596FB 		movb	%al, -1130(%rbp)
+ 257      FFFF
+  82:printConfig.c **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+ 258              		.loc 2 82 9
+ 259 02a6 E9C90000 		jmp	.L7
+ 259      00
+ 260              	.L8:
+  83:printConfig.c **** 			fprintf(
+ 261              		.loc 2 83 17
+ 262 02ab 488B85A0 		movq	-1120(%rbp), %rax
+ 262      FBFFFF
+ 263 02b2 488985B8 		movq	%rax, -1096(%rbp)
+ 263      FBFFFF
+  94:printConfig.c **** 			);
+ 264              		.loc 2 94 17
+ 265 02b9 488B85B8 		movq	-1096(%rbp), %rax
+ 265      FBFFFF
+ 266 02c0 0FB64008 		movzbl	8(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 267              		.loc 2 84 4
+ 268 02c4 440FB6E8 		movzbl	%al, %r13d
+  93:printConfig.c **** 				endpointDesc->bSynchAddress
+ 269              		.loc 2 93 17
+ 270 02c8 488B85B8 		movq	-1096(%rbp), %rax
+ 270      FBFFFF
+ 271 02cf 0FB64007 		movzbl	7(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 272              		.loc 2 84 4
+ 273 02d3 440FB6E0 		movzbl	%al, %r12d
+  92:printConfig.c **** 				endpointDesc->bRefresh,
+ 274              		.loc 2 92 17
+ 275 02d7 488B85B8 		movq	-1096(%rbp), %rax
+ 275      FBFFFF
+ 276 02de 0FB64006 		movzbl	6(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 277              		.loc 2 84 4
+ 278 02e2 0FB6D8   		movzbl	%al, %ebx
+  91:printConfig.c **** 				endpointDesc->bInterval,
+ 279              		.loc 2 91 32
+ 280 02e5 488B85B8 		movq	-1096(%rbp), %rax
+ 280      FBFFFF
+ 281 02ec 0FB74004 		movzwl	4(%rax), %eax
+  91:printConfig.c **** 				endpointDesc->bInterval,
+ 282              		.loc 2 91 5
+ 283 02f0 0FB7C0   		movzwl	%ax, %eax
+ 284 02f3 89C7     		movl	%eax, %edi
+ 285 02f5 E806FDFF 		call	littleEndian16
+ 285      FF
+  84:printConfig.c **** 				stream,
+ 286              		.loc 2 84 4
+ 287 02fa 0FB7F0   		movzwl	%ax, %esi
+  90:printConfig.c **** 				littleEndian16(endpointDesc->wMaxPacketSize),
+ 288              		.loc 2 90 17
+ 289 02fd 488B85B8 		movq	-1096(%rbp), %rax
+ 289      FBFFFF
+ 290 0304 0FB64003 		movzbl	3(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 291              		.loc 2 84 4
+ 292 0308 440FB6C0 		movzbl	%al, %r8d
+  89:printConfig.c **** 				endpointDesc->bmAttributes,
+ 293              		.loc 2 89 17
+ 294 030c 488B85B8 		movq	-1096(%rbp), %rax
+ 294      FBFFFF
+ 295 0313 0FB64002 		movzbl	2(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 296              		.loc 2 84 4
+ 297 0317 0FB6F8   		movzbl	%al, %edi
+  88:printConfig.c **** 				endpointDesc->bEndpointAddress,
+ 298              		.loc 2 88 17
+ 299 031a 488B85B8 		movq	-1096(%rbp), %rax
+ 299      FBFFFF
+ 300 0321 0FB64001 		movzbl	1(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 301              		.loc 2 84 4
+ 302 0325 0FB6C8   		movzbl	%al, %ecx
+  87:printConfig.c **** 				endpointDesc->bDescriptorType,
+ 303              		.loc 2 87 17
+ 304 0328 488B85B8 		movq	-1096(%rbp), %rax
+ 304      FBFFFF
+ 305 032f 0FB600   		movzbl	(%rax), %eax
+  84:printConfig.c **** 				stream,
+ 306              		.loc 2 84 4
+ 307 0332 0FB6D0   		movzbl	%al, %edx
+ 308 0335 488B8580 		movq	-1152(%rbp), %rax
+ 308      FBFFFF
+ 309 033c 4155     		pushq	%r13
+ 310 033e 4154     		pushq	%r12
+ 311 0340 53       		pushq	%rbx
+ 312 0341 56       		pushq	%rsi
+ 313 0342 4589C1   		movl	%r8d, %r9d
+ 314 0345 4189F8   		movl	%edi, %r8d
+ 315 0348 488D3500 		leaq	.LC3(%rip), %rsi
+ 315      000000
+ 316 034f 4889C7   		movq	%rax, %rdi
+ 317 0352 B8000000 		movl	$0, %eax
+ 317      00
+ 318 0357 E8000000 		call	fprintf@PLT
+ 318      00
+ 319 035c 4883C420 		addq	$32, %rsp
+  96:printConfig.c **** 		}
+ 320              		.loc 2 96 23
+ 321 0360 488B85B8 		movq	-1096(%rbp), %rax
+ 321      FBFFFF
+ 322 0367 0FB600   		movzbl	(%rax), %eax
+ 323 036a 0FB6C0   		movzbl	%al, %eax
+  96:printConfig.c **** 		}
+ 324              		.loc 2 96 8
+ 325 036d 480185A0 		addq	%rax, -1120(%rbp)
+ 325      FBFFFF
+ 326              	.L7:
+  82:printConfig.c **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+ 327              		.loc 2 82 22
+ 328 0374 0FB68596 		movzbl	-1130(%rbp), %eax
+ 328      FBFFFF
+ 329 037b 8D50FF   		leal	-1(%rax), %edx
+ 330 037e 889596FB 		movb	%dl, -1130(%rbp)
+ 330      FFFF
+  82:printConfig.c **** 			endpointDesc = (struct usb_endpoint_descriptor *)ptr;
+ 331              		.loc 2 82 11
+ 332 0384 84C0     		testb	%al, %al
+ 333 0386 0F851FFF 		jne	.L8
+ 333      FFFF
+  98:printConfig.c **** 	}
+ 334              		.loc 2 98 3
+ 335 038c 488B8580 		movq	-1152(%rbp), %rax
+ 335      FBFFFF
+ 336 0393 4889C1   		movq	%rax, %rcx
+ 337 0396 BA060000 		movl	$6, %edx
+ 337      00
+ 338 039b BE010000 		movl	$1, %esi
+ 338      00
+ 339 03a0 488D0500 		leaq	.LC4(%rip), %rax
+ 339      000000
+ 340 03a7 4889C7   		movq	%rax, %rdi
+ 341 03aa E8000000 		call	fwrite@PLT
+ 341      00
+ 342              	.L6:
+  65:printConfig.c **** 		interfaceDesc = (struct usb_interface_descriptor *)ptr;
+ 343              		.loc 2 65 22
+ 344 03af 0FB68597 		movzbl	-1129(%rbp), %eax
+ 344      FBFFFF
+ 345 03b6 8D50FF   		leal	-1(%rax), %edx
+ 346 03b9 889597FB 		movb	%dl, -1129(%rbp)
+ 346      FFFF
+  65:printConfig.c **** 		interfaceDesc = (struct usb_interface_descriptor *)ptr;
+ 347              		.loc 2 65 10
+ 348 03bf 84C0     		testb	%al, %al
+ 349 03c1 0F85FAFD 		jne	.L9
+ 349      FFFF
+ 100:printConfig.c **** 	return USB_SUCCESS;
+ 350              		.loc 2 100 2
+ 351 03c7 488B8580 		movq	-1152(%rbp), %rax
+ 351      FBFFFF
+ 352 03ce 4889C1   		movq	%rax, %rcx
+ 353 03d1 BA020000 		movl	$2, %edx
+ 353      00
+ 354 03d6 BE010000 		movl	$1, %esi
+ 354      00
+ 355 03db 488D0500 		leaq	.LC5(%rip), %rax
+ 355      000000
+ 356 03e2 4889C7   		movq	%rax, %rdi
+ 357 03e5 E8000000 		call	fwrite@PLT
+ 357      00
+ 101:printConfig.c **** cleanup:
+ 358              		.loc 2 101 9
+ 359 03ea B8000000 		movl	$0, %eax
+ 359      00
+ 360              	.L11:
+ 104:printConfig.c **** }
+ 361              		.loc 2 104 1 discriminator 1
+ 362 03ef 488B55C8 		movq	-56(%rbp), %rdx
+ 363 03f3 64482B14 		subq	%fs:40, %rdx
+ 363      25280000 
+ 363      00
+ 364 03fc 7405     		je	.L12
+ 365              		.loc 2 104 1 is_stmt 0
+ 366 03fe E8000000 		call	__stack_chk_fail@PLT
+ 366      00
+ 367              	.L12:
+ 368 0403 488D65D8 		leaq	-40(%rbp), %rsp
+ 369 0407 5B       		popq	%rbx
+ 370 0408 415C     		popq	%r12
+ 371 040a 415D     		popq	%r13
+ 372 040c 415E     		popq	%r14
+ 373 040e 415F     		popq	%r15
+ 374 0410 5D       		popq	%rbp
+ 375              		.cfi_def_cfa 7, 8
+ 376 0411 C3       		ret
+ 377              		.cfi_endproc
+ 378              	.LFE4:
+ 380              	.Letext0:
+ 381              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h"
+ 382              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 383              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 384              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 385              		.file 7 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
+ 386              		.file 8 "/usr/include/usb.h"
+ 387              		.file 9 "libusbwrap.h"
+ 388              		.file 10 "/usr/include/stdio.h"
+ 389              		.file 11 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/liberror/liberror.h"
+ 1986              		.section	.note.gnu.property,"a"
+ 1987              		.align 8
+ 1988 0000 04000000 		.long	1f - 0f
+ 1989 0004 10000000 		.long	4f - 1f
+ 1990 0008 05000000 		.long	5
+ 1991              	0:
+ 1992 000c 474E5500 		.string	"GNU"
+ 1993              	1:
+ 1994              		.align 8
+ 1995 0010 020000C0 		.long	0xc0000002
+ 1996 0014 04000000 		.long	3f - 2f
+ 1997              	2:
+ 1998 0018 03000000 		.long	0x3
+ 1999              	3:
+ 2000 001c 00000000 		.align 8
+ 2001              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 printConfig.c
+     /tmp/ccFL2qAO.s:6      .text:0000000000000000 littleEndian16
+     /tmp/ccFL2qAO.s:49     .text:0000000000000010 usbPrintConfiguration
+
+UNDEFINED SYMBOLS
+usb_control_msg
+usb_strerror
+errRender
+fprintf
+fwrite
+__stack_chk_fail

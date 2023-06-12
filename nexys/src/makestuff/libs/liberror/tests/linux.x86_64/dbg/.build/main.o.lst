@@ -1,0 +1,91 @@
+   1              		.file	"main.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/liberror/tests" "main.
+   5              		.globl	main
+   7              	main:
+   8              	.LFB1148:
+   9              		.file 1 "main.cpp"
+   1:main.cpp      **** /*
+   2:main.cpp      ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:main.cpp      ****  *
+   4:main.cpp      ****  * This program is free software: you can redistribute it and/or modify
+   5:main.cpp      ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:main.cpp      ****  * the Free Software Foundation, either version 3 of the License, or
+   7:main.cpp      ****  * (at your option) any later version.
+   8:main.cpp      ****  *
+   9:main.cpp      ****  * This program is distributed in the hope that it will be useful,
+  10:main.cpp      ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:main.cpp      ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:main.cpp      ****  * GNU Lesser General Public License for more details.
+  13:main.cpp      ****  *
+  14:main.cpp      ****  * You should have received a copy of the GNU Lesser General Public License
+  15:main.cpp      ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:main.cpp      ****  */
+  17:main.cpp      **** #include <UnitTest++.h>
+  18:main.cpp      **** 
+  19:main.cpp      **** int main() {
+  10              		.loc 1 19 12
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  20:main.cpp      **** 	return UnitTest::RunAllTests();
+  18              		.loc 1 20 30
+  19 0008 E8000000 		call	_ZN8UnitTest11RunAllTestsEv@PLT
+  19      00
+  20              		.loc 1 20 31
+  21 000d 90       		nop
+  21:main.cpp      **** }
+  22              		.loc 1 21 1
+  23 000e 5D       		popq	%rbp
+  24              		.cfi_def_cfa 7, 8
+  25 000f C3       		ret
+  26              		.cfi_endproc
+  27              	.LFE1148:
+  29              	.Letext0:
+  30              		.file 2 "<built-in>"
+  31              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h"
+  32              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/wint_t.h"
+  33              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
+  34              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h"
+  35              		.file 7 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
+  36              		.file 8 "/usr/include/c++/12/cwchar"
+  37              		.file 9 "/usr/include/c++/12/clocale"
+  38              		.file 10 "/usr/include/c++/12/cwctype"
+  39              		.file 11 "/usr/include/wchar.h"
+  40              		.file 12 "/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h"
+  41              		.file 13 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libutpp/TestDetails.h
+  42              		.file 14 "/usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h"
+  43              		.file 15 "/usr/include/c++/12/debug/debug.h"
+  44              		.file 16 "/usr/include/c++/12/bits/predefined_ops.h"
+  45              		.file 17 "/usr/include/locale.h"
+  46              		.file 18 "/usr/include/x86_64-linux-gnu/bits/types.h"
+  47              		.file 19 "/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h"
+  48              		.file 20 "/usr/include/wctype.h"
+  49              		.file 21 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libutpp/TestRunner.h"
+ 2843              		.section	.note.gnu.property,"a"
+ 2844              		.align 8
+ 2845 0000 04000000 		.long	1f - 0f
+ 2846 0004 10000000 		.long	4f - 1f
+ 2847 0008 05000000 		.long	5
+ 2848              	0:
+ 2849 000c 474E5500 		.string	"GNU"
+ 2850              	1:
+ 2851              		.align 8
+ 2852 0010 020000C0 		.long	0xc0000002
+ 2853 0014 04000000 		.long	3f - 2f
+ 2854              	2:
+ 2855 0018 03000000 		.long	0x3
+ 2856              	3:
+ 2857 001c 00000000 		.align 8
+ 2858              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.cpp
+     /tmp/cchDswtr.s:7      .text:0000000000000000 main
+
+UNDEFINED SYMBOLS
+_ZN8UnitTest11RunAllTestsEv

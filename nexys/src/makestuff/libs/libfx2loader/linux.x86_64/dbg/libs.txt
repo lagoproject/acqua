@@ -1,0 +1,1 @@
+-L/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libfx2loader/linux.x86_64/dbg -lfx2loader

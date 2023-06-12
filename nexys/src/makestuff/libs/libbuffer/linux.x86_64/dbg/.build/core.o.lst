@@ -1,0 +1,2587 @@
+   1              		.file	"core.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/libbuffer" "core.c"
+   5              		.section	.rodata
+   6              		.align 8
+   7              	.LC0:
+   8 0000 43616E6E 		.string	"Cannot allocate memory for buffer"
+   8      6F742061 
+   8      6C6C6F63 
+   8      61746520 
+   8      6D656D6F 
+   9              		.text
+  10              		.globl	bufInitialise
+  12              	bufInitialise:
+  13              	.LFB4:
+  14              		.file 1 "core.c"
+   1:core.c        **** /*
+   2:core.c        ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:core.c        ****  *
+   4:core.c        ****  * This program is free software: you can redistribute it and/or modify
+   5:core.c        ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:core.c        ****  * the Free Software Foundation, either version 3 of the License, or
+   7:core.c        ****  * (at your option) any later version.
+   8:core.c        ****  *
+   9:core.c        ****  * This program is distributed in the hope that it will be useful,
+  10:core.c        ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:core.c        ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:core.c        ****  * GNU Lesser General Public License for more details.
+  13:core.c        ****  *
+  14:core.c        ****  * You should have received a copy of the GNU Lesser General Public License
+  15:core.c        ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:core.c        ****  */
+  17:core.c        **** #include <stdio.h>
+  18:core.c        **** #include <stdlib.h>
+  19:core.c        **** #include <string.h>
+  20:core.c        **** #include <liberror.h>
+  21:core.c        **** #include "libbuffer.h"
+  22:core.c        **** 
+  23:core.c        **** // Initialise the promRecords structure.
+  24:core.c        **** // Returns BUF_SUCCESS or BUF_NO_MEM.
+  25:core.c        **** //
+  26:core.c        **** DLLEXPORT(BufferStatus) bufInitialise(
+  27:core.c        **** 	struct Buffer *self, uint32 initialSize, uint8 fill, const char **error)
+  28:core.c        **** {
+  15              		.loc 1 28 1
+  16              		.cfi_startproc
+  17 0000 F30F1EFA 		endbr64
+  18 0004 55       		pushq	%rbp
+  19              		.cfi_def_cfa_offset 16
+  20              		.cfi_offset 6, -16
+  21 0005 4889E5   		movq	%rsp, %rbp
+  22              		.cfi_def_cfa_register 6
+  23 0008 4883EC30 		subq	$48, %rsp
+  24 000c 48897DE8 		movq	%rdi, -24(%rbp)
+  25 0010 8975E4   		movl	%esi, -28(%rbp)
+  26 0013 89D0     		movl	%edx, %eax
+  27 0015 48894DD8 		movq	%rcx, -40(%rbp)
+  28 0019 8845E0   		movb	%al, -32(%rbp)
+  29:core.c        **** 	uint8 *ptr;
+  30:core.c        **** 	const uint8 *endPtr;
+  31:core.c        **** 	self->fill = fill;
+  29              		.loc 1 31 13
+  30 001c 488B45E8 		movq	-24(%rbp), %rax
+  31 0020 0FB655E0 		movzbl	-32(%rbp), %edx
+  32 0024 885010   		movb	%dl, 16(%rax)
+  32:core.c        **** 	self->data = (uint8 *)malloc(initialSize);
+  33              		.loc 1 32 24
+  34 0027 8B45E4   		movl	-28(%rbp), %eax
+  35 002a 4889C7   		movq	%rax, %rdi
+  36 002d E8000000 		call	malloc@PLT
+  36      00
+  37 0032 4889C2   		movq	%rax, %rdx
+  38              		.loc 1 32 13
+  39 0035 488B45E8 		movq	-24(%rbp), %rax
+  40 0039 488910   		movq	%rdx, (%rax)
+  33:core.c        **** 	if ( !self->data ) {
+  41              		.loc 1 33 12
+  42 003c 488B45E8 		movq	-24(%rbp), %rax
+  43 0040 488B00   		movq	(%rax), %rax
+  44              		.loc 1 33 5
+  45 0043 4885C0   		testq	%rax, %rax
+  46 0046 7522     		jne	.L2
+  34:core.c        **** 		errRender(error, "Cannot allocate memory for buffer");
+  47              		.loc 1 34 3
+  48 0048 488B45D8 		movq	-40(%rbp), %rax
+  49 004c 488D1500 		leaq	.LC0(%rip), %rdx
+  49      000000
+  50 0053 4889D6   		movq	%rdx, %rsi
+  51 0056 4889C7   		movq	%rax, %rdi
+  52 0059 B8000000 		movl	$0, %eax
+  52      00
+  53 005e E8000000 		call	errRender@PLT
+  53      00
+  35:core.c        **** 		return BUF_NO_MEM;
+  54              		.loc 1 35 10
+  55 0063 B8010000 		movl	$1, %eax
+  55      00
+  56 0068 EB55     		jmp	.L3
+  57              	.L2:
+  36:core.c        **** 	}
+  37:core.c        **** 	ptr = self->data;
+  58              		.loc 1 37 6
+  59 006a 488B45E8 		movq	-24(%rbp), %rax
+  60 006e 488B00   		movq	(%rax), %rax
+  61 0071 488945F0 		movq	%rax, -16(%rbp)
+  38:core.c        **** 	endPtr = ptr + initialSize;
+  62              		.loc 1 38 15
+  63 0075 8B55E4   		movl	-28(%rbp), %edx
+  64              		.loc 1 38 9
+  65 0078 488B45F0 		movq	-16(%rbp), %rax
+  66 007c 4801D0   		addq	%rdx, %rax
+  67 007f 488945F8 		movq	%rax, -8(%rbp)
+  39:core.c        **** 	while ( ptr < endPtr ) {
+  68              		.loc 1 39 8
+  69 0083 EB16     		jmp	.L4
+  70              	.L5:
+  40:core.c        **** 		*ptr++ = self->fill;
+  71              		.loc 1 40 7
+  72 0085 488B45F0 		movq	-16(%rbp), %rax
+  73 0089 488D5001 		leaq	1(%rax), %rdx
+  74 008d 488955F0 		movq	%rdx, -16(%rbp)
+  75              		.loc 1 40 16
+  76 0091 488B55E8 		movq	-24(%rbp), %rdx
+  77 0095 0FB65210 		movzbl	16(%rdx), %edx
+  78              		.loc 1 40 10
+  79 0099 8810     		movb	%dl, (%rax)
+  80              	.L4:
+  39:core.c        **** 	while ( ptr < endPtr ) {
+  81              		.loc 1 39 14
+  82 009b 488B45F0 		movq	-16(%rbp), %rax
+  83 009f 483B45F8 		cmpq	-8(%rbp), %rax
+  84 00a3 72E0     		jb	.L5
+  41:core.c        **** 	}
+  42:core.c        **** 	self->capacity = initialSize;
+  85              		.loc 1 42 17
+  86 00a5 488B45E8 		movq	-24(%rbp), %rax
+  87 00a9 8B55E4   		movl	-28(%rbp), %edx
+  88 00ac 89500C   		movl	%edx, 12(%rax)
+  43:core.c        **** 	self->length = 0;
+  89              		.loc 1 43 15
+  90 00af 488B45E8 		movq	-24(%rbp), %rax
+  91 00b3 C7400800 		movl	$0, 8(%rax)
+  91      000000
+  44:core.c        **** 	return BUF_SUCCESS;
+  92              		.loc 1 44 9
+  93 00ba B8000000 		movl	$0, %eax
+  93      00
+  94              	.L3:
+  45:core.c        **** }
+  95              		.loc 1 45 1
+  96 00bf C9       		leave
+  97              		.cfi_def_cfa 7, 8
+  98 00c0 C3       		ret
+  99              		.cfi_endproc
+ 100              	.LFE4:
+ 102              		.globl	bufDestroy
+ 104              	bufDestroy:
+ 105              	.LFB5:
+  46:core.c        **** 
+  47:core.c        **** // Free up any memory associated with the buffer structure.
+  48:core.c        **** //
+  49:core.c        **** DLLEXPORT(void) bufDestroy(struct Buffer *self) {
+ 106              		.loc 1 49 49
+ 107              		.cfi_startproc
+ 108 00c1 F30F1EFA 		endbr64
+ 109 00c5 55       		pushq	%rbp
+ 110              		.cfi_def_cfa_offset 16
+ 111              		.cfi_offset 6, -16
+ 112 00c6 4889E5   		movq	%rsp, %rbp
+ 113              		.cfi_def_cfa_register 6
+ 114 00c9 4883EC10 		subq	$16, %rsp
+ 115 00cd 48897DF8 		movq	%rdi, -8(%rbp)
+  50:core.c        **** 	free(self->data);
+ 116              		.loc 1 50 11
+ 117 00d1 488B45F8 		movq	-8(%rbp), %rax
+ 118 00d5 488B00   		movq	(%rax), %rax
+ 119              		.loc 1 50 2
+ 120 00d8 4889C7   		movq	%rax, %rdi
+ 121 00db E8000000 		call	free@PLT
+ 121      00
+  51:core.c        **** 	self->data = NULL;
+ 122              		.loc 1 51 13
+ 123 00e0 488B45F8 		movq	-8(%rbp), %rax
+ 124 00e4 48C70000 		movq	$0, (%rax)
+ 124      000000
+  52:core.c        **** 	self->capacity = 0;
+ 125              		.loc 1 52 17
+ 126 00eb 488B45F8 		movq	-8(%rbp), %rax
+ 127 00ef C7400C00 		movl	$0, 12(%rax)
+ 127      000000
+  53:core.c        **** 	self->length = 0;
+ 128              		.loc 1 53 15
+ 129 00f6 488B45F8 		movq	-8(%rbp), %rax
+ 130 00fa C7400800 		movl	$0, 8(%rax)
+ 130      000000
+  54:core.c        **** 	self->fill = 0;
+ 131              		.loc 1 54 13
+ 132 0101 488B45F8 		movq	-8(%rbp), %rax
+ 133 0105 C6401000 		movb	$0, 16(%rax)
+  55:core.c        **** }
+ 134              		.loc 1 55 1
+ 135 0109 90       		nop
+ 136 010a C9       		leave
+ 137              		.cfi_def_cfa 7, 8
+ 138 010b C3       		ret
+ 139              		.cfi_endproc
+ 140              	.LFE5:
+ 142              		.globl	bufDeepCopy
+ 144              	bufDeepCopy:
+ 145              	.LFB6:
+  56:core.c        **** 
+  57:core.c        **** // Either deep copy into an already-constructed buffer, or copy-construct into an uninitialised
+  58:core.c        **** // buffer.
+  59:core.c        **** //
+  60:core.c        **** DLLEXPORT(BufferStatus) bufDeepCopy(
+  61:core.c        **** 	struct Buffer *dst, const struct Buffer *src, const char **error)
+  62:core.c        **** {
+ 146              		.loc 1 62 1
+ 147              		.cfi_startproc
+ 148 010c F30F1EFA 		endbr64
+ 149 0110 55       		pushq	%rbp
+ 150              		.cfi_def_cfa_offset 16
+ 151              		.cfi_offset 6, -16
+ 152 0111 4889E5   		movq	%rsp, %rbp
+ 153              		.cfi_def_cfa_register 6
+ 154 0114 4883EC30 		subq	$48, %rsp
+ 155 0118 48897DE8 		movq	%rdi, -24(%rbp)
+ 156 011c 488975E0 		movq	%rsi, -32(%rbp)
+ 157 0120 488955D8 		movq	%rdx, -40(%rbp)
+  63:core.c        **** 	uint8 *ptr;
+  64:core.c        **** 	const uint8 *endPtr;
+  65:core.c        **** 	if ( dst->data && dst->capacity < src->capacity ) {
+ 158              		.loc 1 65 10
+ 159 0124 488B45E8 		movq	-24(%rbp), %rax
+ 160 0128 488B00   		movq	(%rax), %rax
+ 161              		.loc 1 65 5
+ 162 012b 4885C0   		testq	%rax, %rax
+ 163 012e 741E     		je	.L8
+ 164              		.loc 1 65 23 discriminator 1
+ 165 0130 488B45E8 		movq	-24(%rbp), %rax
+ 166 0134 8B500C   		movl	12(%rax), %edx
+ 167              		.loc 1 65 39 discriminator 1
+ 168 0137 488B45E0 		movq	-32(%rbp), %rax
+ 169 013b 8B400C   		movl	12(%rax), %eax
+ 170              		.loc 1 65 17 discriminator 1
+ 171 013e 39C2     		cmpl	%eax, %edx
+ 172 0140 730C     		jnb	.L8
+  66:core.c        **** 		// The dst has been initialised, but there is not enough room for the copy.
+  67:core.c        **** 		bufDestroy(dst);
+ 173              		.loc 1 67 3
+ 174 0142 488B45E8 		movq	-24(%rbp), %rax
+ 175 0146 4889C7   		movq	%rax, %rdi
+ 176 0149 E8000000 		call	bufDestroy@PLT
+ 176      00
+ 177              	.L8:
+  68:core.c        **** 	}
+  69:core.c        **** 	if ( !dst->data ) {
+ 178              		.loc 1 69 11
+ 179 014e 488B45E8 		movq	-24(%rbp), %rax
+ 180 0152 488B00   		movq	(%rax), %rax
+ 181              		.loc 1 69 5
+ 182 0155 4885C0   		testq	%rax, %rax
+ 183 0158 755A     		jne	.L9
+  70:core.c        **** 		// The dst needs to be allocated.
+  71:core.c        **** 		dst->capacity = src->capacity;
+ 184              		.loc 1 71 22
+ 185 015a 488B45E0 		movq	-32(%rbp), %rax
+ 186 015e 8B500C   		movl	12(%rax), %edx
+ 187              		.loc 1 71 17
+ 188 0161 488B45E8 		movq	-24(%rbp), %rax
+ 189 0165 89500C   		movl	%edx, 12(%rax)
+  72:core.c        **** 		dst->data = (uint8 *)malloc(dst->capacity);
+ 190              		.loc 1 72 34
+ 191 0168 488B45E8 		movq	-24(%rbp), %rax
+ 192 016c 8B400C   		movl	12(%rax), %eax
+ 193              		.loc 1 72 24
+ 194 016f 89C0     		movl	%eax, %eax
+ 195 0171 4889C7   		movq	%rax, %rdi
+ 196 0174 E8000000 		call	malloc@PLT
+ 196      00
+ 197 0179 4889C2   		movq	%rax, %rdx
+ 198              		.loc 1 72 13
+ 199 017c 488B45E8 		movq	-24(%rbp), %rax
+ 200 0180 488910   		movq	%rdx, (%rax)
+  73:core.c        **** 		if ( !dst->data ) {
+ 201              		.loc 1 73 12
+ 202 0183 488B45E8 		movq	-24(%rbp), %rax
+ 203 0187 488B00   		movq	(%rax), %rax
+ 204              		.loc 1 73 6
+ 205 018a 4885C0   		testq	%rax, %rax
+ 206 018d 7525     		jne	.L9
+  74:core.c        **** 			errRender(error, "Cannot allocate memory for buffer");
+ 207              		.loc 1 74 4
+ 208 018f 488B45D8 		movq	-40(%rbp), %rax
+ 209 0193 488D1500 		leaq	.LC0(%rip), %rdx
+ 209      000000
+ 210 019a 4889D6   		movq	%rdx, %rsi
+ 211 019d 4889C7   		movq	%rax, %rdi
+ 212 01a0 B8000000 		movl	$0, %eax
+ 212      00
+ 213 01a5 E8000000 		call	errRender@PLT
+ 213      00
+  75:core.c        **** 			return BUF_NO_MEM;
+ 214              		.loc 1 75 11
+ 215 01aa B8010000 		movl	$1, %eax
+ 215      00
+ 216 01af E9940000 		jmp	.L10
+ 216      00
+ 217              	.L9:
+  76:core.c        **** 		}
+  77:core.c        **** 	}
+  78:core.c        **** 	dst->length = src->length;
+ 218              		.loc 1 78 19
+ 219 01b4 488B45E0 		movq	-32(%rbp), %rax
+ 220 01b8 8B5008   		movl	8(%rax), %edx
+ 221              		.loc 1 78 14
+ 222 01bb 488B45E8 		movq	-24(%rbp), %rax
+ 223 01bf 895008   		movl	%edx, 8(%rax)
+  79:core.c        **** 	dst->fill = src->fill;
+ 224              		.loc 1 79 17
+ 225 01c2 488B45E0 		movq	-32(%rbp), %rax
+ 226 01c6 0FB65010 		movzbl	16(%rax), %edx
+ 227              		.loc 1 79 12
+ 228 01ca 488B45E8 		movq	-24(%rbp), %rax
+ 229 01ce 885010   		movb	%dl, 16(%rax)
+  80:core.c        **** 	memcpy(dst->data, src->data, dst->length);
+ 230              		.loc 1 80 34
+ 231 01d1 488B45E8 		movq	-24(%rbp), %rax
+ 232 01d5 8B4008   		movl	8(%rax), %eax
+ 233              		.loc 1 80 2
+ 234 01d8 89C2     		movl	%eax, %edx
+ 235              		.loc 1 80 23
+ 236 01da 488B45E0 		movq	-32(%rbp), %rax
+ 237 01de 488B08   		movq	(%rax), %rcx
+ 238              		.loc 1 80 12
+ 239 01e1 488B45E8 		movq	-24(%rbp), %rax
+ 240 01e5 488B00   		movq	(%rax), %rax
+ 241              		.loc 1 80 2
+ 242 01e8 4889CE   		movq	%rcx, %rsi
+ 243 01eb 4889C7   		movq	%rax, %rdi
+ 244 01ee E8000000 		call	memcpy@PLT
+ 244      00
+  81:core.c        **** 	ptr = dst->data + dst->length;
+ 245              		.loc 1 81 11
+ 246 01f3 488B45E8 		movq	-24(%rbp), %rax
+ 247 01f7 488B10   		movq	(%rax), %rdx
+ 248              		.loc 1 81 23
+ 249 01fa 488B45E8 		movq	-24(%rbp), %rax
+ 250 01fe 8B4008   		movl	8(%rax), %eax
+ 251 0201 89C0     		movl	%eax, %eax
+ 252              		.loc 1 81 6
+ 253 0203 4801D0   		addq	%rdx, %rax
+ 254 0206 488945F0 		movq	%rax, -16(%rbp)
+  82:core.c        **** 	endPtr = dst->data + dst->capacity;
+ 255              		.loc 1 82 14
+ 256 020a 488B45E8 		movq	-24(%rbp), %rax
+ 257 020e 488B10   		movq	(%rax), %rdx
+ 258              		.loc 1 82 26
+ 259 0211 488B45E8 		movq	-24(%rbp), %rax
+ 260 0215 8B400C   		movl	12(%rax), %eax
+ 261 0218 89C0     		movl	%eax, %eax
+ 262              		.loc 1 82 9
+ 263 021a 4801D0   		addq	%rdx, %rax
+ 264 021d 488945F8 		movq	%rax, -8(%rbp)
+  83:core.c        **** 	while ( ptr < endPtr ) {
+ 265              		.loc 1 83 8
+ 266 0221 EB16     		jmp	.L11
+ 267              	.L12:
+  84:core.c        **** 		*ptr++ = dst->fill;
+ 268              		.loc 1 84 7
+ 269 0223 488B45F0 		movq	-16(%rbp), %rax
+ 270 0227 488D5001 		leaq	1(%rax), %rdx
+ 271 022b 488955F0 		movq	%rdx, -16(%rbp)
+ 272              		.loc 1 84 15
+ 273 022f 488B55E8 		movq	-24(%rbp), %rdx
+ 274 0233 0FB65210 		movzbl	16(%rdx), %edx
+ 275              		.loc 1 84 10
+ 276 0237 8810     		movb	%dl, (%rax)
+ 277              	.L11:
+  83:core.c        **** 	while ( ptr < endPtr ) {
+ 278              		.loc 1 83 14
+ 279 0239 488B45F0 		movq	-16(%rbp), %rax
+ 280 023d 483B45F8 		cmpq	-8(%rbp), %rax
+ 281 0241 72E0     		jb	.L12
+  85:core.c        **** 	}
+  86:core.c        **** 	return BUF_SUCCESS;
+ 282              		.loc 1 86 9
+ 283 0243 B8000000 		movl	$0, %eax
+ 283      00
+ 284              	.L10:
+  87:core.c        **** }
+ 285              		.loc 1 87 1
+ 286 0248 C9       		leave
+ 287              		.cfi_def_cfa 7, 8
+ 288 0249 C3       		ret
+ 289              		.cfi_endproc
+ 290              	.LFE6:
+ 292              		.globl	bufSwap
+ 294              	bufSwap:
+ 295              	.LFB7:
+  88:core.c        **** 
+  89:core.c        **** DLLEXPORT(void) bufSwap(
+  90:core.c        **** 	struct Buffer *x, struct Buffer *y)
+  91:core.c        **** {
+ 296              		.loc 1 91 1
+ 297              		.cfi_startproc
+ 298 024a F30F1EFA 		endbr64
+ 299 024e 55       		pushq	%rbp
+ 300              		.cfi_def_cfa_offset 16
+ 301              		.cfi_offset 6, -16
+ 302 024f 4889E5   		movq	%rsp, %rbp
+ 303              		.cfi_def_cfa_register 6
+ 304 0252 48897DD8 		movq	%rdi, -40(%rbp)
+ 305 0256 488975D0 		movq	%rsi, -48(%rbp)
+  92:core.c        **** 	uint8 *const tmpData = x->data;
+ 306              		.loc 1 92 15
+ 307 025a 488B45D8 		movq	-40(%rbp), %rax
+ 308 025e 488B00   		movq	(%rax), %rax
+ 309 0261 488945F8 		movq	%rax, -8(%rbp)
+  93:core.c        **** 	const uint32 tmpLength = x->length;
+ 310              		.loc 1 93 15
+ 311 0265 488B45D8 		movq	-40(%rbp), %rax
+ 312 0269 8B4008   		movl	8(%rax), %eax
+ 313 026c 8945F0   		movl	%eax, -16(%rbp)
+  94:core.c        **** 	const uint32 tmpCapacity = x->capacity;
+ 314              		.loc 1 94 15
+ 315 026f 488B45D8 		movq	-40(%rbp), %rax
+ 316 0273 8B400C   		movl	12(%rax), %eax
+ 317 0276 8945F4   		movl	%eax, -12(%rbp)
+  95:core.c        **** 	const uint8 tmpFill = x->fill;
+ 318              		.loc 1 95 14
+ 319 0279 488B45D8 		movq	-40(%rbp), %rax
+ 320 027d 0FB64010 		movzbl	16(%rax), %eax
+ 321 0281 8845EF   		movb	%al, -17(%rbp)
+  96:core.c        **** 
+  97:core.c        **** 	x->data = y->data;
+ 322              		.loc 1 97 13
+ 323 0284 488B45D0 		movq	-48(%rbp), %rax
+ 324 0288 488B10   		movq	(%rax), %rdx
+ 325              		.loc 1 97 10
+ 326 028b 488B45D8 		movq	-40(%rbp), %rax
+ 327 028f 488910   		movq	%rdx, (%rax)
+  98:core.c        **** 	x->length = y->length;
+ 328              		.loc 1 98 15
+ 329 0292 488B45D0 		movq	-48(%rbp), %rax
+ 330 0296 8B5008   		movl	8(%rax), %edx
+ 331              		.loc 1 98 12
+ 332 0299 488B45D8 		movq	-40(%rbp), %rax
+ 333 029d 895008   		movl	%edx, 8(%rax)
+  99:core.c        **** 	x->capacity = y->capacity;
+ 334              		.loc 1 99 17
+ 335 02a0 488B45D0 		movq	-48(%rbp), %rax
+ 336 02a4 8B500C   		movl	12(%rax), %edx
+ 337              		.loc 1 99 14
+ 338 02a7 488B45D8 		movq	-40(%rbp), %rax
+ 339 02ab 89500C   		movl	%edx, 12(%rax)
+ 100:core.c        **** 	x->fill = y->fill;
+ 340              		.loc 1 100 13
+ 341 02ae 488B45D0 		movq	-48(%rbp), %rax
+ 342 02b2 0FB65010 		movzbl	16(%rax), %edx
+ 343              		.loc 1 100 10
+ 344 02b6 488B45D8 		movq	-40(%rbp), %rax
+ 345 02ba 885010   		movb	%dl, 16(%rax)
+ 101:core.c        **** 
+ 102:core.c        **** 	y->data = tmpData;
+ 346              		.loc 1 102 10
+ 347 02bd 488B45D0 		movq	-48(%rbp), %rax
+ 348 02c1 488B55F8 		movq	-8(%rbp), %rdx
+ 349 02c5 488910   		movq	%rdx, (%rax)
+ 103:core.c        **** 	y->length = tmpLength;
+ 350              		.loc 1 103 12
+ 351 02c8 488B45D0 		movq	-48(%rbp), %rax
+ 352 02cc 8B55F0   		movl	-16(%rbp), %edx
+ 353 02cf 895008   		movl	%edx, 8(%rax)
+ 104:core.c        **** 	y->capacity = tmpCapacity;
+ 354              		.loc 1 104 14
+ 355 02d2 488B45D0 		movq	-48(%rbp), %rax
+ 356 02d6 8B55F4   		movl	-12(%rbp), %edx
+ 357 02d9 89500C   		movl	%edx, 12(%rax)
+ 105:core.c        **** 	y->fill = tmpFill;
+ 358              		.loc 1 105 10
+ 359 02dc 488B45D0 		movq	-48(%rbp), %rax
+ 360 02e0 0FB655EF 		movzbl	-17(%rbp), %edx
+ 361 02e4 885010   		movb	%dl, 16(%rax)
+ 106:core.c        **** }
+ 362              		.loc 1 106 1
+ 363 02e7 90       		nop
+ 364 02e8 5D       		popq	%rbp
+ 365              		.cfi_def_cfa 7, 8
+ 366 02e9 C3       		ret
+ 367              		.cfi_endproc
+ 368              	.LFE7:
+ 370              		.globl	bufZeroLength
+ 372              	bufZeroLength:
+ 373              	.LFB8:
+ 107:core.c        **** 
+ 108:core.c        **** // Clean the buffer structure so it can be reused.
+ 109:core.c        **** //
+ 110:core.c        **** DLLEXPORT(void) bufZeroLength(struct Buffer *self) {
+ 374              		.loc 1 110 52
+ 375              		.cfi_startproc
+ 376 02ea F30F1EFA 		endbr64
+ 377 02ee 55       		pushq	%rbp
+ 378              		.cfi_def_cfa_offset 16
+ 379              		.cfi_offset 6, -16
+ 380 02ef 4889E5   		movq	%rsp, %rbp
+ 381              		.cfi_def_cfa_register 6
+ 382 02f2 48897DE8 		movq	%rdi, -24(%rbp)
+ 111:core.c        **** 	uint32 i;
+ 112:core.c        **** 	self->length = 0;
+ 383              		.loc 1 112 15
+ 384 02f6 488B45E8 		movq	-24(%rbp), %rax
+ 385 02fa C7400800 		movl	$0, 8(%rax)
+ 385      000000
+ 113:core.c        **** 	for ( i = 0; i < self->capacity; i++ ) {
+ 386              		.loc 1 113 10
+ 387 0301 C745FC00 		movl	$0, -4(%rbp)
+ 387      000000
+ 388              		.loc 1 113 2
+ 389 0308 EB1B     		jmp	.L15
+ 390              	.L16:
+ 114:core.c        **** 		self->data[i] = self->fill;
+ 391              		.loc 1 114 7 discriminator 3
+ 392 030a 488B45E8 		movq	-24(%rbp), %rax
+ 393 030e 488B10   		movq	(%rax), %rdx
+ 394              		.loc 1 114 13 discriminator 3
+ 395 0311 8B45FC   		movl	-4(%rbp), %eax
+ 396 0314 4801C2   		addq	%rax, %rdx
+ 397              		.loc 1 114 23 discriminator 3
+ 398 0317 488B45E8 		movq	-24(%rbp), %rax
+ 399 031b 0FB64010 		movzbl	16(%rax), %eax
+ 400              		.loc 1 114 17 discriminator 3
+ 401 031f 8802     		movb	%al, (%rdx)
+ 113:core.c        **** 	for ( i = 0; i < self->capacity; i++ ) {
+ 402              		.loc 1 113 36 discriminator 3
+ 403 0321 8345FC01 		addl	$1, -4(%rbp)
+ 404              	.L15:
+ 113:core.c        **** 	for ( i = 0; i < self->capacity; i++ ) {
+ 405              		.loc 1 113 23 discriminator 1
+ 406 0325 488B45E8 		movq	-24(%rbp), %rax
+ 407 0329 8B400C   		movl	12(%rax), %eax
+ 113:core.c        **** 	for ( i = 0; i < self->capacity; i++ ) {
+ 408              		.loc 1 113 17 discriminator 1
+ 409 032c 3945FC   		cmpl	%eax, -4(%rbp)
+ 410 032f 72D9     		jb	.L16
+ 115:core.c        **** 	}
+ 116:core.c        **** }
+ 411              		.loc 1 116 1
+ 412 0331 90       		nop
+ 413 0332 90       		nop
+ 414 0333 5D       		popq	%rbp
+ 415              		.cfi_def_cfa 7, 8
+ 416 0334 C3       		ret
+ 417              		.cfi_endproc
+ 418              	.LFE8:
+ 420              		.section	.rodata
+ 421 0022 00000000 		.align 8
+ 421      0000
+ 422              	.LC1:
+ 423 0028 43616E6E 		.string	"Cannot reallocate memory for buffer"
+ 423      6F742072 
+ 423      65616C6C 
+ 423      6F636174 
+ 423      65206D65 
+ 424              		.text
+ 426              	reallocate:
+ 427              	.LFB9:
+ 117:core.c        **** 
+ 118:core.c        **** // Reallocate the memory for the buffer by doubling the capacity and zeroing the extra storage.
+ 119:core.c        **** //
+ 120:core.c        **** static BufferStatus reallocate(
+ 121:core.c        **** 	struct Buffer *self, uint32 newCapacity, uint32 blockEnd, const char **error)
+ 122:core.c        **** {
+ 428              		.loc 1 122 1
+ 429              		.cfi_startproc
+ 430 0335 F30F1EFA 		endbr64
+ 431 0339 55       		pushq	%rbp
+ 432              		.cfi_def_cfa_offset 16
+ 433              		.cfi_offset 6, -16
+ 434 033a 4889E5   		movq	%rsp, %rbp
+ 435              		.cfi_def_cfa_register 6
+ 436 033d 4883EC30 		subq	$48, %rsp
+ 437 0341 48897DE8 		movq	%rdi, -24(%rbp)
+ 438 0345 8975E4   		movl	%esi, -28(%rbp)
+ 439 0348 8955E0   		movl	%edx, -32(%rbp)
+ 440 034b 48894DD8 		movq	%rcx, -40(%rbp)
+ 441              	.L18:
+ 123:core.c        **** 	// The data will not fit in the buffer - we need to make the buffer bigger
+ 124:core.c        **** 	//
+ 125:core.c        **** 	uint8 *ptr;
+ 126:core.c        **** 	const uint8 *endPtr;
+ 127:core.c        **** 	do {
+ 128:core.c        **** 		newCapacity *= 2;
+ 442              		.loc 1 128 15 discriminator 1
+ 443 034f D165E4   		sall	-28(%rbp)
+ 129:core.c        **** 	} while ( blockEnd > newCapacity );
+ 444              		.loc 1 129 21 discriminator 1
+ 445 0352 8B45E0   		movl	-32(%rbp), %eax
+ 446 0355 3945E4   		cmpl	%eax, -28(%rbp)
+ 447 0358 72F5     		jb	.L18
+ 130:core.c        **** 	self->data = (uint8 *)realloc(self->data, newCapacity);
+ 448              		.loc 1 130 24
+ 449 035a 8B55E4   		movl	-28(%rbp), %edx
+ 450              		.loc 1 130 36
+ 451 035d 488B45E8 		movq	-24(%rbp), %rax
+ 452 0361 488B00   		movq	(%rax), %rax
+ 453              		.loc 1 130 24
+ 454 0364 4889D6   		movq	%rdx, %rsi
+ 455 0367 4889C7   		movq	%rax, %rdi
+ 456 036a E8000000 		call	realloc@PLT
+ 456      00
+ 457              		.loc 1 130 13
+ 458 036f 488B55E8 		movq	-24(%rbp), %rdx
+ 459 0373 488902   		movq	%rax, (%rdx)
+ 131:core.c        **** 	if ( !self->data ) {
+ 460              		.loc 1 131 12
+ 461 0376 488B45E8 		movq	-24(%rbp), %rax
+ 462 037a 488B00   		movq	(%rax), %rax
+ 463              		.loc 1 131 5
+ 464 037d 4885C0   		testq	%rax, %rax
+ 465 0380 7522     		jne	.L19
+ 132:core.c        **** 		errRender(error, "Cannot reallocate memory for buffer");
+ 466              		.loc 1 132 3
+ 467 0382 488B45D8 		movq	-40(%rbp), %rax
+ 468 0386 488D1500 		leaq	.LC1(%rip), %rdx
+ 468      000000
+ 469 038d 4889D6   		movq	%rdx, %rsi
+ 470 0390 4889C7   		movq	%rax, %rdi
+ 471 0393 B8000000 		movl	$0, %eax
+ 471      00
+ 472 0398 E8000000 		call	errRender@PLT
+ 472      00
+ 133:core.c        **** 		return BUF_NO_MEM;
+ 473              		.loc 1 133 10
+ 474 039d B8010000 		movl	$1, %eax
+ 474      00
+ 475 03a2 EB53     		jmp	.L20
+ 476              	.L19:
+ 134:core.c        **** 	}
+ 135:core.c        **** 	self->capacity = newCapacity;
+ 477              		.loc 1 135 17
+ 478 03a4 488B45E8 		movq	-24(%rbp), %rax
+ 479 03a8 8B55E4   		movl	-28(%rbp), %edx
+ 480 03ab 89500C   		movl	%edx, 12(%rax)
+ 136:core.c        **** 	
+ 137:core.c        **** 	// Now zero from the end of the block to the end of the new capacity
+ 138:core.c        **** 	//
+ 139:core.c        **** 	ptr = self->data + blockEnd;
+ 481              		.loc 1 139 12
+ 482 03ae 488B45E8 		movq	-24(%rbp), %rax
+ 483 03b2 488B10   		movq	(%rax), %rdx
+ 484              		.loc 1 139 19
+ 485 03b5 8B45E0   		movl	-32(%rbp), %eax
+ 486              		.loc 1 139 6
+ 487 03b8 4801D0   		addq	%rdx, %rax
+ 488 03bb 488945F0 		movq	%rax, -16(%rbp)
+ 140:core.c        **** 	endPtr = self->data + newCapacity;
+ 489              		.loc 1 140 15
+ 490 03bf 488B45E8 		movq	-24(%rbp), %rax
+ 491 03c3 488B10   		movq	(%rax), %rdx
+ 492              		.loc 1 140 22
+ 493 03c6 8B45E4   		movl	-28(%rbp), %eax
+ 494              		.loc 1 140 9
+ 495 03c9 4801D0   		addq	%rdx, %rax
+ 496 03cc 488945F8 		movq	%rax, -8(%rbp)
+ 141:core.c        **** 	while ( ptr < endPtr ) {
+ 497              		.loc 1 141 8
+ 498 03d0 EB16     		jmp	.L21
+ 499              	.L22:
+ 142:core.c        **** 		*ptr++ = self->fill;
+ 500              		.loc 1 142 7
+ 501 03d2 488B45F0 		movq	-16(%rbp), %rax
+ 502 03d6 488D5001 		leaq	1(%rax), %rdx
+ 503 03da 488955F0 		movq	%rdx, -16(%rbp)
+ 504              		.loc 1 142 16
+ 505 03de 488B55E8 		movq	-24(%rbp), %rdx
+ 506 03e2 0FB65210 		movzbl	16(%rdx), %edx
+ 507              		.loc 1 142 10
+ 508 03e6 8810     		movb	%dl, (%rax)
+ 509              	.L21:
+ 141:core.c        **** 	while ( ptr < endPtr ) {
+ 510              		.loc 1 141 14
+ 511 03e8 488B45F0 		movq	-16(%rbp), %rax
+ 512 03ec 483B45F8 		cmpq	-8(%rbp), %rax
+ 513 03f0 72E0     		jb	.L22
+ 143:core.c        **** 	}
+ 144:core.c        **** 	return BUF_SUCCESS;
+ 514              		.loc 1 144 9
+ 515 03f2 B8000000 		movl	$0, %eax
+ 515      00
+ 516              	.L20:
+ 145:core.c        **** }
+ 517              		.loc 1 145 1
+ 518 03f7 C9       		leave
+ 519              		.cfi_def_cfa 7, 8
+ 520 03f8 C3       		ret
+ 521              		.cfi_endproc
+ 522              	.LFE9:
+ 524              		.globl	bufAppendByte
+ 526              	bufAppendByte:
+ 527              	.LFB10:
+ 146:core.c        **** 
+ 147:core.c        **** // If the data will not fit in the buffer, make the buffer bigger
+ 148:core.c        **** //
+ 149:core.c        **** #define ENSURE_CAPACITY() \
+ 150:core.c        **** 	if ( blockEnd > self->capacity ) { \
+ 151:core.c        **** 		BufferStatus status = reallocate(self, self->capacity, blockEnd, error); \
+ 152:core.c        **** 		if ( status != BUF_SUCCESS ) { \
+ 153:core.c        **** 			return status; \
+ 154:core.c        **** 		} \
+ 155:core.c        **** 	}
+ 156:core.c        **** 
+ 157:core.c        **** DLLEXPORT(BufferStatus) bufAppendByte(struct Buffer *self, uint8 byte, const char **error) {
+ 528              		.loc 1 157 92
+ 529              		.cfi_startproc
+ 530 03f9 F30F1EFA 		endbr64
+ 531 03fd 55       		pushq	%rbp
+ 532              		.cfi_def_cfa_offset 16
+ 533              		.cfi_offset 6, -16
+ 534 03fe 4889E5   		movq	%rsp, %rbp
+ 535              		.cfi_def_cfa_register 6
+ 536 0401 4883EC30 		subq	$48, %rsp
+ 537 0405 48897DE8 		movq	%rdi, -24(%rbp)
+ 538 0409 89F0     		movl	%esi, %eax
+ 539 040b 488955D8 		movq	%rdx, -40(%rbp)
+ 540 040f 8845E4   		movb	%al, -28(%rbp)
+ 158:core.c        **** 	const uint32 blockEnd = self->length + 1;
+ 541              		.loc 1 158 30
+ 542 0412 488B45E8 		movq	-24(%rbp), %rax
+ 543 0416 8B4008   		movl	8(%rax), %eax
+ 544              		.loc 1 158 15
+ 545 0419 83C001   		addl	$1, %eax
+ 546 041c 8945F8   		movl	%eax, -8(%rbp)
+ 159:core.c        **** 	ENSURE_CAPACITY();
+ 547              		.loc 1 159 2
+ 548 041f 488B45E8 		movq	-24(%rbp), %rax
+ 549 0423 8B400C   		movl	12(%rax), %eax
+ 550 0426 3B45F8   		cmpl	-8(%rbp), %eax
+ 551 0429 7328     		jnb	.L24
+ 552              	.LBB2:
+ 553              		.loc 1 159 2 is_stmt 0 discriminator 1
+ 554 042b 488B45E8 		movq	-24(%rbp), %rax
+ 555 042f 8B700C   		movl	12(%rax), %esi
+ 556 0432 488B4DD8 		movq	-40(%rbp), %rcx
+ 557 0436 8B55F8   		movl	-8(%rbp), %edx
+ 558 0439 488B45E8 		movq	-24(%rbp), %rax
+ 559 043d 4889C7   		movq	%rax, %rdi
+ 560 0440 E8F0FEFF 		call	reallocate
+ 560      FF
+ 561 0445 8945FC   		movl	%eax, -4(%rbp)
+ 562 0448 837DFC00 		cmpl	$0, -4(%rbp)
+ 563 044c 7405     		je	.L24
+ 564              		.loc 1 159 2 discriminator 2
+ 565 044e 8B45FC   		movl	-4(%rbp), %eax
+ 566 0451 EB2F     		jmp	.L25
+ 567              	.L24:
+ 568              	.LBE2:
+ 160:core.c        **** 	*(self->data + self->length) = byte;
+ 569              		.loc 1 160 8 is_stmt 1
+ 570 0453 488B45E8 		movq	-24(%rbp), %rax
+ 571 0457 488B10   		movq	(%rax), %rdx
+ 572              		.loc 1 160 21
+ 573 045a 488B45E8 		movq	-24(%rbp), %rax
+ 574 045e 8B4008   		movl	8(%rax), %eax
+ 575 0461 89C0     		movl	%eax, %eax
+ 576              		.loc 1 160 15
+ 577 0463 4801C2   		addq	%rax, %rdx
+ 578              		.loc 1 160 31
+ 579 0466 0FB645E4 		movzbl	-28(%rbp), %eax
+ 580 046a 8802     		movb	%al, (%rdx)
+ 161:core.c        **** 	self->length++;
+ 581              		.loc 1 161 6
+ 582 046c 488B45E8 		movq	-24(%rbp), %rax
+ 583 0470 8B4008   		movl	8(%rax), %eax
+ 584              		.loc 1 161 14
+ 585 0473 8D5001   		leal	1(%rax), %edx
+ 586 0476 488B45E8 		movq	-24(%rbp), %rax
+ 587 047a 895008   		movl	%edx, 8(%rax)
+ 162:core.c        **** 	return BUF_SUCCESS;
+ 588              		.loc 1 162 9
+ 589 047d B8000000 		movl	$0, %eax
+ 589      00
+ 590              	.L25:
+ 163:core.c        **** }
+ 591              		.loc 1 163 1
+ 592 0482 C9       		leave
+ 593              		.cfi_def_cfa 7, 8
+ 594 0483 C3       		ret
+ 595              		.cfi_endproc
+ 596              	.LFE10:
+ 598              		.globl	bufAppendWordLE
+ 600              	bufAppendWordLE:
+ 601              	.LFB11:
+ 164:core.c        **** 
+ 165:core.c        **** DLLEXPORT(BufferStatus) bufAppendWordLE(struct Buffer *self, uint16 word, const char **error) {
+ 602              		.loc 1 165 95
+ 603              		.cfi_startproc
+ 604 0484 F30F1EFA 		endbr64
+ 605 0488 55       		pushq	%rbp
+ 606              		.cfi_def_cfa_offset 16
+ 607              		.cfi_offset 6, -16
+ 608 0489 4889E5   		movq	%rsp, %rbp
+ 609              		.cfi_def_cfa_register 6
+ 610 048c 4883EC40 		subq	$64, %rsp
+ 611 0490 48897DD8 		movq	%rdi, -40(%rbp)
+ 612 0494 89F0     		movl	%esi, %eax
+ 613 0496 488955C8 		movq	%rdx, -56(%rbp)
+ 614 049a 668945D4 		movw	%ax, -44(%rbp)
+ 615              		.loc 1 165 95
+ 616 049e 64488B04 		movq	%fs:40, %rax
+ 616      25280000 
+ 616      00
+ 617 04a7 488945F8 		movq	%rax, -8(%rbp)
+ 618 04ab 31C0     		xorl	%eax, %eax
+ 166:core.c        **** 	const uint32 blockEnd = self->length + 2;
+ 619              		.loc 1 166 30
+ 620 04ad 488B45D8 		movq	-40(%rbp), %rax
+ 621 04b1 8B4008   		movl	8(%rax), %eax
+ 622              		.loc 1 166 15
+ 623 04b4 83C002   		addl	$2, %eax
+ 624 04b7 8945EC   		movl	%eax, -20(%rbp)
+ 167:core.c        **** 	union {
+ 168:core.c        **** 		uint16 word;
+ 169:core.c        **** 		uint8 byte[2];
+ 170:core.c        **** 	} u;
+ 171:core.c        **** 	u.word = word;
+ 625              		.loc 1 171 9
+ 626 04ba 0FB745D4 		movzwl	-44(%rbp), %eax
+ 627 04be 668945F6 		movw	%ax, -10(%rbp)
+ 172:core.c        **** 	ENSURE_CAPACITY();
+ 628              		.loc 1 172 2
+ 629 04c2 488B45D8 		movq	-40(%rbp), %rax
+ 630 04c6 8B400C   		movl	12(%rax), %eax
+ 631 04c9 3B45EC   		cmpl	-20(%rbp), %eax
+ 632 04cc 7328     		jnb	.L27
+ 633              	.LBB3:
+ 634              		.loc 1 172 2 is_stmt 0 discriminator 1
+ 635 04ce 488B45D8 		movq	-40(%rbp), %rax
+ 636 04d2 8B700C   		movl	12(%rax), %esi
+ 637 04d5 488B4DC8 		movq	-56(%rbp), %rcx
+ 638 04d9 8B55EC   		movl	-20(%rbp), %edx
+ 639 04dc 488B45D8 		movq	-40(%rbp), %rax
+ 640 04e0 4889C7   		movq	%rax, %rdi
+ 641 04e3 E84DFEFF 		call	reallocate
+ 641      FF
+ 642 04e8 8945F0   		movl	%eax, -16(%rbp)
+ 643 04eb 837DF000 		cmpl	$0, -16(%rbp)
+ 644 04ef 7405     		je	.L27
+ 645              		.loc 1 172 2 discriminator 2
+ 646 04f1 8B45F0   		movl	-16(%rbp), %eax
+ 647 04f4 EB4C     		jmp	.L29
+ 648              	.L27:
+ 649              	.LBE3:
+ 173:core.c        **** 	#if BYTE_ORDER == 1234
+ 174:core.c        **** 		*(self->data + self->length) = u.byte[0];
+ 650              		.loc 1 174 9 is_stmt 1
+ 651 04f6 488B45D8 		movq	-40(%rbp), %rax
+ 652 04fa 488B10   		movq	(%rax), %rdx
+ 653              		.loc 1 174 22
+ 654 04fd 488B45D8 		movq	-40(%rbp), %rax
+ 655 0501 8B4008   		movl	8(%rax), %eax
+ 656 0504 89C0     		movl	%eax, %eax
+ 657              		.loc 1 174 16
+ 658 0506 4801C2   		addq	%rax, %rdx
+ 659              		.loc 1 174 40
+ 660 0509 0FB645F6 		movzbl	-10(%rbp), %eax
+ 661              		.loc 1 174 32
+ 662 050d 8802     		movb	%al, (%rdx)
+ 175:core.c        **** 		*(self->data + self->length + 1) = u.byte[1];
+ 663              		.loc 1 175 9
+ 664 050f 488B45D8 		movq	-40(%rbp), %rax
+ 665 0513 488B10   		movq	(%rax), %rdx
+ 666              		.loc 1 175 22
+ 667 0516 488B45D8 		movq	-40(%rbp), %rax
+ 668 051a 8B4008   		movl	8(%rax), %eax
+ 669 051d 89C0     		movl	%eax, %eax
+ 670              		.loc 1 175 31
+ 671 051f 4883C001 		addq	$1, %rax
+ 672 0523 4801C2   		addq	%rax, %rdx
+ 673              		.loc 1 175 44
+ 674 0526 0FB645F7 		movzbl	-9(%rbp), %eax
+ 675              		.loc 1 175 36
+ 676 052a 8802     		movb	%al, (%rdx)
+ 176:core.c        **** 	#else
+ 177:core.c        **** 		*(self->data + self->length) = u.byte[1];
+ 178:core.c        **** 		*(self->data + self->length + 1) = u.byte[0];
+ 179:core.c        **** 	#endif
+ 180:core.c        **** 	self->length += 2;
+ 677              		.loc 1 180 6
+ 678 052c 488B45D8 		movq	-40(%rbp), %rax
+ 679 0530 8B4008   		movl	8(%rax), %eax
+ 680              		.loc 1 180 15
+ 681 0533 8D5002   		leal	2(%rax), %edx
+ 682 0536 488B45D8 		movq	-40(%rbp), %rax
+ 683 053a 895008   		movl	%edx, 8(%rax)
+ 181:core.c        **** 	return BUF_SUCCESS;
+ 684              		.loc 1 181 9
+ 685 053d B8000000 		movl	$0, %eax
+ 685      00
+ 686              	.L29:
+ 182:core.c        **** }
+ 687              		.loc 1 182 1 discriminator 1
+ 688 0542 488B55F8 		movq	-8(%rbp), %rdx
+ 689 0546 64482B14 		subq	%fs:40, %rdx
+ 689      25280000 
+ 689      00
+ 690 054f 7405     		je	.L30
+ 691              		.loc 1 182 1 is_stmt 0
+ 692 0551 E8000000 		call	__stack_chk_fail@PLT
+ 692      00
+ 693              	.L30:
+ 694 0556 C9       		leave
+ 695              		.cfi_def_cfa 7, 8
+ 696 0557 C3       		ret
+ 697              		.cfi_endproc
+ 698              	.LFE11:
+ 700              		.globl	bufAppendWordBE
+ 702              	bufAppendWordBE:
+ 703              	.LFB12:
+ 183:core.c        **** 
+ 184:core.c        **** DLLEXPORT(BufferStatus) bufAppendWordBE(struct Buffer *self, uint16 word, const char **error) {
+ 704              		.loc 1 184 95 is_stmt 1
+ 705              		.cfi_startproc
+ 706 0558 F30F1EFA 		endbr64
+ 707 055c 55       		pushq	%rbp
+ 708              		.cfi_def_cfa_offset 16
+ 709              		.cfi_offset 6, -16
+ 710 055d 4889E5   		movq	%rsp, %rbp
+ 711              		.cfi_def_cfa_register 6
+ 712 0560 4883EC40 		subq	$64, %rsp
+ 713 0564 48897DD8 		movq	%rdi, -40(%rbp)
+ 714 0568 89F0     		movl	%esi, %eax
+ 715 056a 488955C8 		movq	%rdx, -56(%rbp)
+ 716 056e 668945D4 		movw	%ax, -44(%rbp)
+ 717              		.loc 1 184 95
+ 718 0572 64488B04 		movq	%fs:40, %rax
+ 718      25280000 
+ 718      00
+ 719 057b 488945F8 		movq	%rax, -8(%rbp)
+ 720 057f 31C0     		xorl	%eax, %eax
+ 185:core.c        **** 	const uint32 blockEnd = self->length + 2;
+ 721              		.loc 1 185 30
+ 722 0581 488B45D8 		movq	-40(%rbp), %rax
+ 723 0585 8B4008   		movl	8(%rax), %eax
+ 724              		.loc 1 185 15
+ 725 0588 83C002   		addl	$2, %eax
+ 726 058b 8945EC   		movl	%eax, -20(%rbp)
+ 186:core.c        **** 	union {
+ 187:core.c        **** 		uint16 word;
+ 188:core.c        **** 		uint8 byte[2];
+ 189:core.c        **** 	} u;
+ 190:core.c        **** 	u.word = word;
+ 727              		.loc 1 190 9
+ 728 058e 0FB745D4 		movzwl	-44(%rbp), %eax
+ 729 0592 668945F6 		movw	%ax, -10(%rbp)
+ 191:core.c        **** 	ENSURE_CAPACITY();
+ 730              		.loc 1 191 2
+ 731 0596 488B45D8 		movq	-40(%rbp), %rax
+ 732 059a 8B400C   		movl	12(%rax), %eax
+ 733 059d 3B45EC   		cmpl	-20(%rbp), %eax
+ 734 05a0 7328     		jnb	.L32
+ 735              	.LBB4:
+ 736              		.loc 1 191 2 is_stmt 0 discriminator 1
+ 737 05a2 488B45D8 		movq	-40(%rbp), %rax
+ 738 05a6 8B700C   		movl	12(%rax), %esi
+ 739 05a9 488B4DC8 		movq	-56(%rbp), %rcx
+ 740 05ad 8B55EC   		movl	-20(%rbp), %edx
+ 741 05b0 488B45D8 		movq	-40(%rbp), %rax
+ 742 05b4 4889C7   		movq	%rax, %rdi
+ 743 05b7 E879FDFF 		call	reallocate
+ 743      FF
+ 744 05bc 8945F0   		movl	%eax, -16(%rbp)
+ 745 05bf 837DF000 		cmpl	$0, -16(%rbp)
+ 746 05c3 7405     		je	.L32
+ 747              		.loc 1 191 2 discriminator 2
+ 748 05c5 8B45F0   		movl	-16(%rbp), %eax
+ 749 05c8 EB4C     		jmp	.L34
+ 750              	.L32:
+ 751              	.LBE4:
+ 192:core.c        **** 	#if BYTE_ORDER == 1234
+ 193:core.c        **** 		*(self->data + self->length) = u.byte[1];
+ 752              		.loc 1 193 9 is_stmt 1
+ 753 05ca 488B45D8 		movq	-40(%rbp), %rax
+ 754 05ce 488B10   		movq	(%rax), %rdx
+ 755              		.loc 1 193 22
+ 756 05d1 488B45D8 		movq	-40(%rbp), %rax
+ 757 05d5 8B4008   		movl	8(%rax), %eax
+ 758 05d8 89C0     		movl	%eax, %eax
+ 759              		.loc 1 193 16
+ 760 05da 4801C2   		addq	%rax, %rdx
+ 761              		.loc 1 193 40
+ 762 05dd 0FB645F7 		movzbl	-9(%rbp), %eax
+ 763              		.loc 1 193 32
+ 764 05e1 8802     		movb	%al, (%rdx)
+ 194:core.c        **** 		*(self->data + self->length + 1) = u.byte[0];
+ 765              		.loc 1 194 9
+ 766 05e3 488B45D8 		movq	-40(%rbp), %rax
+ 767 05e7 488B10   		movq	(%rax), %rdx
+ 768              		.loc 1 194 22
+ 769 05ea 488B45D8 		movq	-40(%rbp), %rax
+ 770 05ee 8B4008   		movl	8(%rax), %eax
+ 771 05f1 89C0     		movl	%eax, %eax
+ 772              		.loc 1 194 31
+ 773 05f3 4883C001 		addq	$1, %rax
+ 774 05f7 4801C2   		addq	%rax, %rdx
+ 775              		.loc 1 194 44
+ 776 05fa 0FB645F6 		movzbl	-10(%rbp), %eax
+ 777              		.loc 1 194 36
+ 778 05fe 8802     		movb	%al, (%rdx)
+ 195:core.c        **** 	#else
+ 196:core.c        **** 		*(self->data + self->length) = u.byte[0];
+ 197:core.c        **** 		*(self->data + self->length + 1) = u.byte[1];
+ 198:core.c        **** 	#endif
+ 199:core.c        **** 	self->length += 2;
+ 779              		.loc 1 199 6
+ 780 0600 488B45D8 		movq	-40(%rbp), %rax
+ 781 0604 8B4008   		movl	8(%rax), %eax
+ 782              		.loc 1 199 15
+ 783 0607 8D5002   		leal	2(%rax), %edx
+ 784 060a 488B45D8 		movq	-40(%rbp), %rax
+ 785 060e 895008   		movl	%edx, 8(%rax)
+ 200:core.c        **** 	return BUF_SUCCESS;
+ 786              		.loc 1 200 9
+ 787 0611 B8000000 		movl	$0, %eax
+ 787      00
+ 788              	.L34:
+ 201:core.c        **** }
+ 789              		.loc 1 201 1 discriminator 1
+ 790 0616 488B55F8 		movq	-8(%rbp), %rdx
+ 791 061a 64482B14 		subq	%fs:40, %rdx
+ 791      25280000 
+ 791      00
+ 792 0623 7405     		je	.L35
+ 793              		.loc 1 201 1 is_stmt 0
+ 794 0625 E8000000 		call	__stack_chk_fail@PLT
+ 794      00
+ 795              	.L35:
+ 796 062a C9       		leave
+ 797              		.cfi_def_cfa 7, 8
+ 798 062b C3       		ret
+ 799              		.cfi_endproc
+ 800              	.LFE12:
+ 802              		.globl	bufAppendLongLE
+ 804              	bufAppendLongLE:
+ 805              	.LFB13:
+ 202:core.c        **** 
+ 203:core.c        **** DLLEXPORT(BufferStatus) bufAppendLongLE(struct Buffer *self, uint32 lword, const char **error) {
+ 806              		.loc 1 203 96 is_stmt 1
+ 807              		.cfi_startproc
+ 808 062c F30F1EFA 		endbr64
+ 809 0630 55       		pushq	%rbp
+ 810              		.cfi_def_cfa_offset 16
+ 811              		.cfi_offset 6, -16
+ 812 0631 4889E5   		movq	%rsp, %rbp
+ 813              		.cfi_def_cfa_register 6
+ 814 0634 4883EC40 		subq	$64, %rsp
+ 815 0638 48897DD8 		movq	%rdi, -40(%rbp)
+ 816 063c 8975D4   		movl	%esi, -44(%rbp)
+ 817 063f 488955C8 		movq	%rdx, -56(%rbp)
+ 818              		.loc 1 203 96
+ 819 0643 64488B04 		movq	%fs:40, %rax
+ 819      25280000 
+ 819      00
+ 820 064c 488945F8 		movq	%rax, -8(%rbp)
+ 821 0650 31C0     		xorl	%eax, %eax
+ 204:core.c        **** 	const uint32 blockEnd = self->length + 4;
+ 822              		.loc 1 204 30
+ 823 0652 488B45D8 		movq	-40(%rbp), %rax
+ 824 0656 8B4008   		movl	8(%rax), %eax
+ 825              		.loc 1 204 15
+ 826 0659 83C004   		addl	$4, %eax
+ 827 065c 8945EC   		movl	%eax, -20(%rbp)
+ 205:core.c        **** 	union {
+ 206:core.c        **** 		uint32 lword;
+ 207:core.c        **** 		uint8 byte[4];
+ 208:core.c        **** 	} u;
+ 209:core.c        **** 	u.lword = lword;
+ 828              		.loc 1 209 10
+ 829 065f 8B45D4   		movl	-44(%rbp), %eax
+ 830 0662 8945F4   		movl	%eax, -12(%rbp)
+ 210:core.c        **** 	ENSURE_CAPACITY();
+ 831              		.loc 1 210 2
+ 832 0665 488B45D8 		movq	-40(%rbp), %rax
+ 833 0669 8B400C   		movl	12(%rax), %eax
+ 834 066c 3B45EC   		cmpl	-20(%rbp), %eax
+ 835 066f 732B     		jnb	.L37
+ 836              	.LBB5:
+ 837              		.loc 1 210 2 is_stmt 0 discriminator 1
+ 838 0671 488B45D8 		movq	-40(%rbp), %rax
+ 839 0675 8B700C   		movl	12(%rax), %esi
+ 840 0678 488B4DC8 		movq	-56(%rbp), %rcx
+ 841 067c 8B55EC   		movl	-20(%rbp), %edx
+ 842 067f 488B45D8 		movq	-40(%rbp), %rax
+ 843 0683 4889C7   		movq	%rax, %rdi
+ 844 0686 E8AAFCFF 		call	reallocate
+ 844      FF
+ 845 068b 8945F0   		movl	%eax, -16(%rbp)
+ 846 068e 837DF000 		cmpl	$0, -16(%rbp)
+ 847 0692 7408     		je	.L37
+ 848              		.loc 1 210 2 discriminator 2
+ 849 0694 8B45F0   		movl	-16(%rbp), %eax
+ 850 0697 E9860000 		jmp	.L39
+ 850      00
+ 851              	.L37:
+ 852              	.LBE5:
+ 211:core.c        **** 	#if BYTE_ORDER == 1234
+ 212:core.c        **** 		*(self->data + self->length) = u.byte[0];
+ 853              		.loc 1 212 9 is_stmt 1
+ 854 069c 488B45D8 		movq	-40(%rbp), %rax
+ 855 06a0 488B10   		movq	(%rax), %rdx
+ 856              		.loc 1 212 22
+ 857 06a3 488B45D8 		movq	-40(%rbp), %rax
+ 858 06a7 8B4008   		movl	8(%rax), %eax
+ 859 06aa 89C0     		movl	%eax, %eax
+ 860              		.loc 1 212 16
+ 861 06ac 4801C2   		addq	%rax, %rdx
+ 862              		.loc 1 212 40
+ 863 06af 0FB645F4 		movzbl	-12(%rbp), %eax
+ 864              		.loc 1 212 32
+ 865 06b3 8802     		movb	%al, (%rdx)
+ 213:core.c        **** 		*(self->data + self->length + 1) = u.byte[1];
+ 866              		.loc 1 213 9
+ 867 06b5 488B45D8 		movq	-40(%rbp), %rax
+ 868 06b9 488B10   		movq	(%rax), %rdx
+ 869              		.loc 1 213 22
+ 870 06bc 488B45D8 		movq	-40(%rbp), %rax
+ 871 06c0 8B4008   		movl	8(%rax), %eax
+ 872 06c3 89C0     		movl	%eax, %eax
+ 873              		.loc 1 213 31
+ 874 06c5 4883C001 		addq	$1, %rax
+ 875 06c9 4801C2   		addq	%rax, %rdx
+ 876              		.loc 1 213 44
+ 877 06cc 0FB645F5 		movzbl	-11(%rbp), %eax
+ 878              		.loc 1 213 36
+ 879 06d0 8802     		movb	%al, (%rdx)
+ 214:core.c        **** 		*(self->data + self->length + 2) = u.byte[2];
+ 880              		.loc 1 214 9
+ 881 06d2 488B45D8 		movq	-40(%rbp), %rax
+ 882 06d6 488B10   		movq	(%rax), %rdx
+ 883              		.loc 1 214 22
+ 884 06d9 488B45D8 		movq	-40(%rbp), %rax
+ 885 06dd 8B4008   		movl	8(%rax), %eax
+ 886 06e0 89C0     		movl	%eax, %eax
+ 887              		.loc 1 214 31
+ 888 06e2 4883C002 		addq	$2, %rax
+ 889 06e6 4801C2   		addq	%rax, %rdx
+ 890              		.loc 1 214 44
+ 891 06e9 0FB645F6 		movzbl	-10(%rbp), %eax
+ 892              		.loc 1 214 36
+ 893 06ed 8802     		movb	%al, (%rdx)
+ 215:core.c        **** 		*(self->data + self->length + 3) = u.byte[3];
+ 894              		.loc 1 215 9
+ 895 06ef 488B45D8 		movq	-40(%rbp), %rax
+ 896 06f3 488B10   		movq	(%rax), %rdx
+ 897              		.loc 1 215 22
+ 898 06f6 488B45D8 		movq	-40(%rbp), %rax
+ 899 06fa 8B4008   		movl	8(%rax), %eax
+ 900 06fd 89C0     		movl	%eax, %eax
+ 901              		.loc 1 215 31
+ 902 06ff 4883C003 		addq	$3, %rax
+ 903 0703 4801C2   		addq	%rax, %rdx
+ 904              		.loc 1 215 44
+ 905 0706 0FB645F7 		movzbl	-9(%rbp), %eax
+ 906              		.loc 1 215 36
+ 907 070a 8802     		movb	%al, (%rdx)
+ 216:core.c        **** 	#else
+ 217:core.c        **** 		*(self->data + self->length) = u.byte[3];
+ 218:core.c        **** 		*(self->data + self->length + 1) = u.byte[2];
+ 219:core.c        **** 		*(self->data + self->length + 2) = u.byte[1];
+ 220:core.c        **** 		*(self->data + self->length + 3) = u.byte[0];
+ 221:core.c        **** 	#endif
+ 222:core.c        **** 	self->length += 4;
+ 908              		.loc 1 222 6
+ 909 070c 488B45D8 		movq	-40(%rbp), %rax
+ 910 0710 8B4008   		movl	8(%rax), %eax
+ 911              		.loc 1 222 15
+ 912 0713 8D5004   		leal	4(%rax), %edx
+ 913 0716 488B45D8 		movq	-40(%rbp), %rax
+ 914 071a 895008   		movl	%edx, 8(%rax)
+ 223:core.c        **** 	return BUF_SUCCESS;
+ 915              		.loc 1 223 9
+ 916 071d B8000000 		movl	$0, %eax
+ 916      00
+ 917              	.L39:
+ 224:core.c        **** }
+ 918              		.loc 1 224 1 discriminator 1
+ 919 0722 488B55F8 		movq	-8(%rbp), %rdx
+ 920 0726 64482B14 		subq	%fs:40, %rdx
+ 920      25280000 
+ 920      00
+ 921 072f 7405     		je	.L40
+ 922              		.loc 1 224 1 is_stmt 0
+ 923 0731 E8000000 		call	__stack_chk_fail@PLT
+ 923      00
+ 924              	.L40:
+ 925 0736 C9       		leave
+ 926              		.cfi_def_cfa 7, 8
+ 927 0737 C3       		ret
+ 928              		.cfi_endproc
+ 929              	.LFE13:
+ 931              		.globl	bufAppendLongBE
+ 933              	bufAppendLongBE:
+ 934              	.LFB14:
+ 225:core.c        **** 
+ 226:core.c        **** DLLEXPORT(BufferStatus) bufAppendLongBE(struct Buffer *self, uint32 lword, const char **error) {
+ 935              		.loc 1 226 96 is_stmt 1
+ 936              		.cfi_startproc
+ 937 0738 F30F1EFA 		endbr64
+ 938 073c 55       		pushq	%rbp
+ 939              		.cfi_def_cfa_offset 16
+ 940              		.cfi_offset 6, -16
+ 941 073d 4889E5   		movq	%rsp, %rbp
+ 942              		.cfi_def_cfa_register 6
+ 943 0740 4883EC40 		subq	$64, %rsp
+ 944 0744 48897DD8 		movq	%rdi, -40(%rbp)
+ 945 0748 8975D4   		movl	%esi, -44(%rbp)
+ 946 074b 488955C8 		movq	%rdx, -56(%rbp)
+ 947              		.loc 1 226 96
+ 948 074f 64488B04 		movq	%fs:40, %rax
+ 948      25280000 
+ 948      00
+ 949 0758 488945F8 		movq	%rax, -8(%rbp)
+ 950 075c 31C0     		xorl	%eax, %eax
+ 227:core.c        **** 	const uint32 blockEnd = self->length + 4;
+ 951              		.loc 1 227 30
+ 952 075e 488B45D8 		movq	-40(%rbp), %rax
+ 953 0762 8B4008   		movl	8(%rax), %eax
+ 954              		.loc 1 227 15
+ 955 0765 83C004   		addl	$4, %eax
+ 956 0768 8945EC   		movl	%eax, -20(%rbp)
+ 228:core.c        **** 	union {
+ 229:core.c        **** 		uint32 lword;
+ 230:core.c        **** 		uint8 byte[4];
+ 231:core.c        **** 	} u;
+ 232:core.c        **** 	u.lword = lword;
+ 957              		.loc 1 232 10
+ 958 076b 8B45D4   		movl	-44(%rbp), %eax
+ 959 076e 8945F4   		movl	%eax, -12(%rbp)
+ 233:core.c        **** 	ENSURE_CAPACITY();
+ 960              		.loc 1 233 2
+ 961 0771 488B45D8 		movq	-40(%rbp), %rax
+ 962 0775 8B400C   		movl	12(%rax), %eax
+ 963 0778 3B45EC   		cmpl	-20(%rbp), %eax
+ 964 077b 732B     		jnb	.L42
+ 965              	.LBB6:
+ 966              		.loc 1 233 2 is_stmt 0 discriminator 1
+ 967 077d 488B45D8 		movq	-40(%rbp), %rax
+ 968 0781 8B700C   		movl	12(%rax), %esi
+ 969 0784 488B4DC8 		movq	-56(%rbp), %rcx
+ 970 0788 8B55EC   		movl	-20(%rbp), %edx
+ 971 078b 488B45D8 		movq	-40(%rbp), %rax
+ 972 078f 4889C7   		movq	%rax, %rdi
+ 973 0792 E89EFBFF 		call	reallocate
+ 973      FF
+ 974 0797 8945F0   		movl	%eax, -16(%rbp)
+ 975 079a 837DF000 		cmpl	$0, -16(%rbp)
+ 976 079e 7408     		je	.L42
+ 977              		.loc 1 233 2 discriminator 2
+ 978 07a0 8B45F0   		movl	-16(%rbp), %eax
+ 979 07a3 E9860000 		jmp	.L44
+ 979      00
+ 980              	.L42:
+ 981              	.LBE6:
+ 234:core.c        **** 	#if BYTE_ORDER == 1234
+ 235:core.c        **** 		*(self->data + self->length) = u.byte[3];
+ 982              		.loc 1 235 9 is_stmt 1
+ 983 07a8 488B45D8 		movq	-40(%rbp), %rax
+ 984 07ac 488B10   		movq	(%rax), %rdx
+ 985              		.loc 1 235 22
+ 986 07af 488B45D8 		movq	-40(%rbp), %rax
+ 987 07b3 8B4008   		movl	8(%rax), %eax
+ 988 07b6 89C0     		movl	%eax, %eax
+ 989              		.loc 1 235 16
+ 990 07b8 4801C2   		addq	%rax, %rdx
+ 991              		.loc 1 235 40
+ 992 07bb 0FB645F7 		movzbl	-9(%rbp), %eax
+ 993              		.loc 1 235 32
+ 994 07bf 8802     		movb	%al, (%rdx)
+ 236:core.c        **** 		*(self->data + self->length + 1) = u.byte[2];
+ 995              		.loc 1 236 9
+ 996 07c1 488B45D8 		movq	-40(%rbp), %rax
+ 997 07c5 488B10   		movq	(%rax), %rdx
+ 998              		.loc 1 236 22
+ 999 07c8 488B45D8 		movq	-40(%rbp), %rax
+ 1000 07cc 8B4008   		movl	8(%rax), %eax
+ 1001 07cf 89C0     		movl	%eax, %eax
+ 1002              		.loc 1 236 31
+ 1003 07d1 4883C001 		addq	$1, %rax
+ 1004 07d5 4801C2   		addq	%rax, %rdx
+ 1005              		.loc 1 236 44
+ 1006 07d8 0FB645F6 		movzbl	-10(%rbp), %eax
+ 1007              		.loc 1 236 36
+ 1008 07dc 8802     		movb	%al, (%rdx)
+ 237:core.c        **** 		*(self->data + self->length + 2) = u.byte[1];
+ 1009              		.loc 1 237 9
+ 1010 07de 488B45D8 		movq	-40(%rbp), %rax
+ 1011 07e2 488B10   		movq	(%rax), %rdx
+ 1012              		.loc 1 237 22
+ 1013 07e5 488B45D8 		movq	-40(%rbp), %rax
+ 1014 07e9 8B4008   		movl	8(%rax), %eax
+ 1015 07ec 89C0     		movl	%eax, %eax
+ 1016              		.loc 1 237 31
+ 1017 07ee 4883C002 		addq	$2, %rax
+ 1018 07f2 4801C2   		addq	%rax, %rdx
+ 1019              		.loc 1 237 44
+ 1020 07f5 0FB645F5 		movzbl	-11(%rbp), %eax
+ 1021              		.loc 1 237 36
+ 1022 07f9 8802     		movb	%al, (%rdx)
+ 238:core.c        **** 		*(self->data + self->length + 3) = u.byte[0];
+ 1023              		.loc 1 238 9
+ 1024 07fb 488B45D8 		movq	-40(%rbp), %rax
+ 1025 07ff 488B10   		movq	(%rax), %rdx
+ 1026              		.loc 1 238 22
+ 1027 0802 488B45D8 		movq	-40(%rbp), %rax
+ 1028 0806 8B4008   		movl	8(%rax), %eax
+ 1029 0809 89C0     		movl	%eax, %eax
+ 1030              		.loc 1 238 31
+ 1031 080b 4883C003 		addq	$3, %rax
+ 1032 080f 4801C2   		addq	%rax, %rdx
+ 1033              		.loc 1 238 44
+ 1034 0812 0FB645F4 		movzbl	-12(%rbp), %eax
+ 1035              		.loc 1 238 36
+ 1036 0816 8802     		movb	%al, (%rdx)
+ 239:core.c        **** 	#else
+ 240:core.c        **** 		*(self->data + self->length) = u.byte[0];
+ 241:core.c        **** 		*(self->data + self->length + 1) = u.byte[1];
+ 242:core.c        **** 		*(self->data + self->length + 2) = u.byte[2];
+ 243:core.c        **** 		*(self->data + self->length + 3) = u.byte[3];
+ 244:core.c        **** 	#endif
+ 245:core.c        **** 	self->length += 4;
+ 1037              		.loc 1 245 6
+ 1038 0818 488B45D8 		movq	-40(%rbp), %rax
+ 1039 081c 8B4008   		movl	8(%rax), %eax
+ 1040              		.loc 1 245 15
+ 1041 081f 8D5004   		leal	4(%rax), %edx
+ 1042 0822 488B45D8 		movq	-40(%rbp), %rax
+ 1043 0826 895008   		movl	%edx, 8(%rax)
+ 246:core.c        **** 	return BUF_SUCCESS;
+ 1044              		.loc 1 246 9
+ 1045 0829 B8000000 		movl	$0, %eax
+ 1045      00
+ 1046              	.L44:
+ 247:core.c        **** }
+ 1047              		.loc 1 247 1 discriminator 1
+ 1048 082e 488B55F8 		movq	-8(%rbp), %rdx
+ 1049 0832 64482B14 		subq	%fs:40, %rdx
+ 1049      25280000 
+ 1049      00
+ 1050 083b 7405     		je	.L45
+ 1051              		.loc 1 247 1 is_stmt 0
+ 1052 083d E8000000 		call	__stack_chk_fail@PLT
+ 1052      00
+ 1053              	.L45:
+ 1054 0842 C9       		leave
+ 1055              		.cfi_def_cfa 7, 8
+ 1056 0843 C3       		ret
+ 1057              		.cfi_endproc
+ 1058              	.LFE14:
+ 1060              		.globl	bufAppendConst
+ 1062              	bufAppendConst:
+ 1063              	.LFB15:
+ 248:core.c        **** 
+ 249:core.c        **** // Append a block of a given constant to the end of the buffer, and return a ptr to the next free
+ 250:core.c        **** // byte after the end.
+ 251:core.c        **** //
+ 252:core.c        **** DLLEXPORT(BufferStatus) bufAppendConst(
+ 253:core.c        **** 	struct Buffer *self, uint8 value, uint32 count, const char **error)
+ 254:core.c        **** {
+ 1064              		.loc 1 254 1 is_stmt 1
+ 1065              		.cfi_startproc
+ 1066 0844 F30F1EFA 		endbr64
+ 1067 0848 55       		pushq	%rbp
+ 1068              		.cfi_def_cfa_offset 16
+ 1069              		.cfi_offset 6, -16
+ 1070 0849 4889E5   		movq	%rsp, %rbp
+ 1071              		.cfi_def_cfa_register 6
+ 1072 084c 4883EC30 		subq	$48, %rsp
+ 1073 0850 48897DE8 		movq	%rdi, -24(%rbp)
+ 1074 0854 89F0     		movl	%esi, %eax
+ 1075 0856 8955E0   		movl	%edx, -32(%rbp)
+ 1076 0859 48894DD8 		movq	%rcx, -40(%rbp)
+ 1077 085d 8845E4   		movb	%al, -28(%rbp)
+ 255:core.c        **** 	const uint32 blockEnd = self->length + count;
+ 1078              		.loc 1 255 30
+ 1079 0860 488B45E8 		movq	-24(%rbp), %rax
+ 1080 0864 8B5008   		movl	8(%rax), %edx
+ 1081              		.loc 1 255 15
+ 1082 0867 8B45E0   		movl	-32(%rbp), %eax
+ 1083 086a 01D0     		addl	%edx, %eax
+ 1084 086c 8945F8   		movl	%eax, -8(%rbp)
+ 256:core.c        **** 	ENSURE_CAPACITY();
+ 1085              		.loc 1 256 2
+ 1086 086f 488B45E8 		movq	-24(%rbp), %rax
+ 1087 0873 8B400C   		movl	12(%rax), %eax
+ 1088 0876 3B45F8   		cmpl	-8(%rbp), %eax
+ 1089 0879 7328     		jnb	.L47
+ 1090              	.LBB7:
+ 1091              		.loc 1 256 2 is_stmt 0 discriminator 1
+ 1092 087b 488B45E8 		movq	-24(%rbp), %rax
+ 1093 087f 8B700C   		movl	12(%rax), %esi
+ 1094 0882 488B4DD8 		movq	-40(%rbp), %rcx
+ 1095 0886 8B55F8   		movl	-8(%rbp), %edx
+ 1096 0889 488B45E8 		movq	-24(%rbp), %rax
+ 1097 088d 4889C7   		movq	%rax, %rdi
+ 1098 0890 E8A0FAFF 		call	reallocate
+ 1098      FF
+ 1099 0895 8945FC   		movl	%eax, -4(%rbp)
+ 1100 0898 837DFC00 		cmpl	$0, -4(%rbp)
+ 1101 089c 7405     		je	.L47
+ 1102              		.loc 1 256 2 discriminator 2
+ 1103 089e 8B45FC   		movl	-4(%rbp), %eax
+ 1104 08a1 EB33     		jmp	.L48
+ 1105              	.L47:
+ 1106              	.LBE7:
+ 257:core.c        **** 	memset(self->data + self->length, value, count);
+ 1107              		.loc 1 257 2 is_stmt 1
+ 1108 08a3 8B55E0   		movl	-32(%rbp), %edx
+ 1109 08a6 0FB645E4 		movzbl	-28(%rbp), %eax
+ 1110              		.loc 1 257 13
+ 1111 08aa 488B4DE8 		movq	-24(%rbp), %rcx
+ 1112 08ae 488B31   		movq	(%rcx), %rsi
+ 1113              		.loc 1 257 26
+ 1114 08b1 488B4DE8 		movq	-24(%rbp), %rcx
+ 1115 08b5 8B4908   		movl	8(%rcx), %ecx
+ 1116 08b8 89C9     		movl	%ecx, %ecx
+ 1117              		.loc 1 257 20
+ 1118 08ba 4801F1   		addq	%rsi, %rcx
+ 1119              		.loc 1 257 2
+ 1120 08bd 89C6     		movl	%eax, %esi
+ 1121 08bf 4889CF   		movq	%rcx, %rdi
+ 1122 08c2 E8000000 		call	memset@PLT
+ 1122      00
+ 258:core.c        **** 	self->length = blockEnd;
+ 1123              		.loc 1 258 15
+ 1124 08c7 488B45E8 		movq	-24(%rbp), %rax
+ 1125 08cb 8B55F8   		movl	-8(%rbp), %edx
+ 1126 08ce 895008   		movl	%edx, 8(%rax)
+ 259:core.c        **** 	return BUF_SUCCESS;
+ 1127              		.loc 1 259 9
+ 1128 08d1 B8000000 		movl	$0, %eax
+ 1128      00
+ 1129              	.L48:
+ 260:core.c        **** }
+ 1130              		.loc 1 260 1
+ 1131 08d6 C9       		leave
+ 1132              		.cfi_def_cfa 7, 8
+ 1133 08d7 C3       		ret
+ 1134              		.cfi_endproc
+ 1135              	.LFE15:
+ 1137              		.globl	bufAppendBlock
+ 1139              	bufAppendBlock:
+ 1140              	.LFB16:
+ 261:core.c        **** 
+ 262:core.c        **** // Write the supplied data to the buffer structure.
+ 263:core.c        **** // Returns BUF_SUCCESS or BUF_NO_MEM.
+ 264:core.c        **** //
+ 265:core.c        **** DLLEXPORT(BufferStatus) bufAppendBlock(
+ 266:core.c        **** 	struct Buffer *self, const uint8 *srcPtr, uint32 count, const char **error)
+ 267:core.c        **** {
+ 1141              		.loc 1 267 1
+ 1142              		.cfi_startproc
+ 1143 08d8 F30F1EFA 		endbr64
+ 1144 08dc 55       		pushq	%rbp
+ 1145              		.cfi_def_cfa_offset 16
+ 1146              		.cfi_offset 6, -16
+ 1147 08dd 4889E5   		movq	%rsp, %rbp
+ 1148              		.cfi_def_cfa_register 6
+ 1149 08e0 4883EC30 		subq	$48, %rsp
+ 1150 08e4 48897DE8 		movq	%rdi, -24(%rbp)
+ 1151 08e8 488975E0 		movq	%rsi, -32(%rbp)
+ 1152 08ec 8955DC   		movl	%edx, -36(%rbp)
+ 1153 08ef 48894DD0 		movq	%rcx, -48(%rbp)
+ 268:core.c        **** 	const uint32 blockEnd = self->length + count;
+ 1154              		.loc 1 268 30
+ 1155 08f3 488B45E8 		movq	-24(%rbp), %rax
+ 1156 08f7 8B5008   		movl	8(%rax), %edx
+ 1157              		.loc 1 268 15
+ 1158 08fa 8B45DC   		movl	-36(%rbp), %eax
+ 1159 08fd 01D0     		addl	%edx, %eax
+ 1160 08ff 8945F8   		movl	%eax, -8(%rbp)
+ 269:core.c        **** 	ENSURE_CAPACITY();
+ 1161              		.loc 1 269 2
+ 1162 0902 488B45E8 		movq	-24(%rbp), %rax
+ 1163 0906 8B400C   		movl	12(%rax), %eax
+ 1164 0909 3B45F8   		cmpl	-8(%rbp), %eax
+ 1165 090c 7328     		jnb	.L50
+ 1166              	.LBB8:
+ 1167              		.loc 1 269 2 is_stmt 0 discriminator 1
+ 1168 090e 488B45E8 		movq	-24(%rbp), %rax
+ 1169 0912 8B700C   		movl	12(%rax), %esi
+ 1170 0915 488B4DD0 		movq	-48(%rbp), %rcx
+ 1171 0919 8B55F8   		movl	-8(%rbp), %edx
+ 1172 091c 488B45E8 		movq	-24(%rbp), %rax
+ 1173 0920 4889C7   		movq	%rax, %rdi
+ 1174 0923 E80DFAFF 		call	reallocate
+ 1174      FF
+ 1175 0928 8945FC   		movl	%eax, -4(%rbp)
+ 1176 092b 837DFC00 		cmpl	$0, -4(%rbp)
+ 1177 092f 7405     		je	.L50
+ 1178              		.loc 1 269 2 discriminator 2
+ 1179 0931 8B45FC   		movl	-4(%rbp), %eax
+ 1180 0934 EB34     		jmp	.L51
+ 1181              	.L50:
+ 1182              	.LBE8:
+ 270:core.c        **** 	memcpy(self->data + self->length, srcPtr, count);
+ 1183              		.loc 1 270 2 is_stmt 1
+ 1184 0936 8B55DC   		movl	-36(%rbp), %edx
+ 1185              		.loc 1 270 13
+ 1186 0939 488B45E8 		movq	-24(%rbp), %rax
+ 1187 093d 488B08   		movq	(%rax), %rcx
+ 1188              		.loc 1 270 26
+ 1189 0940 488B45E8 		movq	-24(%rbp), %rax
+ 1190 0944 8B4008   		movl	8(%rax), %eax
+ 1191 0947 89C0     		movl	%eax, %eax
+ 1192              		.loc 1 270 20
+ 1193 0949 4801C1   		addq	%rax, %rcx
+ 1194              		.loc 1 270 2
+ 1195 094c 488B45E0 		movq	-32(%rbp), %rax
+ 1196 0950 4889C6   		movq	%rax, %rsi
+ 1197 0953 4889CF   		movq	%rcx, %rdi
+ 1198 0956 E8000000 		call	memcpy@PLT
+ 1198      00
+ 271:core.c        **** 	self->length = blockEnd;
+ 1199              		.loc 1 271 15
+ 1200 095b 488B45E8 		movq	-24(%rbp), %rax
+ 1201 095f 8B55F8   		movl	-8(%rbp), %edx
+ 1202 0962 895008   		movl	%edx, 8(%rax)
+ 272:core.c        **** 	return BUF_SUCCESS;
+ 1203              		.loc 1 272 9
+ 1204 0965 B8000000 		movl	$0, %eax
+ 1204      00
+ 1205              	.L51:
+ 273:core.c        **** }
+ 1206              		.loc 1 273 1
+ 1207 096a C9       		leave
+ 1208              		.cfi_def_cfa 7, 8
+ 1209 096b C3       		ret
+ 1210              		.cfi_endproc
+ 1211              	.LFE16:
+ 1214              	maybeReallocate:
+ 1215              	.LFB17:
+ 274:core.c        **** 
+ 275:core.c        **** // Used by bufWriteXXX() to ensure sufficient capacity for the operation.
+ 276:core.c        **** //
+ 277:core.c        **** static BufferStatus maybeReallocate(
+ 278:core.c        **** 	struct Buffer *const self, const uint32 bufAddress, const uint32 count, const char **error)
+ 279:core.c        **** {
+ 1216              		.loc 1 279 1
+ 1217              		.cfi_startproc
+ 1218 096c F30F1EFA 		endbr64
+ 1219 0970 55       		pushq	%rbp
+ 1220              		.cfi_def_cfa_offset 16
+ 1221              		.cfi_offset 6, -16
+ 1222 0971 4889E5   		movq	%rsp, %rbp
+ 1223              		.cfi_def_cfa_register 6
+ 1224 0974 4883EC40 		subq	$64, %rsp
+ 1225 0978 48897DD8 		movq	%rdi, -40(%rbp)
+ 1226 097c 8975D4   		movl	%esi, -44(%rbp)
+ 1227 097f 8955D0   		movl	%edx, -48(%rbp)
+ 1228 0982 48894DC8 		movq	%rcx, -56(%rbp)
+ 280:core.c        **** 	// There are three possibilities:
+ 281:core.c        **** 	//   * The block to be written starts after the end of the current buffer
+ 282:core.c        **** 	//   * The block to be written starts within the current buffer, but ends beyond it
+ 283:core.c        **** 	//   * The block to be written ends within the current buffer
+ 284:core.c        **** 	//
+ 285:core.c        **** 	const uint32 blockEnd = bufAddress + count;
+ 1229              		.loc 1 285 15
+ 1230 0986 8B55D4   		movl	-44(%rbp), %edx
+ 1231 0989 8B45D0   		movl	-48(%rbp), %eax
+ 1232 098c 01D0     		addl	%edx, %eax
+ 1233 098e 8945E4   		movl	%eax, -28(%rbp)
+ 286:core.c        **** 	if ( bufAddress >= self->length ) {
+ 1234              		.loc 1 286 25
+ 1235 0991 488B45D8 		movq	-40(%rbp), %rax
+ 1236 0995 8B4008   		movl	8(%rax), %eax
+ 1237              		.loc 1 286 5
+ 1238 0998 3945D4   		cmpl	%eax, -44(%rbp)
+ 1239 099b 0F828D00 		jb	.L53
+ 1239      0000
+ 1240              	.LBB9:
+ 287:core.c        **** 		// Begins outside - reallocation may be necessary, zeroing definitely necessary
+ 288:core.c        **** 		//
+ 289:core.c        **** 		uint8 *ptr, *endPtr;
+ 290:core.c        **** 		ENSURE_CAPACITY();
+ 1241              		.loc 1 290 3
+ 1242 09a1 488B45D8 		movq	-40(%rbp), %rax
+ 1243 09a5 8B400C   		movl	12(%rax), %eax
+ 1244 09a8 3B45E4   		cmpl	-28(%rbp), %eax
+ 1245 09ab 732B     		jnb	.L54
+ 1246              	.LBB10:
+ 1247              		.loc 1 290 3 is_stmt 0 discriminator 1
+ 1248 09ad 488B45D8 		movq	-40(%rbp), %rax
+ 1249 09b1 8B700C   		movl	12(%rax), %esi
+ 1250 09b4 488B4DC8 		movq	-56(%rbp), %rcx
+ 1251 09b8 8B55E4   		movl	-28(%rbp), %edx
+ 1252 09bb 488B45D8 		movq	-40(%rbp), %rax
+ 1253 09bf 4889C7   		movq	%rax, %rdi
+ 1254 09c2 E86EF9FF 		call	reallocate
+ 1254      FF
+ 1255 09c7 8945EC   		movl	%eax, -20(%rbp)
+ 1256 09ca 837DEC00 		cmpl	$0, -20(%rbp)
+ 1257 09ce 7408     		je	.L54
+ 1258              		.loc 1 290 3 discriminator 2
+ 1259 09d0 8B45EC   		movl	-20(%rbp), %eax
+ 1260 09d3 E9B10000 		jmp	.L55
+ 1260      00
+ 1261              	.L54:
+ 1262              	.LBE10:
+ 291:core.c        **** 		
+ 292:core.c        **** 		// Now fill from the end of the old length to the start of the block
+ 293:core.c        **** 		//
+ 294:core.c        **** 		ptr = self->data + self->length;
+ 1263              		.loc 1 294 13 is_stmt 1
+ 1264 09d8 488B45D8 		movq	-40(%rbp), %rax
+ 1265 09dc 488B10   		movq	(%rax), %rdx
+ 1266              		.loc 1 294 26
+ 1267 09df 488B45D8 		movq	-40(%rbp), %rax
+ 1268 09e3 8B4008   		movl	8(%rax), %eax
+ 1269 09e6 89C0     		movl	%eax, %eax
+ 1270              		.loc 1 294 7
+ 1271 09e8 4801D0   		addq	%rdx, %rax
+ 1272 09eb 488945F0 		movq	%rax, -16(%rbp)
+ 295:core.c        **** 		endPtr = self->data + bufAddress;
+ 1273              		.loc 1 295 16
+ 1274 09ef 488B45D8 		movq	-40(%rbp), %rax
+ 1275 09f3 488B10   		movq	(%rax), %rdx
+ 1276              		.loc 1 295 23
+ 1277 09f6 8B45D4   		movl	-44(%rbp), %eax
+ 1278              		.loc 1 295 10
+ 1279 09f9 4801D0   		addq	%rdx, %rax
+ 1280 09fc 488945F8 		movq	%rax, -8(%rbp)
+ 296:core.c        **** 		while ( ptr < endPtr ) {
+ 1281              		.loc 1 296 9
+ 1282 0a00 EB16     		jmp	.L56
+ 1283              	.L57:
+ 297:core.c        **** 			*ptr++ = self->fill;
+ 1284              		.loc 1 297 8
+ 1285 0a02 488B45F0 		movq	-16(%rbp), %rax
+ 1286 0a06 488D5001 		leaq	1(%rax), %rdx
+ 1287 0a0a 488955F0 		movq	%rdx, -16(%rbp)
+ 1288              		.loc 1 297 17
+ 1289 0a0e 488B55D8 		movq	-40(%rbp), %rdx
+ 1290 0a12 0FB65210 		movzbl	16(%rdx), %edx
+ 1291              		.loc 1 297 11
+ 1292 0a16 8810     		movb	%dl, (%rax)
+ 1293              	.L56:
+ 296:core.c        **** 		while ( ptr < endPtr ) {
+ 1294              		.loc 1 296 15
+ 1295 0a18 488B45F0 		movq	-16(%rbp), %rax
+ 1296 0a1c 483B45F8 		cmpq	-8(%rbp), %rax
+ 1297 0a20 72E0     		jb	.L57
+ 298:core.c        **** 		}
+ 299:core.c        **** 		
+ 300:core.c        **** 		self->length = blockEnd;
+ 1298              		.loc 1 300 16
+ 1299 0a22 488B45D8 		movq	-40(%rbp), %rax
+ 1300 0a26 8B55E4   		movl	-28(%rbp), %edx
+ 1301 0a29 895008   		movl	%edx, 8(%rax)
+ 1302              	.LBE9:
+ 1303 0a2c EB56     		jmp	.L58
+ 1304              	.L53:
+ 301:core.c        **** 	} else if ( bufAddress < self->length && blockEnd > self->length ) {
+ 1305              		.loc 1 301 31
+ 1306 0a2e 488B45D8 		movq	-40(%rbp), %rax
+ 1307 0a32 8B4008   		movl	8(%rax), %eax
+ 1308              		.loc 1 301 12
+ 1309 0a35 3945D4   		cmpl	%eax, -44(%rbp)
+ 1310 0a38 734A     		jnb	.L58
+ 1311              		.loc 1 301 58 discriminator 1
+ 1312 0a3a 488B45D8 		movq	-40(%rbp), %rax
+ 1313 0a3e 8B4008   		movl	8(%rax), %eax
+ 1314              		.loc 1 301 40 discriminator 1
+ 1315 0a41 3B45E4   		cmpl	-28(%rbp), %eax
+ 1316 0a44 733E     		jnb	.L58
+ 302:core.c        **** 		// Begins inside, ends outside - reallocation and zeroing may be necessary
+ 303:core.c        **** 		//
+ 304:core.c        **** 		ENSURE_CAPACITY();
+ 1317              		.loc 1 304 3
+ 1318 0a46 488B45D8 		movq	-40(%rbp), %rax
+ 1319 0a4a 8B400C   		movl	12(%rax), %eax
+ 1320 0a4d 3B45E4   		cmpl	-28(%rbp), %eax
+ 1321 0a50 7328     		jnb	.L59
+ 1322              	.LBB11:
+ 1323              		.loc 1 304 3 is_stmt 0 discriminator 1
+ 1324 0a52 488B45D8 		movq	-40(%rbp), %rax
+ 1325 0a56 8B700C   		movl	12(%rax), %esi
+ 1326 0a59 488B4DC8 		movq	-56(%rbp), %rcx
+ 1327 0a5d 8B55E4   		movl	-28(%rbp), %edx
+ 1328 0a60 488B45D8 		movq	-40(%rbp), %rax
+ 1329 0a64 4889C7   		movq	%rax, %rdi
+ 1330 0a67 E8C9F8FF 		call	reallocate
+ 1330      FF
+ 1331 0a6c 8945E8   		movl	%eax, -24(%rbp)
+ 1332 0a6f 837DE800 		cmpl	$0, -24(%rbp)
+ 1333 0a73 7405     		je	.L59
+ 1334              		.loc 1 304 3 discriminator 2
+ 1335 0a75 8B45E8   		movl	-24(%rbp), %eax
+ 1336 0a78 EB0F     		jmp	.L55
+ 1337              	.L59:
+ 1338              	.LBE11:
+ 305:core.c        **** 		self->length = blockEnd;
+ 1339              		.loc 1 305 16 is_stmt 1
+ 1340 0a7a 488B45D8 		movq	-40(%rbp), %rax
+ 1341 0a7e 8B55E4   		movl	-28(%rbp), %edx
+ 1342 0a81 895008   		movl	%edx, 8(%rax)
+ 1343              	.L58:
+ 306:core.c        **** 	}
+ 307:core.c        **** 	return BUF_SUCCESS;
+ 1344              		.loc 1 307 9
+ 1345 0a84 B8000000 		movl	$0, %eax
+ 1345      00
+ 1346              	.L55:
+ 308:core.c        **** }
+ 1347              		.loc 1 308 1
+ 1348 0a89 C9       		leave
+ 1349              		.cfi_def_cfa 7, 8
+ 1350 0a8a C3       		ret
+ 1351              		.cfi_endproc
+ 1352              	.LFE17:
+ 1354              		.section	.rodata
+ 1355              	.LC2:
+ 1356 004c 62756657 		.string	"bufWriteByte()"
+ 1356      72697465 
+ 1356      42797465 
+ 1356      282900
+ 1357              		.text
+ 1358              		.globl	bufWriteByte
+ 1360              	bufWriteByte:
+ 1361              	.LFB18:
+ 309:core.c        **** 
+ 310:core.c        **** // Write a single byte into the target buffer. The target offset may be outside the current extent
+ 311:core.c        **** // (or even capacity) of the target buffer.
+ 312:core.c        **** //
+ 313:core.c        **** DLLEXPORT(BufferStatus) bufWriteByte(
+ 314:core.c        **** 	struct Buffer *self, uint32 offset, uint8 byte, const char **error)
+ 315:core.c        **** {
+ 1362              		.loc 1 315 1
+ 1363              		.cfi_startproc
+ 1364 0a8b F30F1EFA 		endbr64
+ 1365 0a8f 55       		pushq	%rbp
+ 1366              		.cfi_def_cfa_offset 16
+ 1367              		.cfi_offset 6, -16
+ 1368 0a90 4889E5   		movq	%rsp, %rbp
+ 1369              		.cfi_def_cfa_register 6
+ 1370 0a93 4883EC30 		subq	$48, %rsp
+ 1371 0a97 48897DE8 		movq	%rdi, -24(%rbp)
+ 1372 0a9b 8975E4   		movl	%esi, -28(%rbp)
+ 1373 0a9e 89D0     		movl	%edx, %eax
+ 1374 0aa0 48894DD8 		movq	%rcx, -40(%rbp)
+ 1375 0aa4 8845E0   		movb	%al, -32(%rbp)
+ 316:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1376              		.loc 1 316 23
+ 1377 0aa7 C745F800 		movl	$0, -8(%rbp)
+ 1377      000000
+ 317:core.c        **** 	status = maybeReallocate(self, offset, 1, error);
+ 1378              		.loc 1 317 11
+ 1379 0aae 488B55D8 		movq	-40(%rbp), %rdx
+ 1380 0ab2 8B75E4   		movl	-28(%rbp), %esi
+ 1381 0ab5 488B45E8 		movq	-24(%rbp), %rax
+ 1382 0ab9 4889D1   		movq	%rdx, %rcx
+ 1383 0abc BA010000 		movl	$1, %edx
+ 1383      00
+ 1384 0ac1 4889C7   		movq	%rax, %rdi
+ 1385 0ac4 E8A3FEFF 		call	maybeReallocate
+ 1385      FF
+ 1386 0ac9 8945FC   		movl	%eax, -4(%rbp)
+ 318:core.c        **** 	CHECK_STATUS(status, "bufWriteByte()", status);
+ 1387              		.loc 1 318 2
+ 1388 0acc 837DFC00 		cmpl	$0, -4(%rbp)
+ 1389 0ad0 741E     		je	.L61
+ 1390              		.loc 1 318 2 is_stmt 0 discriminator 1
+ 1391 0ad2 488B45D8 		movq	-40(%rbp), %rax
+ 1392 0ad6 488D1500 		leaq	.LC2(%rip), %rdx
+ 1392      000000
+ 1393 0add 4889D6   		movq	%rdx, %rsi
+ 1394 0ae0 4889C7   		movq	%rax, %rdi
+ 1395 0ae3 E8000000 		call	errPrefix@PLT
+ 1395      00
+ 1396 0ae8 8B45FC   		movl	-4(%rbp), %eax
+ 1397 0aeb 8945F8   		movl	%eax, -8(%rbp)
+ 1398 0aee EB13     		jmp	.L62
+ 1399              	.L61:
+ 319:core.c        **** 	self->data[offset] = byte;
+ 1400              		.loc 1 319 6 is_stmt 1
+ 1401 0af0 488B45E8 		movq	-24(%rbp), %rax
+ 1402 0af4 488B10   		movq	(%rax), %rdx
+ 1403              		.loc 1 319 12
+ 1404 0af7 8B45E4   		movl	-28(%rbp), %eax
+ 1405 0afa 4801C2   		addq	%rax, %rdx
+ 1406              		.loc 1 319 21
+ 1407 0afd 0FB645E0 		movzbl	-32(%rbp), %eax
+ 1408 0b01 8802     		movb	%al, (%rdx)
+ 1409              	.L62:
+ 320:core.c        **** cleanup:
+ 321:core.c        **** 	return returnCode;
+ 1410              		.loc 1 321 9
+ 1411 0b03 8B45F8   		movl	-8(%rbp), %eax
+ 322:core.c        **** }
+ 1412              		.loc 1 322 1
+ 1413 0b06 C9       		leave
+ 1414              		.cfi_def_cfa 7, 8
+ 1415 0b07 C3       		ret
+ 1416              		.cfi_endproc
+ 1417              	.LFE18:
+ 1419              		.section	.rodata
+ 1420              	.LC3:
+ 1421 005b 62756657 		.string	"bufWriteWordLE()"
+ 1421      72697465 
+ 1421      576F7264 
+ 1421      4C452829 
+ 1421      00
+ 1422              		.text
+ 1423              		.globl	bufWriteWordLE
+ 1425              	bufWriteWordLE:
+ 1426              	.LFB19:
+ 323:core.c        **** 
+ 324:core.c        **** // Write a uint16 into the target buffer in little-endian format. The target offset may be outside
+ 325:core.c        **** // the current extent (or even capacity) of the target buffer.
+ 326:core.c        **** //
+ 327:core.c        **** DLLEXPORT(BufferStatus) bufWriteWordLE(
+ 328:core.c        **** 	struct Buffer *self, uint32 offset, uint16 word, const char **error)
+ 329:core.c        **** {
+ 1427              		.loc 1 329 1
+ 1428              		.cfi_startproc
+ 1429 0b08 F30F1EFA 		endbr64
+ 1430 0b0c 55       		pushq	%rbp
+ 1431              		.cfi_def_cfa_offset 16
+ 1432              		.cfi_offset 6, -16
+ 1433 0b0d 4889E5   		movq	%rsp, %rbp
+ 1434              		.cfi_def_cfa_register 6
+ 1435 0b10 4883EC40 		subq	$64, %rsp
+ 1436 0b14 48897DD8 		movq	%rdi, -40(%rbp)
+ 1437 0b18 8975D4   		movl	%esi, -44(%rbp)
+ 1438 0b1b 89D0     		movl	%edx, %eax
+ 1439 0b1d 48894DC8 		movq	%rcx, -56(%rbp)
+ 1440 0b21 668945D0 		movw	%ax, -48(%rbp)
+ 1441              		.loc 1 329 1
+ 1442 0b25 64488B04 		movq	%fs:40, %rax
+ 1442      25280000 
+ 1442      00
+ 1443 0b2e 488945F8 		movq	%rax, -8(%rbp)
+ 1444 0b32 31C0     		xorl	%eax, %eax
+ 330:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1445              		.loc 1 330 23
+ 1446 0b34 C745EC00 		movl	$0, -20(%rbp)
+ 1446      000000
+ 331:core.c        **** 	union {
+ 332:core.c        **** 		uint16 word;
+ 333:core.c        **** 		uint8 byte[2];
+ 334:core.c        **** 	} u;
+ 335:core.c        **** 	u.word = word;
+ 1447              		.loc 1 335 9
+ 1448 0b3b 0FB745D0 		movzwl	-48(%rbp), %eax
+ 1449 0b3f 668945F6 		movw	%ax, -10(%rbp)
+ 336:core.c        **** 	status = maybeReallocate(self, offset, 2, error);
+ 1450              		.loc 1 336 11
+ 1451 0b43 488B55C8 		movq	-56(%rbp), %rdx
+ 1452 0b47 8B75D4   		movl	-44(%rbp), %esi
+ 1453 0b4a 488B45D8 		movq	-40(%rbp), %rax
+ 1454 0b4e 4889D1   		movq	%rdx, %rcx
+ 1455 0b51 BA020000 		movl	$2, %edx
+ 1455      00
+ 1456 0b56 4889C7   		movq	%rax, %rdi
+ 1457 0b59 E80EFEFF 		call	maybeReallocate
+ 1457      FF
+ 1458 0b5e 8945F0   		movl	%eax, -16(%rbp)
+ 337:core.c        **** 	CHECK_STATUS(status, "bufWriteWordLE()", status);
+ 1459              		.loc 1 337 2
+ 1460 0b61 837DF000 		cmpl	$0, -16(%rbp)
+ 1461 0b65 741E     		je	.L65
+ 1462              		.loc 1 337 2 is_stmt 0 discriminator 1
+ 1463 0b67 488B45C8 		movq	-56(%rbp), %rax
+ 1464 0b6b 488D1500 		leaq	.LC3(%rip), %rdx
+ 1464      000000
+ 1465 0b72 4889D6   		movq	%rdx, %rsi
+ 1466 0b75 4889C7   		movq	%rax, %rdi
+ 1467 0b78 E8000000 		call	errPrefix@PLT
+ 1467      00
+ 1468 0b7d 8B45F0   		movl	-16(%rbp), %eax
+ 1469 0b80 8945EC   		movl	%eax, -20(%rbp)
+ 1470 0b83 EB2A     		jmp	.L66
+ 1471              	.L65:
+ 338:core.c        **** 	#if BYTE_ORDER == 1234
+ 339:core.c        **** 		*(self->data + offset) = u.byte[0];
+ 1472              		.loc 1 339 9 is_stmt 1
+ 1473 0b85 488B45D8 		movq	-40(%rbp), %rax
+ 1474 0b89 488B10   		movq	(%rax), %rdx
+ 1475              		.loc 1 339 16
+ 1476 0b8c 8B45D4   		movl	-44(%rbp), %eax
+ 1477 0b8f 4801C2   		addq	%rax, %rdx
+ 1478              		.loc 1 339 34
+ 1479 0b92 0FB645F6 		movzbl	-10(%rbp), %eax
+ 1480              		.loc 1 339 26
+ 1481 0b96 8802     		movb	%al, (%rdx)
+ 340:core.c        **** 		*(self->data + offset + 1) = u.byte[1];
+ 1482              		.loc 1 340 9
+ 1483 0b98 488B45D8 		movq	-40(%rbp), %rax
+ 1484 0b9c 488B00   		movq	(%rax), %rax
+ 1485              		.loc 1 340 25
+ 1486 0b9f 8B55D4   		movl	-44(%rbp), %edx
+ 1487 0ba2 4883C201 		addq	$1, %rdx
+ 1488 0ba6 4801C2   		addq	%rax, %rdx
+ 1489              		.loc 1 340 38
+ 1490 0ba9 0FB645F7 		movzbl	-9(%rbp), %eax
+ 1491              		.loc 1 340 30
+ 1492 0bad 8802     		movb	%al, (%rdx)
+ 1493              	.L66:
+ 341:core.c        **** 	#else
+ 342:core.c        **** 		*(self->data + offset) = u.byte[1];
+ 343:core.c        **** 		*(self->data + offset + 1) = u.byte[0];
+ 344:core.c        **** 	#endif
+ 345:core.c        **** cleanup:
+ 346:core.c        **** 	return returnCode;
+ 1494              		.loc 1 346 9
+ 1495 0baf 8B45EC   		movl	-20(%rbp), %eax
+ 347:core.c        **** }
+ 1496              		.loc 1 347 1
+ 1497 0bb2 488B55F8 		movq	-8(%rbp), %rdx
+ 1498 0bb6 64482B14 		subq	%fs:40, %rdx
+ 1498      25280000 
+ 1498      00
+ 1499 0bbf 7405     		je	.L68
+ 1500 0bc1 E8000000 		call	__stack_chk_fail@PLT
+ 1500      00
+ 1501              	.L68:
+ 1502 0bc6 C9       		leave
+ 1503              		.cfi_def_cfa 7, 8
+ 1504 0bc7 C3       		ret
+ 1505              		.cfi_endproc
+ 1506              	.LFE19:
+ 1508              		.section	.rodata
+ 1509              	.LC4:
+ 1510 006c 62756657 		.string	"bufWriteWordBE()"
+ 1510      72697465 
+ 1510      576F7264 
+ 1510      42452829 
+ 1510      00
+ 1511              		.text
+ 1512              		.globl	bufWriteWordBE
+ 1514              	bufWriteWordBE:
+ 1515              	.LFB20:
+ 348:core.c        **** 
+ 349:core.c        **** // Write a uint16 into the target buffer in big-endian format. The target offset may be outside
+ 350:core.c        **** // the current extent (or even capacity) of the target buffer.
+ 351:core.c        **** //
+ 352:core.c        **** DLLEXPORT(BufferStatus) bufWriteWordBE(
+ 353:core.c        **** 	struct Buffer *self, uint32 offset, uint16 word, const char **error)
+ 354:core.c        **** {
+ 1516              		.loc 1 354 1
+ 1517              		.cfi_startproc
+ 1518 0bc8 F30F1EFA 		endbr64
+ 1519 0bcc 55       		pushq	%rbp
+ 1520              		.cfi_def_cfa_offset 16
+ 1521              		.cfi_offset 6, -16
+ 1522 0bcd 4889E5   		movq	%rsp, %rbp
+ 1523              		.cfi_def_cfa_register 6
+ 1524 0bd0 4883EC40 		subq	$64, %rsp
+ 1525 0bd4 48897DD8 		movq	%rdi, -40(%rbp)
+ 1526 0bd8 8975D4   		movl	%esi, -44(%rbp)
+ 1527 0bdb 89D0     		movl	%edx, %eax
+ 1528 0bdd 48894DC8 		movq	%rcx, -56(%rbp)
+ 1529 0be1 668945D0 		movw	%ax, -48(%rbp)
+ 1530              		.loc 1 354 1
+ 1531 0be5 64488B04 		movq	%fs:40, %rax
+ 1531      25280000 
+ 1531      00
+ 1532 0bee 488945F8 		movq	%rax, -8(%rbp)
+ 1533 0bf2 31C0     		xorl	%eax, %eax
+ 355:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1534              		.loc 1 355 23
+ 1535 0bf4 C745EC00 		movl	$0, -20(%rbp)
+ 1535      000000
+ 356:core.c        **** 	union {
+ 357:core.c        **** 		uint16 word;
+ 358:core.c        **** 		uint8 byte[2];
+ 359:core.c        **** 	} u;
+ 360:core.c        **** 	u.word = word;
+ 1536              		.loc 1 360 9
+ 1537 0bfb 0FB745D0 		movzwl	-48(%rbp), %eax
+ 1538 0bff 668945F6 		movw	%ax, -10(%rbp)
+ 361:core.c        **** 	status = maybeReallocate(self, offset, 2, error);
+ 1539              		.loc 1 361 11
+ 1540 0c03 488B55C8 		movq	-56(%rbp), %rdx
+ 1541 0c07 8B75D4   		movl	-44(%rbp), %esi
+ 1542 0c0a 488B45D8 		movq	-40(%rbp), %rax
+ 1543 0c0e 4889D1   		movq	%rdx, %rcx
+ 1544 0c11 BA020000 		movl	$2, %edx
+ 1544      00
+ 1545 0c16 4889C7   		movq	%rax, %rdi
+ 1546 0c19 E84EFDFF 		call	maybeReallocate
+ 1546      FF
+ 1547 0c1e 8945F0   		movl	%eax, -16(%rbp)
+ 362:core.c        **** 	CHECK_STATUS(status, "bufWriteWordBE()", status);
+ 1548              		.loc 1 362 2
+ 1549 0c21 837DF000 		cmpl	$0, -16(%rbp)
+ 1550 0c25 741E     		je	.L70
+ 1551              		.loc 1 362 2 is_stmt 0 discriminator 1
+ 1552 0c27 488B45C8 		movq	-56(%rbp), %rax
+ 1553 0c2b 488D1500 		leaq	.LC4(%rip), %rdx
+ 1553      000000
+ 1554 0c32 4889D6   		movq	%rdx, %rsi
+ 1555 0c35 4889C7   		movq	%rax, %rdi
+ 1556 0c38 E8000000 		call	errPrefix@PLT
+ 1556      00
+ 1557 0c3d 8B45F0   		movl	-16(%rbp), %eax
+ 1558 0c40 8945EC   		movl	%eax, -20(%rbp)
+ 1559 0c43 EB2A     		jmp	.L71
+ 1560              	.L70:
+ 363:core.c        **** 	#if BYTE_ORDER == 1234
+ 364:core.c        **** 		*(self->data + offset) = u.byte[1];
+ 1561              		.loc 1 364 9 is_stmt 1
+ 1562 0c45 488B45D8 		movq	-40(%rbp), %rax
+ 1563 0c49 488B10   		movq	(%rax), %rdx
+ 1564              		.loc 1 364 16
+ 1565 0c4c 8B45D4   		movl	-44(%rbp), %eax
+ 1566 0c4f 4801C2   		addq	%rax, %rdx
+ 1567              		.loc 1 364 34
+ 1568 0c52 0FB645F7 		movzbl	-9(%rbp), %eax
+ 1569              		.loc 1 364 26
+ 1570 0c56 8802     		movb	%al, (%rdx)
+ 365:core.c        **** 		*(self->data + offset + 1) = u.byte[0];
+ 1571              		.loc 1 365 9
+ 1572 0c58 488B45D8 		movq	-40(%rbp), %rax
+ 1573 0c5c 488B00   		movq	(%rax), %rax
+ 1574              		.loc 1 365 25
+ 1575 0c5f 8B55D4   		movl	-44(%rbp), %edx
+ 1576 0c62 4883C201 		addq	$1, %rdx
+ 1577 0c66 4801C2   		addq	%rax, %rdx
+ 1578              		.loc 1 365 38
+ 1579 0c69 0FB645F6 		movzbl	-10(%rbp), %eax
+ 1580              		.loc 1 365 30
+ 1581 0c6d 8802     		movb	%al, (%rdx)
+ 1582              	.L71:
+ 366:core.c        **** 	#else
+ 367:core.c        **** 		*(self->data + offset) = u.byte[0];
+ 368:core.c        **** 		*(self->data + offset + 1) = u.byte[1];
+ 369:core.c        **** 	#endif
+ 370:core.c        **** cleanup:
+ 371:core.c        **** 	return returnCode;
+ 1583              		.loc 1 371 9
+ 1584 0c6f 8B45EC   		movl	-20(%rbp), %eax
+ 372:core.c        **** }
+ 1585              		.loc 1 372 1
+ 1586 0c72 488B55F8 		movq	-8(%rbp), %rdx
+ 1587 0c76 64482B14 		subq	%fs:40, %rdx
+ 1587      25280000 
+ 1587      00
+ 1588 0c7f 7405     		je	.L73
+ 1589 0c81 E8000000 		call	__stack_chk_fail@PLT
+ 1589      00
+ 1590              	.L73:
+ 1591 0c86 C9       		leave
+ 1592              		.cfi_def_cfa 7, 8
+ 1593 0c87 C3       		ret
+ 1594              		.cfi_endproc
+ 1595              	.LFE20:
+ 1597              		.section	.rodata
+ 1598              	.LC5:
+ 1599 007d 62756657 		.string	"bufWriteLongLE()"
+ 1599      72697465 
+ 1599      4C6F6E67 
+ 1599      4C452829 
+ 1599      00
+ 1600              		.text
+ 1601              		.globl	bufWriteLongLE
+ 1603              	bufWriteLongLE:
+ 1604              	.LFB21:
+ 373:core.c        **** 
+ 374:core.c        **** // Write a uint16 into the target buffer in little-endian format. The target offset may be outside
+ 375:core.c        **** // the current extent (or even capacity) of the target buffer.
+ 376:core.c        **** //
+ 377:core.c        **** DLLEXPORT(BufferStatus) bufWriteLongLE(
+ 378:core.c        **** 	struct Buffer *self, uint32 offset, uint32 lword, const char **error)
+ 379:core.c        **** {
+ 1605              		.loc 1 379 1
+ 1606              		.cfi_startproc
+ 1607 0c88 F30F1EFA 		endbr64
+ 1608 0c8c 55       		pushq	%rbp
+ 1609              		.cfi_def_cfa_offset 16
+ 1610              		.cfi_offset 6, -16
+ 1611 0c8d 4889E5   		movq	%rsp, %rbp
+ 1612              		.cfi_def_cfa_register 6
+ 1613 0c90 4883EC40 		subq	$64, %rsp
+ 1614 0c94 48897DD8 		movq	%rdi, -40(%rbp)
+ 1615 0c98 8975D4   		movl	%esi, -44(%rbp)
+ 1616 0c9b 8955D0   		movl	%edx, -48(%rbp)
+ 1617 0c9e 48894DC8 		movq	%rcx, -56(%rbp)
+ 1618              		.loc 1 379 1
+ 1619 0ca2 64488B04 		movq	%fs:40, %rax
+ 1619      25280000 
+ 1619      00
+ 1620 0cab 488945F8 		movq	%rax, -8(%rbp)
+ 1621 0caf 31C0     		xorl	%eax, %eax
+ 380:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1622              		.loc 1 380 23
+ 1623 0cb1 C745EC00 		movl	$0, -20(%rbp)
+ 1623      000000
+ 381:core.c        **** 	union {
+ 382:core.c        **** 		uint32 lword;
+ 383:core.c        **** 		uint8 byte[4];
+ 384:core.c        **** 	} u;
+ 385:core.c        **** 	u.lword = lword;
+ 1624              		.loc 1 385 10
+ 1625 0cb8 8B45D0   		movl	-48(%rbp), %eax
+ 1626 0cbb 8945F4   		movl	%eax, -12(%rbp)
+ 386:core.c        **** 	status = maybeReallocate(self, offset, 4, error);
+ 1627              		.loc 1 386 11
+ 1628 0cbe 488B55C8 		movq	-56(%rbp), %rdx
+ 1629 0cc2 8B75D4   		movl	-44(%rbp), %esi
+ 1630 0cc5 488B45D8 		movq	-40(%rbp), %rax
+ 1631 0cc9 4889D1   		movq	%rdx, %rcx
+ 1632 0ccc BA040000 		movl	$4, %edx
+ 1632      00
+ 1633 0cd1 4889C7   		movq	%rax, %rdi
+ 1634 0cd4 E893FCFF 		call	maybeReallocate
+ 1634      FF
+ 1635 0cd9 8945F0   		movl	%eax, -16(%rbp)
+ 387:core.c        **** 	CHECK_STATUS(status, "bufWriteLongLE()", status);
+ 1636              		.loc 1 387 2
+ 1637 0cdc 837DF000 		cmpl	$0, -16(%rbp)
+ 1638 0ce0 741E     		je	.L75
+ 1639              		.loc 1 387 2 is_stmt 0 discriminator 1
+ 1640 0ce2 488B45C8 		movq	-56(%rbp), %rax
+ 1641 0ce6 488D1500 		leaq	.LC5(%rip), %rdx
+ 1641      000000
+ 1642 0ced 4889D6   		movq	%rdx, %rsi
+ 1643 0cf0 4889C7   		movq	%rax, %rdi
+ 1644 0cf3 E8000000 		call	errPrefix@PLT
+ 1644      00
+ 1645 0cf8 8B45F0   		movl	-16(%rbp), %eax
+ 1646 0cfb 8945EC   		movl	%eax, -20(%rbp)
+ 1647 0cfe EB58     		jmp	.L76
+ 1648              	.L75:
+ 388:core.c        **** 	#if BYTE_ORDER == 1234
+ 389:core.c        **** 		*(self->data + offset) = u.byte[0];
+ 1649              		.loc 1 389 9 is_stmt 1
+ 1650 0d00 488B45D8 		movq	-40(%rbp), %rax
+ 1651 0d04 488B10   		movq	(%rax), %rdx
+ 1652              		.loc 1 389 16
+ 1653 0d07 8B45D4   		movl	-44(%rbp), %eax
+ 1654 0d0a 4801C2   		addq	%rax, %rdx
+ 1655              		.loc 1 389 34
+ 1656 0d0d 0FB645F4 		movzbl	-12(%rbp), %eax
+ 1657              		.loc 1 389 26
+ 1658 0d11 8802     		movb	%al, (%rdx)
+ 390:core.c        **** 		*(self->data + offset + 1) = u.byte[1];
+ 1659              		.loc 1 390 9
+ 1660 0d13 488B45D8 		movq	-40(%rbp), %rax
+ 1661 0d17 488B00   		movq	(%rax), %rax
+ 1662              		.loc 1 390 25
+ 1663 0d1a 8B55D4   		movl	-44(%rbp), %edx
+ 1664 0d1d 4883C201 		addq	$1, %rdx
+ 1665 0d21 4801C2   		addq	%rax, %rdx
+ 1666              		.loc 1 390 38
+ 1667 0d24 0FB645F5 		movzbl	-11(%rbp), %eax
+ 1668              		.loc 1 390 30
+ 1669 0d28 8802     		movb	%al, (%rdx)
+ 391:core.c        **** 		*(self->data + offset + 2) = u.byte[2];
+ 1670              		.loc 1 391 9
+ 1671 0d2a 488B45D8 		movq	-40(%rbp), %rax
+ 1672 0d2e 488B00   		movq	(%rax), %rax
+ 1673              		.loc 1 391 25
+ 1674 0d31 8B55D4   		movl	-44(%rbp), %edx
+ 1675 0d34 4883C202 		addq	$2, %rdx
+ 1676 0d38 4801C2   		addq	%rax, %rdx
+ 1677              		.loc 1 391 38
+ 1678 0d3b 0FB645F6 		movzbl	-10(%rbp), %eax
+ 1679              		.loc 1 391 30
+ 1680 0d3f 8802     		movb	%al, (%rdx)
+ 392:core.c        **** 		*(self->data + offset + 3) = u.byte[3];
+ 1681              		.loc 1 392 9
+ 1682 0d41 488B45D8 		movq	-40(%rbp), %rax
+ 1683 0d45 488B00   		movq	(%rax), %rax
+ 1684              		.loc 1 392 25
+ 1685 0d48 8B55D4   		movl	-44(%rbp), %edx
+ 1686 0d4b 4883C203 		addq	$3, %rdx
+ 1687 0d4f 4801C2   		addq	%rax, %rdx
+ 1688              		.loc 1 392 38
+ 1689 0d52 0FB645F7 		movzbl	-9(%rbp), %eax
+ 1690              		.loc 1 392 30
+ 1691 0d56 8802     		movb	%al, (%rdx)
+ 1692              	.L76:
+ 393:core.c        **** 	#else
+ 394:core.c        **** 		*(self->data + offset) = u.byte[3];
+ 395:core.c        **** 		*(self->data + offset + 1) = u.byte[2];
+ 396:core.c        **** 		*(self->data + offset + 2) = u.byte[1];
+ 397:core.c        **** 		*(self->data + offset + 3) = u.byte[0];
+ 398:core.c        **** 	#endif
+ 399:core.c        **** cleanup:
+ 400:core.c        **** 	return returnCode;
+ 1693              		.loc 1 400 9
+ 1694 0d58 8B45EC   		movl	-20(%rbp), %eax
+ 401:core.c        **** }
+ 1695              		.loc 1 401 1
+ 1696 0d5b 488B55F8 		movq	-8(%rbp), %rdx
+ 1697 0d5f 64482B14 		subq	%fs:40, %rdx
+ 1697      25280000 
+ 1697      00
+ 1698 0d68 7405     		je	.L78
+ 1699 0d6a E8000000 		call	__stack_chk_fail@PLT
+ 1699      00
+ 1700              	.L78:
+ 1701 0d6f C9       		leave
+ 1702              		.cfi_def_cfa 7, 8
+ 1703 0d70 C3       		ret
+ 1704              		.cfi_endproc
+ 1705              	.LFE21:
+ 1707              		.section	.rodata
+ 1708              	.LC6:
+ 1709 008e 62756657 		.string	"bufWriteLongBE()"
+ 1709      72697465 
+ 1709      4C6F6E67 
+ 1709      42452829 
+ 1709      00
+ 1710              		.text
+ 1711              		.globl	bufWriteLongBE
+ 1713              	bufWriteLongBE:
+ 1714              	.LFB22:
+ 402:core.c        **** 
+ 403:core.c        **** // Write a uint16 into the target buffer in little-endian format. The target offset may be outside
+ 404:core.c        **** // the current extent (or even capacity) of the target buffer.
+ 405:core.c        **** //
+ 406:core.c        **** DLLEXPORT(BufferStatus) bufWriteLongBE(
+ 407:core.c        **** 	struct Buffer *self, uint32 offset, uint32 lword, const char **error)
+ 408:core.c        **** {
+ 1715              		.loc 1 408 1
+ 1716              		.cfi_startproc
+ 1717 0d71 F30F1EFA 		endbr64
+ 1718 0d75 55       		pushq	%rbp
+ 1719              		.cfi_def_cfa_offset 16
+ 1720              		.cfi_offset 6, -16
+ 1721 0d76 4889E5   		movq	%rsp, %rbp
+ 1722              		.cfi_def_cfa_register 6
+ 1723 0d79 4883EC40 		subq	$64, %rsp
+ 1724 0d7d 48897DD8 		movq	%rdi, -40(%rbp)
+ 1725 0d81 8975D4   		movl	%esi, -44(%rbp)
+ 1726 0d84 8955D0   		movl	%edx, -48(%rbp)
+ 1727 0d87 48894DC8 		movq	%rcx, -56(%rbp)
+ 1728              		.loc 1 408 1
+ 1729 0d8b 64488B04 		movq	%fs:40, %rax
+ 1729      25280000 
+ 1729      00
+ 1730 0d94 488945F8 		movq	%rax, -8(%rbp)
+ 1731 0d98 31C0     		xorl	%eax, %eax
+ 409:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1732              		.loc 1 409 23
+ 1733 0d9a C745EC00 		movl	$0, -20(%rbp)
+ 1733      000000
+ 410:core.c        **** 	union {
+ 411:core.c        **** 		uint32 lword;
+ 412:core.c        **** 		uint8 byte[4];
+ 413:core.c        **** 	} u;
+ 414:core.c        **** 	u.lword = lword;
+ 1734              		.loc 1 414 10
+ 1735 0da1 8B45D0   		movl	-48(%rbp), %eax
+ 1736 0da4 8945F4   		movl	%eax, -12(%rbp)
+ 415:core.c        **** 	status = maybeReallocate(self, offset, 4, error);
+ 1737              		.loc 1 415 11
+ 1738 0da7 488B55C8 		movq	-56(%rbp), %rdx
+ 1739 0dab 8B75D4   		movl	-44(%rbp), %esi
+ 1740 0dae 488B45D8 		movq	-40(%rbp), %rax
+ 1741 0db2 4889D1   		movq	%rdx, %rcx
+ 1742 0db5 BA040000 		movl	$4, %edx
+ 1742      00
+ 1743 0dba 4889C7   		movq	%rax, %rdi
+ 1744 0dbd E8AAFBFF 		call	maybeReallocate
+ 1744      FF
+ 1745 0dc2 8945F0   		movl	%eax, -16(%rbp)
+ 416:core.c        **** 	CHECK_STATUS(status, "bufWriteLongBE()", status);
+ 1746              		.loc 1 416 2
+ 1747 0dc5 837DF000 		cmpl	$0, -16(%rbp)
+ 1748 0dc9 741E     		je	.L80
+ 1749              		.loc 1 416 2 is_stmt 0 discriminator 1
+ 1750 0dcb 488B45C8 		movq	-56(%rbp), %rax
+ 1751 0dcf 488D1500 		leaq	.LC6(%rip), %rdx
+ 1751      000000
+ 1752 0dd6 4889D6   		movq	%rdx, %rsi
+ 1753 0dd9 4889C7   		movq	%rax, %rdi
+ 1754 0ddc E8000000 		call	errPrefix@PLT
+ 1754      00
+ 1755 0de1 8B45F0   		movl	-16(%rbp), %eax
+ 1756 0de4 8945EC   		movl	%eax, -20(%rbp)
+ 1757 0de7 EB58     		jmp	.L81
+ 1758              	.L80:
+ 417:core.c        **** 	#if BYTE_ORDER == 1234
+ 418:core.c        **** 		*(self->data + offset) = u.byte[3];
+ 1759              		.loc 1 418 9 is_stmt 1
+ 1760 0de9 488B45D8 		movq	-40(%rbp), %rax
+ 1761 0ded 488B10   		movq	(%rax), %rdx
+ 1762              		.loc 1 418 16
+ 1763 0df0 8B45D4   		movl	-44(%rbp), %eax
+ 1764 0df3 4801C2   		addq	%rax, %rdx
+ 1765              		.loc 1 418 34
+ 1766 0df6 0FB645F7 		movzbl	-9(%rbp), %eax
+ 1767              		.loc 1 418 26
+ 1768 0dfa 8802     		movb	%al, (%rdx)
+ 419:core.c        **** 		*(self->data + offset + 1) = u.byte[2];
+ 1769              		.loc 1 419 9
+ 1770 0dfc 488B45D8 		movq	-40(%rbp), %rax
+ 1771 0e00 488B00   		movq	(%rax), %rax
+ 1772              		.loc 1 419 25
+ 1773 0e03 8B55D4   		movl	-44(%rbp), %edx
+ 1774 0e06 4883C201 		addq	$1, %rdx
+ 1775 0e0a 4801C2   		addq	%rax, %rdx
+ 1776              		.loc 1 419 38
+ 1777 0e0d 0FB645F6 		movzbl	-10(%rbp), %eax
+ 1778              		.loc 1 419 30
+ 1779 0e11 8802     		movb	%al, (%rdx)
+ 420:core.c        **** 		*(self->data + offset + 2) = u.byte[1];
+ 1780              		.loc 1 420 9
+ 1781 0e13 488B45D8 		movq	-40(%rbp), %rax
+ 1782 0e17 488B00   		movq	(%rax), %rax
+ 1783              		.loc 1 420 25
+ 1784 0e1a 8B55D4   		movl	-44(%rbp), %edx
+ 1785 0e1d 4883C202 		addq	$2, %rdx
+ 1786 0e21 4801C2   		addq	%rax, %rdx
+ 1787              		.loc 1 420 38
+ 1788 0e24 0FB645F5 		movzbl	-11(%rbp), %eax
+ 1789              		.loc 1 420 30
+ 1790 0e28 8802     		movb	%al, (%rdx)
+ 421:core.c        **** 		*(self->data + offset + 3) = u.byte[0];
+ 1791              		.loc 1 421 9
+ 1792 0e2a 488B45D8 		movq	-40(%rbp), %rax
+ 1793 0e2e 488B00   		movq	(%rax), %rax
+ 1794              		.loc 1 421 25
+ 1795 0e31 8B55D4   		movl	-44(%rbp), %edx
+ 1796 0e34 4883C203 		addq	$3, %rdx
+ 1797 0e38 4801C2   		addq	%rax, %rdx
+ 1798              		.loc 1 421 38
+ 1799 0e3b 0FB645F4 		movzbl	-12(%rbp), %eax
+ 1800              		.loc 1 421 30
+ 1801 0e3f 8802     		movb	%al, (%rdx)
+ 1802              	.L81:
+ 422:core.c        **** 	#else
+ 423:core.c        **** 		*(self->data + offset) = u.byte[0];
+ 424:core.c        **** 		*(self->data + offset + 1) = u.byte[1];
+ 425:core.c        **** 		*(self->data + offset + 2) = u.byte[2];
+ 426:core.c        **** 		*(self->data + offset + 3) = u.byte[3];
+ 427:core.c        **** 	#endif
+ 428:core.c        **** cleanup:
+ 429:core.c        **** 	return returnCode;
+ 1803              		.loc 1 429 9
+ 1804 0e41 8B45EC   		movl	-20(%rbp), %eax
+ 430:core.c        **** }
+ 1805              		.loc 1 430 1
+ 1806 0e44 488B55F8 		movq	-8(%rbp), %rdx
+ 1807 0e48 64482B14 		subq	%fs:40, %rdx
+ 1807      25280000 
+ 1807      00
+ 1808 0e51 7405     		je	.L83
+ 1809 0e53 E8000000 		call	__stack_chk_fail@PLT
+ 1809      00
+ 1810              	.L83:
+ 1811 0e58 C9       		leave
+ 1812              		.cfi_def_cfa 7, 8
+ 1813 0e59 C3       		ret
+ 1814              		.cfi_endproc
+ 1815              	.LFE22:
+ 1817              		.section	.rodata
+ 1818              	.LC7:
+ 1819 009f 62756657 		.string	"bufWriteConst()"
+ 1819      72697465 
+ 1819      436F6E73 
+ 1819      74282900 
+ 1820              		.text
+ 1821              		.globl	bufWriteConst
+ 1823              	bufWriteConst:
+ 1824              	.LFB23:
+ 431:core.c        **** 
+ 432:core.c        **** // Set a range of bytes of the target buffer to a given value. The target offset may be outside the
+ 433:core.c        **** // current extent (or even capacity) of the target buffer.
+ 434:core.c        **** //
+ 435:core.c        **** DLLEXPORT(BufferStatus) bufWriteConst(
+ 436:core.c        **** 	struct Buffer *self, uint32 offset, uint8 value, uint32 count, const char **error)
+ 437:core.c        **** {
+ 1825              		.loc 1 437 1
+ 1826              		.cfi_startproc
+ 1827 0e5a F30F1EFA 		endbr64
+ 1828 0e5e 55       		pushq	%rbp
+ 1829              		.cfi_def_cfa_offset 16
+ 1830              		.cfi_offset 6, -16
+ 1831 0e5f 4889E5   		movq	%rsp, %rbp
+ 1832              		.cfi_def_cfa_register 6
+ 1833 0e62 4883EC30 		subq	$48, %rsp
+ 1834 0e66 48897DE8 		movq	%rdi, -24(%rbp)
+ 1835 0e6a 8975E4   		movl	%esi, -28(%rbp)
+ 1836 0e6d 89D0     		movl	%edx, %eax
+ 1837 0e6f 894DDC   		movl	%ecx, -36(%rbp)
+ 1838 0e72 4C8945D0 		movq	%r8, -48(%rbp)
+ 1839 0e76 8845E0   		movb	%al, -32(%rbp)
+ 438:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1840              		.loc 1 438 23
+ 1841 0e79 C745F800 		movl	$0, -8(%rbp)
+ 1841      000000
+ 439:core.c        **** 	status = maybeReallocate(self, offset, count, error);
+ 1842              		.loc 1 439 11
+ 1843 0e80 488B4DD0 		movq	-48(%rbp), %rcx
+ 1844 0e84 8B55DC   		movl	-36(%rbp), %edx
+ 1845 0e87 8B75E4   		movl	-28(%rbp), %esi
+ 1846 0e8a 488B45E8 		movq	-24(%rbp), %rax
+ 1847 0e8e 4889C7   		movq	%rax, %rdi
+ 1848 0e91 E8D6FAFF 		call	maybeReallocate
+ 1848      FF
+ 1849 0e96 8945FC   		movl	%eax, -4(%rbp)
+ 440:core.c        **** 	CHECK_STATUS(status, "bufWriteConst()", status);
+ 1850              		.loc 1 440 2
+ 1851 0e99 837DFC00 		cmpl	$0, -4(%rbp)
+ 1852 0e9d 741E     		je	.L85
+ 1853              		.loc 1 440 2 is_stmt 0 discriminator 1
+ 1854 0e9f 488B45D0 		movq	-48(%rbp), %rax
+ 1855 0ea3 488D1500 		leaq	.LC7(%rip), %rdx
+ 1855      000000
+ 1856 0eaa 4889D6   		movq	%rdx, %rsi
+ 1857 0ead 4889C7   		movq	%rax, %rdi
+ 1858 0eb0 E8000000 		call	errPrefix@PLT
+ 1858      00
+ 1859 0eb5 8B45FC   		movl	-4(%rbp), %eax
+ 1860 0eb8 8945F8   		movl	%eax, -8(%rbp)
+ 1861 0ebb EB1E     		jmp	.L86
+ 1862              	.L85:
+ 441:core.c        **** 	memset(self->data + offset, value, count);
+ 1863              		.loc 1 441 2 is_stmt 1
+ 1864 0ebd 8B55DC   		movl	-36(%rbp), %edx
+ 1865 0ec0 0FB645E0 		movzbl	-32(%rbp), %eax
+ 1866              		.loc 1 441 13
+ 1867 0ec4 488B4DE8 		movq	-24(%rbp), %rcx
+ 1868 0ec8 488B31   		movq	(%rcx), %rsi
+ 1869              		.loc 1 441 2
+ 1870 0ecb 8B4DE4   		movl	-28(%rbp), %ecx
+ 1871              		.loc 1 441 20
+ 1872 0ece 4801F1   		addq	%rsi, %rcx
+ 1873              		.loc 1 441 2
+ 1874 0ed1 89C6     		movl	%eax, %esi
+ 1875 0ed3 4889CF   		movq	%rcx, %rdi
+ 1876 0ed6 E8000000 		call	memset@PLT
+ 1876      00
+ 1877              	.L86:
+ 442:core.c        **** cleanup:
+ 443:core.c        **** 	return returnCode;
+ 1878              		.loc 1 443 9
+ 1879 0edb 8B45F8   		movl	-8(%rbp), %eax
+ 444:core.c        **** }
+ 1880              		.loc 1 444 1
+ 1881 0ede C9       		leave
+ 1882              		.cfi_def_cfa 7, 8
+ 1883 0edf C3       		ret
+ 1884              		.cfi_endproc
+ 1885              	.LFE23:
+ 1887              		.globl	bufWriteBlock
+ 1889              	bufWriteBlock:
+ 1890              	.LFB24:
+ 445:core.c        **** 
+ 446:core.c        **** // Copy a bunch of bytes from a source pointer into the buffer. The target address may be outside
+ 447:core.c        **** // the current extent (or even capacity) of the target buffer.
+ 448:core.c        **** //
+ 449:core.c        **** DLLEXPORT(BufferStatus) bufWriteBlock(
+ 450:core.c        **** 	struct Buffer *self, uint32 offset, const uint8 *ptr, uint32 count, const char **error)
+ 451:core.c        **** {
+ 1891              		.loc 1 451 1
+ 1892              		.cfi_startproc
+ 1893 0ee0 F30F1EFA 		endbr64
+ 1894 0ee4 55       		pushq	%rbp
+ 1895              		.cfi_def_cfa_offset 16
+ 1896              		.cfi_offset 6, -16
+ 1897 0ee5 4889E5   		movq	%rsp, %rbp
+ 1898              		.cfi_def_cfa_register 6
+ 1899 0ee8 4883EC30 		subq	$48, %rsp
+ 1900 0eec 48897DE8 		movq	%rdi, -24(%rbp)
+ 1901 0ef0 8975E4   		movl	%esi, -28(%rbp)
+ 1902 0ef3 488955D8 		movq	%rdx, -40(%rbp)
+ 1903 0ef7 894DE0   		movl	%ecx, -32(%rbp)
+ 1904 0efa 4C8945D0 		movq	%r8, -48(%rbp)
+ 452:core.c        **** 	BufferStatus status, returnCode = BUF_SUCCESS;
+ 1905              		.loc 1 452 23
+ 1906 0efe C745F800 		movl	$0, -8(%rbp)
+ 1906      000000
+ 453:core.c        **** 	status = maybeReallocate(self, offset, count, error);
+ 1907              		.loc 1 453 11
+ 1908 0f05 488B4DD0 		movq	-48(%rbp), %rcx
+ 1909 0f09 8B55E0   		movl	-32(%rbp), %edx
+ 1910 0f0c 8B75E4   		movl	-28(%rbp), %esi
+ 1911 0f0f 488B45E8 		movq	-24(%rbp), %rax
+ 1912 0f13 4889C7   		movq	%rax, %rdi
+ 1913 0f16 E851FAFF 		call	maybeReallocate
+ 1913      FF
+ 1914 0f1b 8945FC   		movl	%eax, -4(%rbp)
+ 454:core.c        **** 	CHECK_STATUS(status, "bufWriteConst()", status);
+ 1915              		.loc 1 454 2
+ 1916 0f1e 837DFC00 		cmpl	$0, -4(%rbp)
+ 1917 0f22 741E     		je	.L89
+ 1918              		.loc 1 454 2 is_stmt 0 discriminator 1
+ 1919 0f24 488B45D0 		movq	-48(%rbp), %rax
+ 1920 0f28 488D1500 		leaq	.LC7(%rip), %rdx
+ 1920      000000
+ 1921 0f2f 4889D6   		movq	%rdx, %rsi
+ 1922 0f32 4889C7   		movq	%rax, %rdi
+ 1923 0f35 E8000000 		call	errPrefix@PLT
+ 1923      00
+ 1924 0f3a 8B45FC   		movl	-4(%rbp), %eax
+ 1925 0f3d 8945F8   		movl	%eax, -8(%rbp)
+ 1926 0f40 EB1F     		jmp	.L90
+ 1927              	.L89:
+ 455:core.c        **** 	memcpy(self->data + offset, ptr, count);
+ 1928              		.loc 1 455 2 is_stmt 1
+ 1929 0f42 8B55E0   		movl	-32(%rbp), %edx
+ 1930              		.loc 1 455 13
+ 1931 0f45 488B45E8 		movq	-24(%rbp), %rax
+ 1932 0f49 488B08   		movq	(%rax), %rcx
+ 1933              		.loc 1 455 2
+ 1934 0f4c 8B45E4   		movl	-28(%rbp), %eax
+ 1935              		.loc 1 455 20
+ 1936 0f4f 4801C1   		addq	%rax, %rcx
+ 1937              		.loc 1 455 2
+ 1938 0f52 488B45D8 		movq	-40(%rbp), %rax
+ 1939 0f56 4889C6   		movq	%rax, %rsi
+ 1940 0f59 4889CF   		movq	%rcx, %rdi
+ 1941 0f5c E8000000 		call	memcpy@PLT
+ 1941      00
+ 1942              	.L90:
+ 456:core.c        **** cleanup:
+ 457:core.c        **** 	return returnCode;
+ 1943              		.loc 1 457 9
+ 1944 0f61 8B45F8   		movl	-8(%rbp), %eax
+ 458:core.c        **** }
+ 1945              		.loc 1 458 1
+ 1946 0f64 C9       		leave
+ 1947              		.cfi_def_cfa 7, 8
+ 1948 0f65 C3       		ret
+ 1949              		.cfi_endproc
+ 1950              	.LFE24:
+ 1952              	.Letext0:
+ 1953              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h"
+ 1954              		.file 3 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/common/makestuff.h"
+ 1955              		.file 4 "libbuffer.h"
+ 1956              		.file 5 "/usr/include/string.h"
+ 1957              		.file 6 "/usr/include/stdlib.h"
+ 1958              		.file 7 "/home/asoreyh/Dropbox/projects/lago/acqua/nexys/src/makestuff/libs/liberror/liberror.h"
+ 4576              		.section	.note.gnu.property,"a"
+ 4577              		.align 8
+ 4578 0000 04000000 		.long	1f - 0f
+ 4579 0004 10000000 		.long	4f - 1f
+ 4580 0008 05000000 		.long	5
+ 4581              	0:
+ 4582 000c 474E5500 		.string	"GNU"
+ 4583              	1:
+ 4584              		.align 8
+ 4585 0010 020000C0 		.long	0xc0000002
+ 4586 0014 04000000 		.long	3f - 2f
+ 4587              	2:
+ 4588 0018 03000000 		.long	0x3
+ 4589              	3:
+ 4590 001c 00000000 		.align 8
+ 4591              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 core.c
+     /tmp/ccNFAceP.s:12     .text:0000000000000000 bufInitialise
+     /tmp/ccNFAceP.s:104    .text:00000000000000c1 bufDestroy
+     /tmp/ccNFAceP.s:144    .text:000000000000010c bufDeepCopy
+     /tmp/ccNFAceP.s:294    .text:000000000000024a bufSwap
+     /tmp/ccNFAceP.s:372    .text:00000000000002ea bufZeroLength
+     /tmp/ccNFAceP.s:426    .text:0000000000000335 reallocate
+     /tmp/ccNFAceP.s:526    .text:00000000000003f9 bufAppendByte
+     /tmp/ccNFAceP.s:600    .text:0000000000000484 bufAppendWordLE
+     /tmp/ccNFAceP.s:702    .text:0000000000000558 bufAppendWordBE
+     /tmp/ccNFAceP.s:804    .text:000000000000062c bufAppendLongLE
+     /tmp/ccNFAceP.s:933    .text:0000000000000738 bufAppendLongBE
+     /tmp/ccNFAceP.s:1062   .text:0000000000000844 bufAppendConst
+     /tmp/ccNFAceP.s:1139   .text:00000000000008d8 bufAppendBlock
+     /tmp/ccNFAceP.s:1214   .text:000000000000096c maybeReallocate
+     /tmp/ccNFAceP.s:1360   .text:0000000000000a8b bufWriteByte
+     /tmp/ccNFAceP.s:1425   .text:0000000000000b08 bufWriteWordLE
+     /tmp/ccNFAceP.s:1514   .text:0000000000000bc8 bufWriteWordBE
+     /tmp/ccNFAceP.s:1603   .text:0000000000000c88 bufWriteLongLE
+     /tmp/ccNFAceP.s:1713   .text:0000000000000d71 bufWriteLongBE
+     /tmp/ccNFAceP.s:1823   .text:0000000000000e5a bufWriteConst
+     /tmp/ccNFAceP.s:1889   .text:0000000000000ee0 bufWriteBlock
+
+UNDEFINED SYMBOLS
+malloc
+errRender
+free
+memcpy
+realloc
+__stack_chk_fail
+memset
+errPrefix
