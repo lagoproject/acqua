@@ -1,22 +1,18 @@
 # ![The LAGO Project](../docs/images/lago-logo.png "The LAGO Project") The LAGO ACQUA suite
 
-Only a few libraries are needed to compile and operate LAGO ACQUA v1 suite. In ubuntu (recomended) and other debian based Linux, just run this command:
+Only a few libraries are needed to compile and operate LAGO ACQUA v2 suite. In the Ubuntu 14.04 version of the OS installed on the Red Pitaya board, just run this command:
 
 ```bash
-sudo apt-get install build-essential libusb-dev sdcc
+apt update
+apt upgrade
+apt install i2c-tools libi2c-dev python-smbus build-essential screen rsync
 cd src/
-make
-make clean
 make
 ```
 
-and that's it (*please note the first make is to assure the correct identification of the libraries path, while the make clean and further make are intendend to avoid residuals from previous compilations*). If everything was fine, you will find a binary file called **lago** in the current directory. This directory is self-contained: all you need to run the LAGO acquisition is here.
+and that's it. If everything was fine, you will find a binary file called **lago** in the current directory. This directory is self-contained: all you need to run the LAGO acquisition is here.
 
-For further information, including the installation at a raspberry pi SBC, please check the ACQUA resources section in the [project wiki](http://wiki.lagoproject.net).
-
-## Other OS
-
-We have some untested builds for other operative system. If you want to test or help to developed this system, please don't hesitate to contact us.
+For further information, including the installation of the LAGO image of the SD card, please check the ACQUA resources section in the [project wiki](http://wiki.lagoproject.net).
 
 ## About LAGO
 
