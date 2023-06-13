@@ -1,10 +1,8 @@
 #!/bin/bash
 detector1HV=0
 detector2HV=0
-detector3HV=0
 detector1Trigger=1000
 detector2Trigger=1000
-detector3Trigger=1000
 
 source ${LAGO_DAQ}/lago-configs
 cd ${work}
@@ -12,7 +10,7 @@ cd ${work}
 maxchecks=5
 for i in $(seq 1 $maxchecks); do
   echo "Try $i"; echo
-  ./lago -x firmware/lago_fpga_vhdl_ram_${fpgaGates}k.xsvf && break
+  cat firmware/lago_v1_3.bit > /dev/xdevcfg && break
   echo
 done
 
@@ -23,7 +21,7 @@ if [ "$i" -eq "$maxchecks" ]; then
 fi
 sleep 5
 
-# Loop to wait for GPS to start working and configue true date
+# Loop to wait for GPS to start working and configure true date
 gps=${hasGPS} 
 # this is highly experimental and should not be used.
 # if you are using a computer, please check the time is correctly setted 
@@ -44,10 +42,8 @@ fi
 # setting daq
 ./lago -s hv1 ${detector1HV}
 ./lago -s hv2 ${detector2HV}
-./lago -s hv3 ${detector3HV}
 ./lago -s t1 ${detector1Trigger}
 ./lago -s t2 ${detector2Trigger}
-./lago -s t3 ${detector3Trigger}
 ./lago -a
 echo "Waiting 10 seconds to start..."
 sleep 10
