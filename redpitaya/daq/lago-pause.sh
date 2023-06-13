@@ -12,10 +12,8 @@ fi
  
 ./lago -s t1 1000
 ./lago -s t2 1000
-./lago -s t3 1000
 ./lago -s hv1 0
 ./lago -s hv2 0
-./lago -s hv3 0
 
 echo "Waiting 10 sec for PMT..."
 sleep 10
