@@ -7,7 +7,7 @@
 # /************************************************************************/
 # /* Authors:  Hernán Asorey                                              */
 # /* e-mail:   asoreyh@cab.cnea.gov.ar                                    */
-# /* for the LAGO Collaboration, lagoproject.org, lago@lagoproject.org	  */
+# /* for the LAGO Collaboration, lagoproject.net, lago@lagoproject.net	  */
 # /************************************************************************/
 # /* Comments: Basic script to configure data acquisition at each site    */
 # /*                                                                      */
@@ -240,10 +240,6 @@ push @parameters,
 	"Where the compressed data and processed files will be located (complete path)",
 	0,
 	"",
-	"fpgaGates",
-	"Number of gates of Nexys2 fpga (500/1200)",
-	1,
-	500,
 	"analyzeRaw",
 	"Do analyze raw data using L1 raw.cc from ANNA module (y/n)?",
 	2,
@@ -403,11 +399,11 @@ while ($_ = $ARGV[0]) {
 }
 
 $usage="
-	The LAGO Project, http://lagoproject.org
+	The LAGO Project, http://lagoproject.net
 	The LAGO ACQUA aquisition suite\n
 	$0
 	A simple script to configure LAGO ACQUA acquisition
-	(c) 2015-Today, The LAGO Project, lago\@lagoproject.org
+	(c) 2015-Today, The LAGO Project, lago\@lagoproject.net
 	(Original (c) 2015, H. Asorey, asoreyh\@cab.cnea.gov.ar)
 	If you enjoy it, please send us an email\n
 	Usage: $0 [OPTION] ... \n
@@ -418,7 +414,7 @@ $usage="
 	Examples:
 		$0 
 	
-	LAGO ACQUA, http://wiki.lagoproject.org/index.php?title=ACQUA";
+	LAGO ACQUA, http://wiki.lagoproject.net/index.php?title=ACQUA";
 
 if ($iHelp) {
 	die "$usage\n";
@@ -486,7 +482,7 @@ open ($fh, "> lago-configs-tmp") or die "# ERROR\tCan't open lago-configs file f
 $now = gmtime();
 print $fh "#########################################################
 # LAGO AQCUA DAQ CONFIGURATION FILE                     #
-# (c) The LAGO Project - lago\@lagoproject.org           #
+# (c) The LAGO Project - lago\@lagoproject.net           #
 # 2015 - Today                                          #
 #                                                       #
 # PLEASE DON'T MODIFY THIS FILE BY HAND.                #
@@ -613,13 +609,16 @@ $trf
 close($fh);
 
 print "# SUCCESS\tNew crontab.run created.\n";
+print "Sourcing Bash config file source $home/.bashrc             \n";
+source $home/.bashrc
+
 print "# SUCCESS\tEverything was fine. Enjoy.\n";
 print "######################################################################\n";
 print "# Now, you are almost ready to start the acquisition					#\n";
 print "# Please verify lago-configs content to be sure everything is right  #\n";
 print "# cat lago-configs                                                   #\n";
-print "# BEFORE TO CONTINUE, PLEASE:  source $home/.bashrc             #\n";
 print "# BE SURE YOU TRANSFERED YOUR KEY TO LAGO CENTRAL DATA REPOSITORY    #\n";
 print "# TO DO THIS, PLEASE:   ssh-copy-id your-user-at-repo\@200.16.117.110 #\n";
 print "# ONCE EVERYTHING IS FINE, then:                  lago-start.sh      #\n";
 print "######################################################################\n";
+
